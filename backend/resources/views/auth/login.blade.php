@@ -1,9 +1,16 @@
 @extends('layouts.app', ['title' => 'Login | ResQLink'])
 
 @section('body')
+    <header class="brand-header">
+        <div class="brand-mark">
+            <svg viewBox="0 0 28 28"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
+        </div>
+        <div class="brand-name">ResQ<span>Link</span></div>
+    </header>
+
     <main class="auth-main">
         <section class="panel">
-            <h1>ResQLink Web Login</h1>
+            <h1>Welcome back</h1>
             <p>Administrator and dispatcher access only.</p>
 
             @if (session('status'))

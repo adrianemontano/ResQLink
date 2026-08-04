@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\Dispatcher\DashboardController as DispatcherDashboardController;
+use App\Http\Controllers\Dispatcher\IncidentController as DispatcherIncidentController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -30,6 +33,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('users', UserController::class)->except(['show', 'destroy']);
         Route::patch('/users/{user}/password', [UserController::class, 'resetPassword'])->name('users.password');
         Route::patch('/users/{user}/activation', [UserController::class, 'toggleActivation'])->name('users.activation');
+        Route::get('/incidents', [AdminIncidentController::class, 'index'])->name('incidents.index');
+        Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
     });
 
 Route::middleware(['auth', 'role:dispatcher'])
@@ -37,4 +42,6 @@ Route::middleware(['auth', 'role:dispatcher'])
     ->name('dispatcher.')
     ->group(function (): void {
         Route::get('/dashboard', DispatcherDashboardController::class)->name('dashboard');
+        Route::get('/incidents', [DispatcherIncidentController::class, 'index'])->name('incidents.index');
+        Route::get('/map', [DispatcherIncidentController::class, 'map'])->name('map');
     });

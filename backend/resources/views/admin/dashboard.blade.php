@@ -10,15 +10,15 @@
     </div>
 
     <section class="grid">
-        <article class="card">
+        <article class="card stat-blue">
             <h2>Total Volunteers</h2>
             <div class="metric">{{ $totalVolunteers }}</div>
         </article>
-        <article class="card">
+        <article class="card stat-green">
             <h2>Total Dispatchers</h2>
             <div class="metric">{{ $totalDispatchers }}</div>
         </article>
-        <article class="card">
+        <article class="card stat-red">
             <h2>Total Incidents</h2>
             <div class="metric">{{ $totalIncidents }}</div>
         </article>
