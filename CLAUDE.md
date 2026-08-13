@@ -47,6 +47,11 @@ of that change.
 
 - Follow existing Laravel conventions already used in `backend/`.
 - Update `docs/` when setup steps, routes, credentials, or behavior change.
+- Whenever an approved change is implemented, update the relevant documentation
+  in `docs/` in the same change. This includes requirements, task status,
+  implementation notes, routes, setup instructions, and user-facing behavior.
+- Do not mark a task complete unless its approved implementation and related
+  documentation are both updated.
 
 ## Agent & Command Restrictions
 
