@@ -23,7 +23,7 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'role_id' => [
                 'required',
-                Rule::exists('roles', 'id')->where(fn ($query) => $query->whereIn('slug', ['dispatcher', 'volunteer'])),
+                Rule::exists('roles', 'id')->where(fn ($query) => $query->whereIn('name', ['dispatcher', 'volunteer'])),
             ],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'is_active' => ['nullable', 'boolean'],

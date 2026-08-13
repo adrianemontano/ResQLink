@@ -11,7 +11,7 @@ class DashboardRedirectController extends Controller
     {
         $user = $request->user();
 
-        return match ($user?->role?->slug) {
+        return match ($user?->role?->name) {
             'admin' => redirect()->route('admin.dashboard'),
             'dispatcher' => redirect()->route('dispatcher.dashboard'),
             default => redirect()->route('login'),

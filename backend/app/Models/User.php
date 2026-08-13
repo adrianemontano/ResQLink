@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'username', 'email', 'password', 'role_id', 'is_active'])]
+#[Fillable(['name', 'first_name', 'last_name', 'contact_number', 'username', 'email', 'password', 'role_id', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -44,7 +44,7 @@ class User extends Authenticatable
     {
         $roles = (array) $roles;
 
-        return $this->role !== null && in_array($this->role->slug, $roles, true);
+        return $this->role !== null && in_array($this->role->name, $roles, true);
     }
 
     public function canAccessWeb(): bool

@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -18,7 +19,7 @@ class UserController extends Controller
     {
         $users = User::query()
             ->with('role')
-            ->whereHas('role', fn ($query) => $query->whereIn('slug', ['dispatcher', 'volunteer']))
+            ->whereHas('role', fn ($query) => $query->whereIn('name', ['dispatcher', 'volunteer']))
             ->orderBy('name')
             ->paginate(15);
 
@@ -36,6 +37,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
+        $this->normalizeNameFields($data);
 
         User::query()->create($data);
 
@@ -58,6 +60,7 @@ class UserController extends Controller
 
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
+        $this->normalizeNameFields($data);
 
         $user->update($data);
 
@@ -90,7 +93,7 @@ class UserController extends Controller
     private function manageableRoles()
     {
         return Role::query()
-            ->whereIn('slug', ['dispatcher', 'volunteer'])
+            ->whereIn('name', ['dispatcher', 'volunteer'])
             ->orderBy('name')
             ->get();
     }
@@ -98,5 +101,18 @@ class UserController extends Controller
     private function abortUnlessManageable(User $user): void
     {
         abort_unless($user->hasRole(['dispatcher', 'volunteer']), 404);
+    }
+
+    /** @param array<string, mixed> $data */
+    private function normalizeNameFields(array &$data): void
+    {
+        if (Schema::hasColumn('users', 'name')) {
+            return;
+        }
+
+        $parts = preg_split('/\s+/', trim((string) ($data['name'] ?? '')), 2);
+        $data['first_name'] = $parts[0] ?? '';
+        $data['last_name'] = $parts[1] ?? null;
+        unset($data['name']);
     }
 }

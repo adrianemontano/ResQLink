@@ -1,0 +1,143 @@
+@startuml
+title ResQLink Database Schema
+
+hide circle
+skinparam linetype ortho
+skinparam entity {
+  BackgroundColor #ffffff
+  BorderColor #2f3a45
+  FontColor #17202a
+}
+
+entity roles {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * name : VARCHAR(50) <<UNIQUE>>
+  description : VARCHAR(255)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity users {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * role_id : BIGINT UNSIGNED <<FK>>
+  * username : VARCHAR(100) <<UNIQUE>>
+  * email : VARCHAR(255) <<UNIQUE>>
+  * password : VARCHAR(255)
+  first_name : VARCHAR(100)
+  last_name : VARCHAR(100)
+  contact_number : VARCHAR(20)
+  * is_active : TINYINT(1)
+  remember_token : VARCHAR(100)
+  email_verified_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity barangays {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * name : VARCHAR(100) <<INDEX>>
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity incident_categories {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * name : VARCHAR(50) <<UNIQUE>>
+  description : VARCHAR(255)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity severity_levels {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * name : VARCHAR(20) <<UNIQUE>>
+  * sort_order : INT <<UNIQUE>>
+  description : VARCHAR(255)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity incident_statuses {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * name : VARCHAR(20) <<UNIQUE>>
+  * sort_order : INT <<UNIQUE>>
+  description : VARCHAR(255)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity volunteer_profiles {
+  * user_id : BIGINT UNSIGNED <<PK, FK>>
+  --
+  * barangay : VARCHAR(100)
+  * verification_status : ENUM
+  verified_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity volunteer_documents {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * volunteer_id : BIGINT UNSIGNED <<FK>>
+  * document_type : ENUM
+  * file_path : VARCHAR(255)
+  * original_filename : VARCHAR(255)
+  * uploaded_at : TIMESTAMP
+  verified_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity incidents {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * volunteer_id : BIGINT UNSIGNED <<FK>>
+  * category_id : BIGINT UNSIGNED <<FK>>
+  * barangay_id : BIGINT UNSIGNED <<FK>>
+  * severity_id : BIGINT UNSIGNED <<FK>>
+  * status_id : BIGINT UNSIGNED <<FK>>
+  nearest_landmark : VARCHAR(255)
+  * latitude : DECIMAL(10,8)
+  * longitude : DECIMAL(11,8)
+  * impact_radius : INT UNSIGNED
+  * affected_population : INT UNSIGNED
+  notes : TEXT
+  * reported_at : TIMESTAMP
+  dispatched_at : TIMESTAMP
+  completed_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity incident_histories {
+  * id : BIGINT UNSIGNED <<PK>>
+  --
+  * incident_id : BIGINT UNSIGNED <<FK>>
+  * status_id : BIGINT UNSIGNED <<FK>>
+  * changed_by : BIGINT UNSIGNED <<FK>>
+  notes : TEXT
+  * changed_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+roles ||--o{ users : role_id
+users ||--o| volunteer_profiles : user_id
+users ||--o{ volunteer_documents : volunteer_id
+users ||--o{ incidents : volunteer_id
+barangays ||--o{ incidents : barangay_id
+incident_categories ||--o{ incidents : category_id
+severity_levels ||--o{ incidents : severity_id
+incident_statuses ||--o{ incidents : status_id
+incidents ||--o{ incident_histories : incident_id
+incident_statuses ||--o{ incident_histories : status_id
+users ||--o{ incident_histories : changed_by
+
+@enduml

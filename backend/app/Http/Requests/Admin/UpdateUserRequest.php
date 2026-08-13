@@ -36,7 +36,7 @@ class UpdateUserRequest extends FormRequest
             ],
             'role_id' => [
                 'required',
-                Rule::exists('roles', 'id')->where(fn ($query) => $query->whereIn('slug', ['dispatcher', 'volunteer'])),
+                Rule::exists('roles', 'id')->where(fn ($query) => $query->whereIn('name', ['dispatcher', 'volunteer'])),
             ],
             'is_active' => ['nullable', 'boolean'],
         ];
