@@ -12,8 +12,7 @@ The current `DatabaseSeeder` creates the roles `admin`, `dispatcher`, and
 Use the admin account to create a dispatcher account before testing dispatcher
 features. These are development credentials only.
 
-**Suggested owner:** One groupmate responsible for dispatcher workflows and
-incident visualization  
+**Assigned owner:** Angela
 **Primary system user:** Dispatcher  
 **Platform:** Laravel Blade, Bootstrap 5, and Leaflet.js web dashboard  
 **Priority:** Must
@@ -113,3 +112,37 @@ The feature is complete when:
 - Completed incidents remain available for historical review.
 - Unauthorized users are denied dispatcher pages and actions.
 - The dispatcher workflow is documented and follows the route/view naming rules.
+
+## Task folder label
+
+This document belongs to **Task 3 — Dispatcher Incident Coordination**.
+
+## Frontend/backend split
+
+The split below defines the concrete interface and server responsibilities for
+each requirement; no requirements are added.
+
+- **`TASK3-001`** Dispatchers can view incoming incidents in an incident queue.
+  - Frontend: Build the dispatcher queue with required summary fields.
+  - Backend: Provide dispatcher-authorized access to incoming incidents.
+- **`TASK3-002`** The queue is ordered by preliminary severity and shows workflow status.
+  - Frontend: Display severity ordering and current status.
+  - Backend: Order incidents and return workflow status.
+- **`TASK3-003`** Dispatchers can view complete incident summaries and details.
+  - Frontend: Build the incident details view.
+  - Backend: Return all required summary fields.
+- **`TASK3-004`** Active and historical incidents are shown on the local Leaflet map.
+  - Frontend: Render local markers and impact-radius circles.
+  - Backend: Supply authorized coordinates and radius values.
+- **`TASK3-005`** Workflow status is limited to Reported, Received, Dispatched, and Completed.
+  - Frontend: Provide only the four allowed status controls.
+  - Backend: Validate and reject other status values.
+- **`TASK3-006`** The system records the dispatcher and timestamp for every status change.
+  - Frontend: Display dispatcher, timestamp, and history entries.
+  - Backend: Persist the acting dispatcher and change timestamp.
+- **`TASK3-007`** Active, completed, and archived incidents are visibly distinguished.
+  - Frontend: Use clear labels or visual states.
+  - Backend: Identify and filter each incident group consistently.
+- **`TASK3-008`** Users without dispatcher access cannot perform dispatcher operations.
+  - Frontend: Show unauthorized state and hide restricted controls.
+  - Backend: Enforce authorization for all dispatcher operations.

@@ -14,6 +14,31 @@ ResQLink use the same words for the same concept.
 - Avoid vague names such as `data`, `info`, `item`, `record`, `manager`, or `handler`.
 - Do not mix similar terms unless they mean different things.
 
+## Team Task Ownership
+
+This project is maintained by four team members. Use the assigned task number
+and owner name when identifying task-scoped work:
+
+| Task | Owner | Scope |
+| --- | --- | --- |
+| Task 1 | Jassy | User access and volunteer management |
+| Task 2 | Adriane | Incident reporting and severity assessment |
+| Task 3 | Angela | Dispatcher incident coordination |
+| Task 4 | Monique | Admin incident records and reports |
+
+Rules for task-scoped work:
+
+- Use the task identifier (`TASK1`, `TASK2`, `TASK3`, or `TASK4`) in checklist
+  items, implementation notes, and task references.
+- Identify the responsible owner by name in task documentation and ownership
+  notes; do not use the generic phrase “One groupmate” when the owner is known.
+- Use the task prefix in task-scoped branch names, commit messages, and feature
+  documentation where it improves traceability, such as
+  `feature/task2-incident-reporting`.
+- Keep technical names based on the domain conventions below; owner names and
+  task numbers identify responsibility and must not be added to PHP classes,
+  routes, database tables, or user-facing domain names.
+
 ## Project Terms
 
 | Concept | Preferred term | Avoid |

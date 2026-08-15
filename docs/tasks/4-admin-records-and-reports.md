@@ -12,8 +12,7 @@ The current `DatabaseSeeder` creates the roles `admin`, `dispatcher`, and
 These are development credentials only. The admin values can be overridden with
 `DEFAULT_ADMIN_USERNAME`, `DEFAULT_ADMIN_EMAIL`, and `DEFAULT_ADMIN_PASSWORD`.
 
-**Suggested owner:** One groupmate responsible for admin data access and
-reporting  
+**Assigned owner:** Monique
 **Primary system user:** Admin / Data Management Personnel  
 **Platform:** Laravel Blade, Bootstrap 5, MySQL, and Laravel report logic  
 **Priority:** Must
@@ -104,3 +103,43 @@ The feature is complete when:
 - Empty periods display a clear empty state rather than incorrect totals.
 - Admin-only pages and actions reject unauthorized users.
 - Report behavior and field definitions are documented.
+
+## Task folder label
+
+This document belongs to **Task 4 — Admin Incident Records and Reports**.
+
+## Frontend/backend split
+
+The split below defines the concrete interface and server responsibilities for
+each requirement; no requirements are added.
+
+- **`TASK4-001`** Admins can access persisted incident records.
+  - Frontend: Build the admin incident-records view.
+  - Backend: Provide admin-authorized record access.
+- **`TASK4-002`** Admins can search records by relevant fields.
+  - Frontend: Provide search controls and matching results.
+  - Backend: Search persisted records by approved fields.
+- **`TASK4-003`** Admins can filter records by category and workflow status.
+  - Frontend: Provide category and status filters.
+  - Backend: Apply validated filters to persisted records.
+- **`TASK4-004`** Admins can retrieve archived and historical incidents.
+  - Frontend: Provide archived and historical record views.
+  - Backend: Retrieve those records under admin authorization.
+- **`TASK4-005`** Admins can generate daily reports.
+  - Frontend: Provide a daily period selector and results view.
+  - Backend: Generate daily results from persisted data.
+- **`TASK4-006`** Admins can generate weekly reports.
+  - Frontend: Provide a weekly period selector and results view.
+  - Backend: Generate weekly results from persisted data.
+- **`TASK4-007`** Admins can generate monthly reports.
+  - Frontend: Provide a monthly period selector and results view.
+  - Backend: Generate monthly results from persisted data.
+- **`TASK4-008`** Reports include category, barangay, status, and frequency statistics.
+  - Frontend: Display the required statistics.
+  - Backend: Aggregate the required statistics.
+- **`TASK4-009`** Report results are scoped to the selected reporting period.
+  - Frontend: Show the selected period and result scope.
+  - Backend: Enforce the selected period in queries and aggregation.
+- **`TASK4-010`** Users without admin access cannot access records or reports.
+  - Frontend: Show an unauthorized state.
+  - Backend: Enforce authorization for all admin record/report routes.

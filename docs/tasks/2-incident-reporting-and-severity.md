@@ -12,8 +12,7 @@ The current `DatabaseSeeder` creates the roles `admin`, `dispatcher`, and
 Use the admin account to create a volunteer account before testing volunteer
 incident reporting. These are development credentials only.
 
-**Suggested owner:** One groupmate responsible for incident domain logic and
-database/API operations  
+**Assigned owner:** Adriane
 **Primary system user:** Volunteer submits; system validates and classifies  
 **Platform:** Laravel backend, MySQL, and the currently supported web interface  
 **Priority:** Must
@@ -113,3 +112,38 @@ The feature is complete when:
   details view.
 - Unauthorized users cannot submit incidents.
 - The requirement-to-code mapping and severity rules are documented.
+
+## Task folder label
+
+This document belongs to **Task 2 — Incident Reporting and Severity Assessment**.
+
+## Frontend/backend split
+
+The same requirement may require both a client form and server-side behavior.
+The split below states the concrete responsibility of each layer; no
+requirements are added.
+
+- **`TASK2-001`** A verified volunteer can submit a complete incident report.
+  - Frontend: Provide the complete incident form and submit action.
+  - Backend: Accept reports only from authenticated, verified volunteers.
+- **`TASK2-002`** Categories are limited to Flood, Earthquake, Landslide, and Fire.
+  - Frontend: Present only the four allowed choices.
+  - Backend: Validate and reject unsupported categories.
+- **`TASK2-003`** An incident stores a local location and impact radius.
+  - Frontend: Provide latitude, longitude, and radius inputs with validation.
+  - Backend: Validate ranges and persist coordinates, radius, and timestamp.
+- **`TASK2-004`** Each report is submitted under the authenticated volunteer session.
+  - Frontend: Submit through the authenticated volunteer flow.
+  - Backend: Associate the incident with the authenticated volunteer.
+- **`TASK2-005`** Invalid or incomplete incident data produces useful errors.
+  - Frontend: Display field, location, radius, and inactive-account errors.
+  - Backend: Reject invalid submissions with safe validation responses.
+- **`TASK2-006`** The system calculates preliminary severity as Low, Moderate, High, or Critical.
+  - Frontend: Display the returned preliminary severity.
+  - Backend: Calculate and return only the four supported values.
+- **`TASK2-007`** Severity is preliminary decision support, not an official assessment.
+  - Frontend: Label severity as preliminary decision support.
+  - Backend: Keep it separate from dispatcher or official assessments.
+- **`TASK2-008`** An accepted incident receives an identifier, timestamp, and initial `Reported` status.
+  - Frontend: Display the identifier, timestamp, and status.
+  - Backend: Generate the identifier, persist the timestamp, and assign `Reported`.

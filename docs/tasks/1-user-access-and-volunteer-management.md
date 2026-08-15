@@ -14,8 +14,7 @@ These are development credentials only. The admin values can be overridden with
 Dispatcher and volunteer users must currently be created through the admin user
 management feature.
 
-**Suggested owner:** One groupmate responsible for authentication, roles, and
-admin account management  
+**Assigned owner:** Jassy
 **Primary system users:** Admin, Dispatcher, Volunteer  
 **Platform:** Laravel backend and Blade/Bootstrap web dashboard  
 **Priority:** Must
@@ -109,3 +108,78 @@ The feature is complete when:
 - Inactive volunteers are prevented from volunteer operations.
 - Validation and authorization behavior is documented and the implementation
   follows the naming conventions.
+
+## Task folder label
+
+This document belongs to **Task 1 — User Access and Volunteer Management**.
+
+## Frontend/backend split
+
+The same requirement may require both a user interface and server-side
+behavior. The split below defines the specific work for each layer; no
+requirement is added or removed.
+
+### Frontend deliverables
+
+- **TASK1-001:** Build the Admin user-management table and create/edit form
+  with volunteer account fields, active/inactive control, confirmation feedback,
+  and action errors.
+- **TASK1-002:** Provide forms and screens for creating and editing
+  dispatcher/admin accounts, including role selection and safe password/reset
+  feedback.
+- **TASK1-003:** Build login, logout, validation/error, redirect, and
+  unauthenticated protected-page states for all supported roles.
+- **TASK1-004:** Show only role-appropriate navigation/actions and display a
+  clear inactive-volunteer access-denied state.
+- **TASK1-005:** Add volunteer document fields/statuses and display the three
+  required document types, file metadata, and review state.
+- **TASK1-006:** Render account availability consistently as `active` or
+  `inactive` and never use incident workflow `status` for it.
+- **TASK1-007:** Display field-level validation, duplicate-account,
+  authorization, and upload errors without passwords or other sensitive data.
+
+### Backend deliverables
+
+- **TASK1-001:** Implement volunteer create, update, activation, and
+  deactivation actions; validate fields, persist the account state, and prevent
+  deactivation from bypassing authorization.
+- **TASK1-002:** Implement role assignment and account updates for
+  dispatcher/admin users, enforce allowed roles, hash passwords, and prevent
+  unauthorized privilege escalation.
+- **TASK1-003:** Configure authentication, sessions, logout, middleware,
+  password verification, and redirects for every protected route.
+- **TASK1-004:** Enforce role authorization through middleware/policies and
+  reject inactive volunteers on every volunteer operation, including direct
+  requests.
+- **TASK1-005:** Create document persistence and relationships; validate
+  document type/file metadata, prevent duplicate required types per volunteer,
+  and authorize admin access.
+- **TASK1-006:** Store and validate the account availability field using
+  `active`/`inactive`; keep it separate from incident status in models, requests,
+  and queries.
+- **TASK1-007:** Add request validation, unique constraints/checks, safe error
+  responses, and logging that excludes passwords and sensitive document
+  contents.
+
+## Detailed implementation checklist
+
+Before marking TASK1 complete, Jassy should:
+
+1. Confirm the `roles`, `users`, volunteer profile, and volunteer-document
+   schema names and relationships, then document any migration or seeder
+   assumptions.
+2. Implement authentication first so all later screens and endpoints use the
+   same authenticated user and role relationship.
+3. Add admin-only routes for user listing, creation, editing, activation, and
+   deactivation, with form requests and policies for each mutating action.
+4. Add the three required volunteer document types and define whether each
+   record stores an uploaded path, original filename, MIME type, and review
+   state; do not expose private files publicly.
+5. Build the Blade pages under the documented admin view paths and connect
+   every form to a real backend action with success and failure feedback.
+6. Verify inactive volunteers cannot reach volunteer actions by typing a URL
+   directly, not only by hiding navigation links.
+7. Add or update development seed data and environment-variable documentation
+   without committing real credentials.
+8. Record routes, permissions, validation rules, and the final requirement-
+   to-code mapping in the relevant documentation before marking the task done.
