@@ -1,4 +1,6 @@
-# Incident Reporting and Severity Feature
+# TASK2 — Incident Reporting and Severity Feature
+
+**Assigned owner:** Adriane
 
 ## Scope
 
@@ -10,7 +12,9 @@ outside this feature.
 
 `POST /api/incidents`
 
-The request must be authenticated as an active user with the `volunteer` role.
+The request must be authenticated as an active user with the `volunteer` role
+and a related `volunteer_profiles` record whose `verification_status` is
+`verified`. Inactive, unverified, or non-volunteer users are rejected.
 The endpoint accepts JSON or form data with:
 
 | Field | Required | Rules |
@@ -30,8 +34,10 @@ different reporter.
 ## Stored workflow values
 
 Accepted reports receive `Reported` status and an automatic `reported_at`
-timestamp. The response includes the incident identifier, submitted location,
-impact radius, and preliminary severity.
+timestamp. Reference IDs for the selected category, severity, and `Reported`
+status are also stored when the reference rows are seeded. The response
+includes the incident identifier, submitted location, impact radius, and
+preliminary severity.
 
 Severity is calculated by `IncidentSeverityService` using both affected
 population and impact radius. The current scoring thresholds are:
