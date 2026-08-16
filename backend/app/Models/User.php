@@ -19,6 +19,18 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public function getNameAttribute(?string $value): string
+    {
+        if ($value !== null) {
+            return $value;
+        }
+
+        return trim(implode(' ', array_filter([
+            $this->attributes['first_name'] ?? null,
+            $this->attributes['last_name'] ?? null,
+        ])));
+    }
+
     /**
      * Get the attributes that should be cast.
      *

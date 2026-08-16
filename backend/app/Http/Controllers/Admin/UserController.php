@@ -19,11 +19,17 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        $users = User::query()
+        $query = User::query()
             ->with('role')
-            ->whereHas('role', fn ($query) => $query->whereIn('name', ['admin', 'dispatcher', 'volunteer']))
-            ->orderBy('name')
-            ->paginate(15);
+            ->whereHas('role', fn ($query) => $query->whereIn('name', ['admin', 'dispatcher', 'volunteer']));
+
+        if (Schema::hasColumn('users', 'name')) {
+            $query->orderBy('name');
+        } else {
+            $query->orderBy('first_name')->orderBy('last_name');
+        }
+
+        $users = $query->paginate(15);
 
         return view('admin.users.index', ['users' => $users]);
     }
