@@ -16,7 +16,6 @@ class ReferenceDataSeeder extends Seeder
             ['name' => 'Earthquake', 'description' => 'Earthquake incident'],
             ['name' => 'Landslide', 'description' => 'Landslide incident'],
             ['name' => 'Fire', 'description' => 'Fire incident'],
-            ['name' => 'Other', 'description' => 'Other incident type'],
         ] as $category) {
             DB::table('incident_categories')->updateOrInsert(
                 ['name' => $category['name']],

@@ -8,9 +8,11 @@ use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\VolunteerProfile;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -19,7 +21,7 @@ class UserController extends Controller
     {
         $users = User::query()
             ->with('role')
-            ->whereHas('role', fn ($query) => $query->whereIn('name', ['dispatcher', 'volunteer']))
+            ->whereHas('role', fn ($query) => $query->whereIn('name', ['admin', 'dispatcher', 'volunteer']))
             ->orderBy('name')
             ->paginate(15);
 
@@ -39,7 +41,21 @@ class UserController extends Controller
         $data['is_active'] = $request->boolean('is_active');
         $this->normalizeNameFields($data);
 
-        User::query()->create($data);
+        $role = Role::query()->findOrFail($data['role_id']);
+        $barangay = $data['barangay'] ?? null;
+        unset($data['barangay']);
+
+        DB::transaction(function () use ($data, $role, $barangay): void {
+            $user = User::query()->create($data);
+
+            if ($role->name === 'volunteer') {
+                VolunteerProfile::query()->create([
+                    'user_id' => $user->id,
+                    'barangay' => $barangay,
+                    'verification_status' => 'pending',
+                ]);
+            }
+        });
 
         return redirect()->route('admin.users.index')->with('status', 'User account created.');
     }
@@ -62,7 +78,25 @@ class UserController extends Controller
         $data['is_active'] = $request->boolean('is_active');
         $this->normalizeNameFields($data);
 
-        $user->update($data);
+        $role = Role::query()->findOrFail($data['role_id']);
+        $barangay = $data['barangay'] ?? $user->volunteerProfile?->barangay;
+        unset($data['barangay']);
+
+        DB::transaction(function () use ($data, $role, $barangay, $user): void {
+            $user->update($data);
+
+            if ($role->name === 'volunteer') {
+                $user->volunteerProfile()->updateOrCreate(
+                    [],
+                    [
+                        'barangay' => $barangay,
+                        'verification_status' => $user->volunteerProfile?->verification_status ?? 'pending',
+                    ],
+                );
+            } else {
+                $user->volunteerProfile()->delete();
+            }
+        });
 
         return redirect()->route('admin.users.index')->with('status', 'User account updated.');
     }
@@ -93,14 +127,14 @@ class UserController extends Controller
     private function manageableRoles()
     {
         return Role::query()
-            ->whereIn('name', ['dispatcher', 'volunteer'])
+            ->whereIn('name', ['admin', 'dispatcher', 'volunteer'])
             ->orderBy('name')
             ->get();
     }
 
     private function abortUnlessManageable(User $user): void
     {
-        abort_unless($user->hasRole(['dispatcher', 'volunteer']), 404);
+        abort_unless($user->hasRole(['admin', 'dispatcher', 'volunteer']), 404);
     }
 
     /** @param array<string, mixed> $data */

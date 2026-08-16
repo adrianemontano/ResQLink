@@ -23,10 +23,16 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'role_id' => [
                 'required',
-                Rule::exists('roles', 'id')->where(fn ($query) => $query->whereIn('name', ['dispatcher', 'volunteer'])),
+                Rule::exists('roles', 'id')->where(fn ($query) => $query->whereIn('name', ['admin', 'dispatcher', 'volunteer'])),
             ],
+            'barangay' => ['required_if:role_id,'.$this->volunteerRoleId(), 'nullable', 'string', 'max:100'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'is_active' => ['nullable', 'boolean'],
         ];
+    }
+
+    private function volunteerRoleId(): int
+    {
+        return (int) \App\Models\Role::query()->where('name', 'volunteer')->value('id');
     }
 }

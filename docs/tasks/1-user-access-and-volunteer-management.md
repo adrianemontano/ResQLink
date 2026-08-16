@@ -14,6 +14,15 @@ These are development credentials only. The admin values can be overridden with
 Dispatcher and volunteer users must currently be created through the admin user
 management feature.
 
+When an admin creates a volunteer, the form records the volunteer's barangay
+and creates the related `volunteer_profiles` row with `verification_status` set
+to `pending`. An admin must verify that profile before incident submission is
+allowed.
+
+Dispatcher accounts do not require volunteer profile fields. If an account's
+role is changed to volunteer, a pending volunteer profile is created; changing
+it away from volunteer removes the volunteer profile.
+
 **Assigned owner:** Jassy
 **Primary system users:** Admin, Dispatcher, Volunteer  
 **Platform:** Laravel backend and Blade/Bootstrap web dashboard  
