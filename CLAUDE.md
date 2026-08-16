@@ -46,6 +46,9 @@ of that change.
 ## Conventions
 
 - Follow existing Laravel conventions already used in `backend/`.
+- Before creating or modifying task-scoped code, documentation, routes, database
+  objects, tests, branches, or commits, read and follow
+  `docs/naming-conventions.md`.
 - Follow the team task ownership convention in `docs/naming-conventions.md`:
   Jassy owns Task 1, Adriane owns Task 2, Angela owns Task 3, and Monique owns
   Task 4. Preserve the applicable `TASK1`–`TASK4` identifier and assigned owner
