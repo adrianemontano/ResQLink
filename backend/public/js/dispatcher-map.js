@@ -1,41 +1,37 @@
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
         var mapEl = document.getElementById('incident-map');
-        if (!mapEl || typeof L === 'undefined') {
+        if (!mapEl) {
             return;
         }
 
-        var map = L.map(mapEl).setView([10.3157, 123.8854], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors',
-            maxZoom: 19,
-        }).addTo(map);
-
         var statusColors = {
-            pending: '#DC2626',
+            Reported: '#DC2626',
             received: '#D97706',
             dispatched: '#16A34A',
         };
 
         var incidents = typeof incidentMapData !== 'undefined' ? incidentMapData : [];
+        mapEl.innerHTML = '<div class="map-grid" aria-label="Offline incident coordinate grid"></div>';
 
         incidents.forEach(function (incident) {
-            if (!incident.latitude || !incident.longitude) {
+            if (incident.latitude === null || incident.longitude === null) {
                 return;
             }
 
+            var marker = document.createElement('span');
+            var latitude = Math.max(0, Math.min(100, (incident.latitude + 90) / 180 * 100));
+            var longitude = Math.max(0, Math.min(100, (incident.longitude + 180) / 360 * 100));
             var color = statusColors[incident.status] || '#2563EB';
 
-            L.circleMarker([incident.latitude, incident.longitude], {
-                radius: 8,
-                color: color,
-                weight: 2,
-                fillColor: color,
-                fillOpacity: 0.85,
-            })
-                .addTo(map)
-                .bindPopup('<strong>' + (incident.category || 'Incident') + '</strong><br>' + (incident.barangay || ''));
+            marker.className = 'offline-map-marker';
+            marker.style.backgroundColor = color;
+            marker.style.left = longitude + '%';
+            marker.style.bottom = latitude + '%';
+            marker.title = (incident.category || 'Incident') + ' — ' + (incident.barangay || '');
+            mapEl.appendChild(marker);
         });
+
+        mapEl.insertAdjacentHTML('beforeend', '<small class="offline-map-label">Offline coordinate grid</small>');
     });
 })();

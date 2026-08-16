@@ -31,11 +31,35 @@
 .legend-dot.dot-dispatched { background: var(--green); }
 
 #incident-map {
+    position: relative;
     background: var(--gray-100);
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-lg);
     height: 520px;
     width: 100%;
+}
+
+.map-grid {
+    background-image: linear-gradient(var(--gray-200) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gray-200) 1px, transparent 1px);
+    background-size: 10% 10%;
+    height: 100%;
+    width: 100%;
+}
+
+.offline-map-marker {
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    height: 14px;
+    position: absolute;
+    transform: translate(-50%, 50%);
+    width: 14px;
+}
+
+.offline-map-label {
+    bottom: 8px;
+    left: 10px;
+    position: absolute;
 }
 
 .report-stat-grid {

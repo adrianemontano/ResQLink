@@ -1,9 +1,5 @@
 @extends('layouts.dashboard', ['title' => 'Incident Map | ResQLink'])
 
-@push('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-@endpush
-
 @section('content')
     <div class="header-row">
         <div>
@@ -22,7 +18,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const incidentMapData = @json($incidents);
     </script>
