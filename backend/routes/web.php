@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\Dispatcher\DashboardController as DispatcherDashboardController;
 use App\Http\Controllers\Dispatcher\IncidentController as DispatcherIncidentController;
+use App\Http\Controllers\Volunteer\DashboardController as VolunteerDashboardController;
+use App\Http\Controllers\Volunteer\IncidentController as VolunteerIncidentController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -44,4 +46,13 @@ Route::middleware(['auth', 'role:dispatcher'])
         Route::get('/dashboard', DispatcherDashboardController::class)->name('dashboard');
         Route::get('/incidents', [DispatcherIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/map', [DispatcherIncidentController::class, 'map'])->name('map');
+    });
+
+Route::middleware(['auth', 'role:volunteer'])
+    ->prefix('volunteer')
+    ->name('volunteer.')
+    ->group(function (): void {
+        Route::get('/dashboard', VolunteerDashboardController::class)->name('dashboard');
+        Route::get('/incidents/create', [VolunteerIncidentController::class, 'create'])->name('incidents.create');
+        Route::post('/incidents', [VolunteerIncidentController::class, 'store'])->name('incidents.store');
     });

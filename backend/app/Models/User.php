@@ -67,6 +67,6 @@ class User extends Authenticatable
 
     public function canAccessWeb(): bool
     {
-        return $this->is_active && $this->hasRole(['admin', 'dispatcher']);
+        return $this->is_active && $this->hasRole(['admin', 'dispatcher', 'volunteer']);
     }
 }

@@ -45,12 +45,6 @@ class LoginController extends Controller
             ]);
         }
 
-        if ($user->hasRole('volunteer')) {
-            throw ValidationException::withMessages([
-                'login' => 'Volunteer accounts cannot access the web application.',
-            ]);
-        }
-
         if (! $user->canAccessWeb()) {
             throw ValidationException::withMessages([
                 'login' => 'This account is not authorized for web access.',
@@ -78,6 +72,7 @@ class LoginController extends Controller
         return match ($user->role?->name) {
             'admin' => route('admin.dashboard'),
             'dispatcher' => route('dispatcher.dashboard'),
+            'volunteer' => route('volunteer.dashboard'),
             default => route('login'),
         };
     }
