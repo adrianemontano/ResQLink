@@ -12,6 +12,18 @@ outside this feature.
 
 `POST /api/incidents`
 
+## Volunteer web flow
+
+Verified active volunteers can also sign in through the web application. After
+login they are redirected to `/volunteer/dashboard` and can submit the same
+incident structure through `/volunteer/incidents/create`. The web form posts to
+`/volunteer/incidents` and uses the shared `StoreIncidentRequest` validation and
+`IncidentSubmissionService`, so API and web submissions produce the same stored
+incident data, severity, timestamp, and `Reported` status.
+
+Development testing requires an active volunteer user with a related
+`volunteer_profiles.verification_status` value of `verified`.
+
 The request must be authenticated as an active user with the `volunteer` role
 and a related `volunteer_profiles` record whose `verification_status` is
 `verified`. Inactive, unverified, or non-volunteer users are rejected.
