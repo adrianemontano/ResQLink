@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'volunteer_id', 'reported_by', 'category_id', 'barangay_id', 'severity_id',
@@ -45,6 +46,14 @@ class Incident extends Model
     public function volunteer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'volunteer_id');
+    }
+
+    /**
+     * @return HasMany<IncidentHistory, $this>
+     */
+    public function history(): HasMany
+    {
+        return $this->hasMany(IncidentHistory::class)->latest('changed_at');
     }
 
     protected static function booted(): void

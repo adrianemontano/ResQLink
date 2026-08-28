@@ -45,6 +45,8 @@ Route::middleware(['auth', 'role:dispatcher'])
     ->group(function (): void {
         Route::get('/dashboard', DispatcherDashboardController::class)->name('dashboard');
         Route::get('/incidents', [DispatcherIncidentController::class, 'index'])->name('incidents.index');
+        Route::get('/incidents/{incident}', [DispatcherIncidentController::class, 'show'])->name('incidents.show');
+        Route::patch('/incidents/{incident}/status', [DispatcherIncidentController::class, 'updateStatus'])->name('incidents.status');
         Route::get('/map', [DispatcherIncidentController::class, 'map'])->name('map');
     });
 
