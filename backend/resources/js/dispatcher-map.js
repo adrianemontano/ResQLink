@@ -52,8 +52,14 @@ async function initializeMap(wrapper) {
     L.control.scale({ metric: true, imperial: false, position: 'bottomleft' }).addTo(map);
 
     const localFeatures = await addLocalFeatures(map);
-    const markers = await loadMarkers(map, wrapper.dataset.markerEndpoint, messageElement);
+    const markers = await loadMarkers(
+        map,
+        wrapper.dataset.markerEndpoint,
+        messageElement,
+        wrapper.dataset.initialMarkers,
+    );
     map.__resqlinkMarkers = markers;
+    applyMarkerFilter(map, map.__resqlinkStatus);
     const fitTargets = markers.length > 0 ? markers : localFeatures.map((feature) => feature.layer).filter(Boolean);
 
     if (fitTargets.length > 0) {
@@ -171,20 +177,18 @@ function bindFilterChips(map, wrapper) {
 function applyMarkerFilter(map, filter) {
     if (!Array.isArray(map.__resqlinkMarkers)) return;
 
+    const normalizedFilter = String(filter || 'all').toLowerCase();
     map.__resqlinkMarkers.forEach((marker) => {
-        const status = marker.__resqlinkStatus || 'Reported';
-        const shouldShow = filter === 'all' || status === filter;
-        if (shouldShow) {
-            if (marker._icon) marker.getElement()?.style.removeProperty('display');
-            if (marker._map) marker.addTo(map);
-            return;
-        }
+        const status = String(marker.__resqlinkStatus || 'Reported').toLowerCase();
+        const shouldShow = normalizedFilter === 'all' || status === normalizedFilter;
+        const radius = marker.__resqlinkRadius;
 
-        if (marker._map) {
+        if (shouldShow) {
+            marker.addTo(map);
+            radius?.addTo(map);
+        } else {
             map.removeLayer(marker);
-        }
-        if (marker.getElement()) {
-            marker.getElement().style.display = 'none';
+            if (radius) map.removeLayer(radius);
         }
     });
 }
@@ -279,16 +283,25 @@ function bindFeaturePopup(layer, feature, type) {
     layer.bindPopup(`<strong>${escapeHtml(feature.properties?.name || type)}</strong><br>${type} in the Cebu City local dataset.`);
 }
 
-async function loadMarkers(map, endpoint, messageElement) {
+async function loadMarkers(map, endpoint, messageElement, initialMarkers = '[]') {
+    const fallbackPoints = JSON.parse(initialMarkers || '[]');
+
     try {
         const response = await fetch(endpoint, { headers: { Accept: 'application/json' } });
         if (!response.ok) throw new Error('Marker endpoint failed');
 
         const points = (await response.json()).data || [];
+        if (points.length === 0 && Array.isArray(fallbackPoints) && fallbackPoints.length > 0) {
+            return fallbackPoints.flatMap((point) => renderMarker(map, point));
+        }
         if (points.length === 0) showMessage(messageElement, 'No incident or dispatch points are available yet.', false);
 
         return points.flatMap((point) => renderMarker(map, point));
     } catch {
+        if (Array.isArray(fallbackPoints) && fallbackPoints.length > 0) {
+            return fallbackPoints.flatMap((point) => renderMarker(map, point));
+        }
+
         showMessage(messageElement, 'Map loaded, but incident data is temporarily unavailable.', true);
         return [];
     }
@@ -298,27 +311,28 @@ function renderMarker(map, point) {
     if (!Number.isFinite(Number(point.latitude)) || !Number.isFinite(Number(point.longitude))) return [];
 
     const type = point.type || 'incident';
-    const color = type === 'incident' ? markerColors.incident[point.status] || markerColors.incident.Reported : markerColors[type] || '#2563EB';
+    const status = normalizeStatus(point.status);
+    const color = type === 'incident' ? markerColors.incident[status] || markerColors.incident.Reported : markerColors[type] || '#2563EB';
     const coordinates = [Number(point.latitude), Number(point.longitude)];
     const pinIcon = buildMapPin(color);
     const marker = L.marker(coordinates, {
         icon: pinIcon,
         keyboard: false,
     }).addTo(map);
-    marker.__resqlinkStatus = point.status || 'Reported';
+    marker.__resqlinkStatus = status;
 
     const headline = point.category || point.type || 'Incident';
     const detailLines = [
         `Category: ${escapeHtml(headline)}`,
         point.reporter ? `Reporter: ${escapeHtml(point.reporter)}` : null,
-        point.status ? `Status: ${escapeHtml(point.status)}` : null,
+        point.status ? `Status: ${escapeHtml(status)}` : null,
         point.reported_at ? `Reported: ${escapeHtml(new Date(point.reported_at).toLocaleString())}` : null,
     ].filter(Boolean);
 
     marker.bindPopup(`${detailLines.map((line) => `<div>${line}</div>`).join('')}${point.detail_url ? `<div><a href="${escapeHtml(point.detail_url)}">Open details</a></div>` : ''}`);
 
     if (Number(point.impact_radius) > 0) {
-        L.circle(coordinates, {
+        marker.__resqlinkRadius = L.circle(coordinates, {
             color,
             fillColor: color,
             fillOpacity: 0.15,
@@ -328,6 +342,12 @@ function renderMarker(map, point) {
     }
 
     return [marker];
+}
+
+function normalizeStatus(status) {
+    const normalizedStatus = String(status || 'Reported').trim().toLowerCase();
+
+    return normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
 }
 
 function buildMapPin(color) {

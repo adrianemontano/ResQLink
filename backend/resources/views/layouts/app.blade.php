@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}">
     @stack('styles')
 </head>
 <body>
