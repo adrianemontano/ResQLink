@@ -24,6 +24,10 @@ class IncidentController extends Controller
             ->paginate(15)
             ->withQueryString();
 
+        if (request()->ajax()) {
+            return view('dispatcher.incidents.partials.results', compact('incidents'));
+        }
+
         return view('dispatcher.incidents.index', [
             'incidents' => $incidents,
             'categories' => Incident::query()->distinct()->orderBy('category')->pluck('category'),

@@ -111,13 +111,14 @@
 
 .filter-row {
     align-items: end;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(160px, 1fr)) auto auto;
     gap: 12px;
+    margin-bottom: 18px;
 }
 
 .filter-row label {
-    flex: 1 1 160px;
+    min-width: 0;
 }
 
 .detail-grid {
@@ -140,11 +141,129 @@
 
 .detail-list dd {
     margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.filter-row button,
+.filter-row a {
+    min-height: 42px;
+    white-space: nowrap;
+}
+
+.filter-row button {
+    min-width: 64px;
+}
+
+.filter-row a {
+    min-width: 42px;
+    justify-content: center;
+}
+
+.filter-row a {
+    align-items: center;
+    color: var(--blue-dark);
+    display: inline-flex;
+    font-size: .85rem;
+    font-weight: 700;
+    padding: .6rem .35rem;
+}
+
+.filter-row a:hover {
+    color: var(--navy);
+    text-decoration: underline;
+}
+
+.card > table {
+    margin: -4px 0;
+}
+
+.incident-results {
+    min-height: 178px;
+}
+
+.incident-results[aria-busy="true"] {
+    opacity: .62;
+    pointer-events: none;
+}
+
+.incident-pagination {
+    margin-top: 1rem;
+}
+
+.card > table a,
+.header-row a:not(.button) {
+    color: var(--blue-dark);
+    font-weight: 700;
+}
+
+.card > table a:hover,
+.header-row a:not(.button):hover {
+    color: var(--navy);
+    text-decoration: underline;
+}
+
+.card > h2 {
+    color: var(--navy);
+    margin-bottom: 14px;
+}
+
+.detail-grid .card > h3 {
+    color: var(--navy);
+    font-size: 13px;
+    margin: 24px 0 0;
 }
 
 @media (max-width: 760px) {
     .detail-grid { grid-template-columns: 1fr; }
     .map-legend { flex-wrap: wrap; gap: 10px 16px; }
+
+    .dashboard-main {
+        padding: 20px 14px;
+    }
+
+    .header-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: .75rem;
+        margin-bottom: 1.1rem;
+    }
+
+    .header-row .button {
+        width: 100%;
+    }
+
+    .card {
+        overflow-x: auto;
+        padding: 16px;
+    }
+
+    .card > h2,
+    .card > form {
+        min-width: 0;
+    }
+
+    .card > table {
+        min-width: 760px;
+    }
+
+    .filter-row {
+        align-items: stretch;
+        grid-template-columns: 1fr;
+    }
+
+    .filter-row label {
+        min-width: 0;
+    }
+
+    .filter-row button,
+    .filter-row a {
+        width: 100%;
+    }
+
+    .detail-list {
+        gap: 8px 12px;
+        grid-template-columns: minmax(105px, .7fr) minmax(0, 1.3fr);
+    }
 }
 
 .offline-map-label {
