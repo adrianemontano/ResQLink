@@ -9,6 +9,11 @@ The current `DatabaseSeeder` creates the roles `admin`, `dispatcher`, and
 | --- | --- | --- | --- |
 | Admin | `admin` | `admin@resqlink.local` | `Admin@12345` |
 
+Dispatcher
+Username: Angela
+Email: a@gmail.com
+Password: admin123
+
 Use the admin account to create a dispatcher account before testing dispatcher
 features. These are development credentials only.
 
@@ -19,12 +24,13 @@ features. These are development credentials only.
 
 ## Local map requirement
 
-The Dispatcher `Map View` and incident detail mini-map must work without
-internet access. Use Leaflet with locally bundled assets and a locally served
-basemap or packaged map data. Do not reference remote tile URLs, CDNs,
-geocoding services, or external map APIs. Incident markers and impact-radius
-circles must be rendered from the locally stored latitude, longitude, and
-radius values.
+The Dispatcher `Map View` and incident detail mini-map must work fully offline.
+Leaflet assets are bundled locally, and the Cebu City boundary, roads, and
+landmarks are served from `public/maps/resqlink-map.geojson`. Do not use remote
+tile URLs, paid map APIs, API keys, geocoding services, or external map APIs.
+Incident markers and impact-radius circles must be rendered from the locally
+stored latitude, longitude, and radius values. A coordinate-grid fallback is
+shown if the local GeoJSON file is unavailable.
 
 Before implementation, document the selected local tile/data source and storage
 path. The application must show a clear local fallback (such as a coordinate
