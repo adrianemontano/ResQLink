@@ -14,6 +14,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use App\Models\VolunteerDocument;
 
 class UserController extends Controller
 {
@@ -71,7 +73,7 @@ class UserController extends Controller
         $this->abortUnlessManageable($user);
 
         return view('admin.users.edit', [
-            'managedUser' => $user->load('role'),
+            'managedUser' => $user->load(['role', 'volunteerProfile.documents']),
             'roles' => $this->manageableRoles(),
         ]);
     }
@@ -125,6 +127,39 @@ class UserController extends Controller
         $user->update(['is_active' => ! $user->is_active]);
 
         return redirect()->route('admin.users.index')->with('status', 'User activation updated.');
+    }
+
+    public function uploadDocument(Request $request, User $user): RedirectResponse
+    {
+        $this->abortUnlessManageable($user);
+        abort_unless($user->hasRole('volunteer') && $user->volunteerProfile, 404);
+        $data = $request->validate([
+            'document_type' => ['required', 'in:endorsement_letter,barangay_clearance,certificate_of_residency'],
+            'document' => ['required', 'file', 'max:5120', 'mimes:pdf,jpg,jpeg,png'],
+        ]);
+        abort_if($user->volunteerProfile->documents()->where('document_type', $data['document_type'])->exists(), 422, 'This document type already exists.');
+        $file = $request->file('document');
+        VolunteerDocument::query()->create([
+            'volunteer_profile_id' => $user->volunteerProfile->id,
+            'document_type' => $data['document_type'],
+            'file_path' => $file->store('volunteer-documents'),
+            'original_filename' => $file->getClientOriginalName(),
+            'mime_type' => $file->getClientMimeType(),
+        ]);
+        return back()->with('status', 'Volunteer document uploaded.');
+    }
+
+    public function toggleVerification(User $user): RedirectResponse
+    {
+        $this->abortUnlessManageable($user);
+        abort_unless($user->hasRole('volunteer') && $user->volunteerProfile, 404);
+        $profile = $user->volunteerProfile;
+        $verified = $profile->verification_status !== 'verified';
+        $profile->update([
+            'verification_status' => $verified ? 'verified' : 'pending',
+            'verified_at' => $verified ? now() : null,
+        ]);
+        return back()->with('status', 'Volunteer verification updated.');
     }
 
     /**

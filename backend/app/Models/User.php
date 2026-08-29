@@ -67,6 +67,8 @@ class User extends Authenticatable
 
     public function canAccessWeb(): bool
     {
-        return $this->is_active && $this->hasRole(['admin', 'dispatcher', 'volunteer']);
+        return $this->is_active
+            && $this->hasRole(['admin', 'dispatcher', 'volunteer'])
+            && (! $this->hasRole('volunteer') || $this->volunteerProfile?->verification_status === 'verified');
     }
 }

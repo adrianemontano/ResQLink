@@ -9,10 +9,13 @@ The current `DatabaseSeeder` creates the roles `admin`, `dispatcher`, and
 | --- | --- | --- | --- |
 | Admin | `admin` | `admin@resqlink.local` | `Admin@12345` |
 
-These are development credentials only. The admin values can be overridden with
-`DEFAULT_ADMIN_USERNAME`, `DEFAULT_ADMIN_EMAIL`, and `DEFAULT_ADMIN_PASSWORD`.
-Dispatcher and volunteer users must currently be created through the admin user
-management feature.
+| Dispatcher | `Angela` | `a@gmail.com` | `admin123` |
+| Volunteer | `volunteer` | `volunteer@resqlink.local` | `Volunteer@12345` |
+
+These are development credentials only. The seeded values can be overridden
+with the corresponding `DEFAULT_ADMIN_*`, `DEFAULT_DISPATCHER_*`, and
+`DEFAULT_VOLUNTEER_*` environment variables. The volunteer profile is seeded
+with `pending` verification and requires admin verification before reporting.
 
 When an admin creates a volunteer, the form records the volunteer's barangay
 and creates the related `volunteer_profiles` row with `verification_status` set
@@ -171,6 +174,16 @@ requirement is added or removed.
   contents.
 
 ## Detailed implementation checklist
+
+## Implementation note — TASK1
+
+Implemented foundation includes role-protected authentication, admin account
+management, inactive/verification checks for volunteer web access, volunteer
+profiles, and private volunteer-document metadata storage. Documents support the
+three required types and unique-per-volunteer type protection. Uploaded files
+are stored through Laravel's non-public default disk. Automated coverage is
+defined in backend/tests/Feature/WebAuthenticationTest.php and the admin
+records/report feature test file.
 
 Before marking TASK1 complete, Jassy should:
 

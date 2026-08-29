@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             ReferenceDataSeeder::class,
             AdminSeeder::class,
+            DispatcherSeeder::class,
+            VolunteerSeeder::class,
             SampleIncidentSeeder::class,
         ]);
     }

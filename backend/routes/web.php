@@ -35,7 +35,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('users', UserController::class)->except(['show', 'destroy']);
         Route::patch('/users/{user}/password', [UserController::class, 'resetPassword'])->name('users.password');
         Route::patch('/users/{user}/activation', [UserController::class, 'toggleActivation'])->name('users.activation');
+        Route::post('/users/{user}/documents', [UserController::class, 'uploadDocument'])->name('users.documents.store');
+        Route::patch('/users/{user}/verification', [UserController::class, 'toggleVerification'])->name('users.verification');
         Route::get('/incidents', [AdminIncidentController::class, 'index'])->name('incidents.index');
+        Route::get('/incidents/{incident}', [AdminIncidentController::class, 'show'])->name('incidents.show');
         Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
     });
 
