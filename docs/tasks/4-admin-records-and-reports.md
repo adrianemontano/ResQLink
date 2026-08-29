@@ -108,6 +108,15 @@ The feature is complete when:
 
 This document belongs to **Task 4 — Admin Incident Records and Reports**.
 
+## Implementation note — TASK4
+
+Admin records now support persisted search, category/status filters, pagination,
+read-only detail/history access, and completed historical records. Reports
+support daily, weekly, and monthly date scopes with category, barangay, status,
+and date-frequency aggregations. Empty periods return zero totals and an
+explicit empty state. Coverage is defined in
+backend/tests/Feature/AdminRecordsAndReportsTest.php.
+
 ## Frontend/backend split
 
 The split below defines the concrete interface and server responsibilities for
