@@ -11,13 +11,13 @@ class DashboardController extends Controller
     public function __invoke(): View
     {
         return view('dispatcher.dashboard', [
-            'activeIncidents' => Incident::query()->whereIn('status', ['Reported', 'Received', 'Dispatched'])->count(),
-            'completedIncidents' => Incident::query()->where('status', 'Completed')->count(),
-            'incidents' => Incident::query()
+            'activeIncidents' => Incident::query()->withReferenceLabels()->whereIn('incident_statuses.name', ['Reported', 'Received', 'Dispatched'])->count(),
+            'completedIncidents' => Incident::query()->withReferenceLabels()->where('incident_statuses.name', 'Completed')->count(),
+            'incidents' => Incident::query()->withReferenceLabels()
                 ->with('reporter')
-                ->whereIn('status', ['Reported', 'Received', 'Dispatched'])
-                ->orderByRaw("FIELD(severity, 'Critical', 'High', 'Moderate', 'Low')")
-                ->orderByRaw("FIELD(status, 'Reported', 'Received', 'Dispatched')")
+                ->whereIn('incident_statuses.name', ['Reported', 'Received', 'Dispatched'])
+                ->orderByRaw("FIELD(severity_levels.name, 'Critical', 'High', 'Moderate', 'Low')")
+                ->orderByRaw("FIELD(incident_statuses.name, 'Reported', 'Received', 'Dispatched')")
                 ->orderByDesc('reported_at')
                 ->limit(10)
                 ->get(),

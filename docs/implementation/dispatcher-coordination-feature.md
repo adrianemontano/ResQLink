@@ -48,4 +48,6 @@ dispatcher to verify the protected routes and status workflow. For a direct
 SQLite import of the two demo incidents, run the statements in
 `backend/database/sample-data/incidents.sql` after migrations and reference
 data seeding. The Laravel `SampleIncidentSeeder` remains the recommended
-cross-database option.
+cross-database option. It checks the columns available in the existing
+`incidents` table before inserting, so it remains safe for databases created
+from earlier compatible schemas.

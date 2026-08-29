@@ -7,19 +7,20 @@ use App\Http\Requests\Dispatcher\UpdateIncidentStatusRequest;
 use App\Models\Incident;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class IncidentController extends Controller
 {
     public function index(): View
     {
-        $incidents = Incident::query()
+        $incidents = Incident::query()->withReferenceLabels()
             ->with('reporter')
-            ->when(request('category'), fn ($query, $category) => $query->where('category', $category))
-            ->when(request('status'), fn ($query, $status) => $query->where('status', $status))
-            ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangay', 'like', '%'.$barangay.'%'))
-            ->orderByRaw("FIELD(severity, 'Critical', 'High', 'Moderate', 'Low')")
-            ->orderByRaw("FIELD(status, 'Reported', 'Received', 'Dispatched', 'Completed')")
+            ->when(request('category'), fn ($query, $category) => $query->where('incident_categories.name', $category))
+            ->when(request('status'), fn ($query, $status) => $query->where('incident_statuses.name', $status))
+            ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangays.name', 'like', '%'.$barangay.'%'))
+            ->orderByRaw("FIELD(severity_levels.name, 'Critical', 'High', 'Moderate', 'Low')")
+            ->orderByRaw("FIELD(incident_statuses.name, 'Reported', 'Received', 'Dispatched', 'Completed')")
             ->orderByDesc('reported_at')
             ->paginate(15)
             ->withQueryString();
@@ -30,13 +31,14 @@ class IncidentController extends Controller
 
         return view('dispatcher.incidents.index', [
             'incidents' => $incidents,
-            'categories' => Incident::query()->distinct()->orderBy('category')->pluck('category'),
+            'categories' => DB::table('incident_categories')->orderBy('name')->pluck('name'),
             'statuses' => ['Reported', 'Received', 'Dispatched', 'Completed'],
         ]);
     }
 
     public function show(Incident $incident): View
     {
+        $incident = Incident::query()->withReferenceLabels()->findOrFail($incident->id);
         $incident->load(['reporter', 'history.dispatcher', 'history.status']);
 
         return view('dispatcher.incidents.show', compact('incident'));
@@ -49,16 +51,24 @@ class IncidentController extends Controller
         $data = $request->validated();
         $status = $data['status'];
 
-        abort_unless($this->isValidTransition($incident->status, $status), 422, 'Invalid incident status transition.');
+        $currentStatus = DB::table('incident_statuses')->where('id', $incident->status_id)->value('name');
+        abort_unless($this->isValidTransition($currentStatus, $status), 422, 'Invalid incident status transition.');
 
         DB::transaction(function () use ($incident, $data, $request, $status): void {
             $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
-            $incident->update([
-                'status' => $status,
-                'status_id' => $statusId,
-                'dispatched_at' => $status === 'Dispatched' ? now() : $incident->dispatched_at,
-                'completed_at' => $status === 'Completed' ? now() : $incident->completed_at,
-            ]);
+            $updates = ['status_id' => $statusId];
+
+            if (Schema::hasColumn('incidents', 'status')) {
+                $updates['status'] = $status;
+            }
+            if (Schema::hasColumn('incidents', 'dispatched_at') && $status === 'Dispatched') {
+                $updates['dispatched_at'] = now();
+            }
+            if (Schema::hasColumn('incidents', 'completed_at') && $status === 'Completed') {
+                $updates['completed_at'] = now();
+            }
+
+            $incident->update($updates);
 
             $incident->history()->create([
                 'status_id' => $statusId,
@@ -74,10 +84,10 @@ class IncidentController extends Controller
 
     public function map(): View
     {
-        $incidents = Incident::query()
+        $incidents = Incident::query()->withReferenceLabels()
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')
-            ->get(['id', 'category', 'status', 'barangay', 'latitude', 'longitude', 'impact_radius', 'severity'])
+            ->get(['incidents.id', 'incidents.latitude', 'incidents.longitude', 'incidents.impact_radius', 'incident_categories.name as category', 'barangays.name as barangay', 'severity_levels.name as severity', 'incident_statuses.name as status'])
             ->each(function (Incident $incident): void {
                 $incident->detail_url = route('dispatcher.incidents.show', $incident);
             });
