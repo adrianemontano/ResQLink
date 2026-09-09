@@ -18,6 +18,38 @@ Role: `Admin`
 
 These credentials are for development and testing only. Change them before using the system in production. The seeded values can be overridden with `DEFAULT_ADMIN_NAME`, `DEFAULT_ADMIN_USERNAME`, `DEFAULT_ADMIN_EMAIL`, and `DEFAULT_ADMIN_PASSWORD`.
 
+## Default Dispatcher
+
+Username: `Angela`
+
+Email: `a@gmail.com`
+
+Password: `admin123`
+
+Role: `Dispatcher`
+
+## Default Volunteer
+
+Username: `volunteer`
+
+Email: `volunteer@resqlink.local`
+
+Password: `Volunteer@12345`
+
+Role: `Volunteer`
+
+The dispatcher and volunteer credentials are for development and testing only.
+The seeded values can be overridden with `DEFAULT_DISPATCHER_FIRST_NAME`,
+`DEFAULT_DISPATCHER_LAST_NAME`,
+`DEFAULT_DISPATCHER_USERNAME`, `DEFAULT_DISPATCHER_EMAIL`,
+`DEFAULT_DISPATCHER_PASSWORD`, `DEFAULT_VOLUNTEER_FIRST_NAME`,
+`DEFAULT_VOLUNTEER_LAST_NAME`,
+`DEFAULT_VOLUNTEER_USERNAME`, `DEFAULT_VOLUNTEER_EMAIL`,
+`DEFAULT_VOLUNTEER_PASSWORD`, and `DEFAULT_VOLUNTEER_BARANGAY`.
+
+The volunteer profile is seeded with `pending` verification and must be verified
+by an admin before the volunteer can submit an incident report.
+
 ## Authentication Flow
 
 Login: Users submit a username or email address and password at `/login`.

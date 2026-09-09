@@ -16,7 +16,7 @@ class EnsureUserHasRole
     {
         $user = $request->user();
 
-        if (! $user || ! $user->is_active) {
+        if (! $user || ! $user->is_active || ($user->hasRole('volunteer') && $user->volunteerProfile?->verification_status !== 'verified')) {
             Auth::logout();
 
             abort(403, 'Your account is not authorized to access this page.');

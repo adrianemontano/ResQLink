@@ -1,0 +1,53 @@
+{
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"properties": { "name": "Cebu City ResQLink Service Area", "kind": "boundary" },
+			"geometry": {
+				"type": "Polygon",
+				"coordinates": [[[123.8700, 10.2850], [123.9100, 10.2850], [123.9100, 10.3450], [123.8700, 10.3450], [123.8700, 10.2850]]]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "Osmena Boulevard", "kind": "road" },
+			"geometry": { "type": "LineString", "coordinates": [[123.8930, 10.2850], [123.8935, 10.3000], [123.8940, 10.3150], [123.8945, 10.3300], [123.8950, 10.3450]] }
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "General Maxilom Avenue", "kind": "road" },
+			"geometry": { "type": "LineString", "coordinates": [[123.8800, 10.3110], [123.8950, 10.3115], [123.9100, 10.3120]] }
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "N. Escario Street", "kind": "road" },
+			"geometry": { "type": "LineString", "coordinates": [[123.8780, 10.3300], [123.8920, 10.3260], [123.9100, 10.3220]] }
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "M. J. Cuenco Avenue", "kind": "road" },
+			"geometry": { "type": "LineString", "coordinates": [[123.8750, 10.3350], [123.8900, 10.3400], [123.9080, 10.3430]] }
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "Cebu Business Park", "kind": "landmark" },
+			"geometry": { "type": "Point", "coordinates": [123.9020, 10.3270] }
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "Fuente Osmena Circle", "kind": "landmark" },
+			"geometry": { "type": "Point", "coordinates": [123.8940, 10.3100] }
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "Cebu Provincial Capitol", "kind": "landmark" },
+			"geometry": { "type": "Point", "coordinates": [123.8910, 10.3170] }
+		},
+		{
+			"type": "Feature",
+			"properties": { "name": "Cebu City Hall", "kind": "landmark" },
+			"geometry": { "type": "Point", "coordinates": [123.9030, 10.2930] }
+		}
+	]
+}

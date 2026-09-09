@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        if (Schema::hasTable('incident_histories')) {
+            return;
+        }
+
+        Schema::create('incident_histories', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('incident_id')->constrained('incidents')->cascadeOnDelete();
+            $table->foreignId('status_id')->constrained('incident_statuses')->restrictOnDelete();
+            $table->foreignId('changed_by')->constrained('users')->restrictOnDelete();
+            $table->text('notes')->nullable();
+            $table->timestamp('changed_at')->useCurrent();
+            $table->timestamps();
+            $table->index(['incident_id', 'changed_at']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('incident_histories');
+    }
+};

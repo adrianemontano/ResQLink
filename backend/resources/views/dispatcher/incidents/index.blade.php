@@ -8,42 +8,75 @@
         </div>
     </div>
 
-    <section class="card">
-        <table>
-            <thead>
-                <tr>
-                    <th>Incident ID</th>
-                    <th>Reporter</th>
-                    <th>Category</th>
-                    <th>Persons</th>
-                    <th>Barangay</th>
-                    <th>Reported</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($incidents as $incident)
-                    <tr>
-                        <td>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</td>
-                        <td>{{ $incident->reporter?->name ?? '—' }}</td>
-                        <td>{{ $incident->category }}</td>
-                        <td>{{ $incident->persons_count }}</td>
-                        <td>{{ $incident->barangay }}</td>
-                        <td>{{ $incident->created_at->diffForHumans() }}</td>
-                        <td>
-                            <span class="badge status-{{ $incident->status }}">{{ ucfirst($incident->status) }}</span>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7">No incidents have been reported yet.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <form class="card filter-row" method="GET" action="{{ route('dispatcher.incidents.index') }}">
+        <label>Category
+            <select name="category">
+                <option value="">All categories</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
+                @endforeach
+            </select>
+        </label>
+        <label>Status
+            <select name="status">
+                <option value="">All statuses</option>
+                @foreach ($statuses as $status)
+                    <option value="{{ $status }}" @selected(request('status') === $status)>{{ $status }}</option>
+                @endforeach
+            </select>
+        </label>
+        <label>Barangay
+            <input type="search" name="barangay" value="{{ request('barangay') }}" placeholder="Search barangay">
+        </label>
+        <button type="submit">Filter</button>
+        <a href="{{ route('dispatcher.incidents.index') }}">Clear</a>
+    </form>
 
-        <div style="margin-top: 1rem;">
-            {{ $incidents->links() }}
-        </div>
+    <section class="card incident-results" data-incident-results aria-live="polite">
+        @include('dispatcher.incidents.partials.results')
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('.filter-row');
+            const results = document.querySelector('[data-incident-results]');
+            if (!form || !results) return;
+
+            const loadResults = async (url) => {
+                results.setAttribute('aria-busy', 'true');
+                try {
+                    const response = await fetch(url, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    });
+                    if (!response.ok) throw new Error('Unable to load incidents.');
+                    results.innerHTML = await response.text();
+                    window.history.pushState({}, '', url);
+                } catch (error) {
+                    results.insertAdjacentHTML('afterbegin', '<p class="alert error">Unable to update incidents. Please try again.</p>');
+                } finally {
+                    results.removeAttribute('aria-busy');
+                }
+            };
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                loadResults(new URL(form.action + '?' + new URLSearchParams(new FormData(form))).toString());
+            });
+
+            form.querySelector('a').addEventListener('click', (event) => {
+                event.preventDefault();
+                form.reset();
+                loadResults(event.currentTarget.href);
+            });
+
+            results.addEventListener('click', (event) => {
+                const link = event.target.closest('a');
+                if (!link || !link.href.includes('/incidents?')) return;
+                event.preventDefault();
+                loadResults(link.href);
+            });
+        });
+    </script>
+@endpush

@@ -46,7 +46,22 @@ of that change.
 ## Conventions
 
 - Follow existing Laravel conventions already used in `backend/`.
+- Before creating or modifying task-scoped code, documentation, routes, database
+  objects, tests, branches, or commits, read and follow
+  `docs/naming-conventions.md`.
+- Follow the team task ownership convention in `docs/naming-conventions.md`:
+  Jassy owns Task 1, Adriane owns Task 2, Angela owns Task 3, and Monique owns
+  Task 4. Preserve the applicable `TASK1`–`TASK4` identifier and assigned owner
+  when editing task-scoped code or documentation.
+- Use task identifiers in task-scoped branches, commits, implementation notes,
+  and checklist references where appropriate. Do not put owner names or task
+  numbers into PHP classes, routes, database tables, or domain names.
 - Update `docs/` when setup steps, routes, credentials, or behavior change.
+- Whenever an approved change is implemented, update the relevant documentation
+  in `docs/` in the same change. This includes requirements, task status,
+  implementation notes, routes, setup instructions, and user-facing behavior.
+- Do not mark a task complete unless its approved implementation and related
+  documentation are both updated.
 
 ## Agent & Command Restrictions
 
