@@ -8,5 +8,5 @@
         </div>
     </div>
 
-    <x-incident-map :initial-markers="$incidents" />
+    <x-incident-map />
 @endsection

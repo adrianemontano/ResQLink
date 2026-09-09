@@ -192,9 +192,37 @@
 .status-dot.dispatched { background: #16A34A; }
 .status-dot.completed { background: #64748B; }
 
+.resqlink-incident-icon,
 .resqlink-map-pin-wrapper {
     background: transparent;
     border: none;
+}
+
+.resqlink-incident-icon span {
+    background: #22C55E;
+    border: 3px solid rgba(255, 255, 255, .96);
+    border-radius: 50%;
+    box-shadow: 0 3px 10px rgba(20, 83, 45, .35);
+    display: block;
+    height: 18px;
+    width: 18px;
+}
+
+.resqlink-hazard-icon {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.resqlink-hazard-icon span {
+    border-bottom: 16px solid #F97316;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    filter: drop-shadow(0 1px 2px rgba(124, 45, 18, .32));
+    height: 0;
+    width: 0;
 }
 
 .resqlink-map-pin {
@@ -242,6 +270,73 @@
         linear-gradient(90deg, rgba(148, 163, 184, .08) 1px, transparent 1px),
         radial-gradient(circle at center, rgba(59, 130, 246, .1), transparent 58%);
     background-size: 22px 22px, 22px 22px, 100% 100%;
+}
+
+.resqlink-incident-popup .leaflet-popup-content-wrapper {
+    border-radius: 14px;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, .2);
+    padding: 0;
+}
+
+.resqlink-incident-popup .leaflet-popup-content {
+    margin: 0;
+    min-width: 230px;
+}
+
+.resqlink-popup-card {
+    color: #1F2937;
+    padding: 16px 18px 18px;
+    position: relative;
+}
+
+.resqlink-popup-close {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #6B7280;
+    cursor: pointer;
+    display: flex;
+    font-size: 18px;
+    height: 28px;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 28px;
+}
+
+.resqlink-popup-close:hover { color: #111827; }
+
+.resqlink-popup-title {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.3;
+    padding-right: 24px;
+}
+
+.resqlink-popup-reporter,
+.resqlink-popup-category,
+.resqlink-popup-members {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 7px;
+}
+
+.resqlink-popup-reporter { color: #6B7280; }
+
+.resqlink-popup-category {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.resqlink-popup-members {
+    background: #F3F4F6;
+    border-radius: 999px;
+    color: #374151;
+    display: inline-block;
+    padding: 4px 8px;
 }
 
 @media (max-width: 760px) {

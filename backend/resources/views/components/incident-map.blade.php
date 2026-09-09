@@ -1,14 +1,8 @@
 @props([
-    'markerEndpoint' => url('/api/dispatch-points'),
     'mapId' => 'incident-map',
-    'initialMarkers' => [],
 ])
 
-@php
-    $googleMapsApiKey = config('services.google_maps.api_key');
-@endphp
-
-<div class="resqlink-map-wrap" data-resqlink-map data-marker-endpoint="{{ $markerEndpoint }}" data-initial-markers="{{ json_encode($initialMarkers) }}">
+<div class="resqlink-map-wrap" data-resqlink-map>
     <div class="map-controls">
         <div class="map-search-box" aria-label="Map search">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M16 16l5 5"></path></svg>
@@ -42,11 +36,6 @@
     <div id="{{ $mapId }}" class="resqlink-map" aria-label="Interactive Cebu City incident map"></div>
     <p class="map-message" data-map-message role="status" hidden></p>
 </div>
-
-<script>
-    window.GOOGLE_MAPS_API_KEY = @json($googleMapsApiKey);
-    window.USE_GOOGLE_MAPS = false;
-</script>
 
 @once
     @push('scripts')

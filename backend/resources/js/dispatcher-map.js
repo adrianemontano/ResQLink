@@ -7,12 +7,6 @@ const PHILIPPINES = {
     initialZoom: 6,
 };
 
-const markerColors = {
-    incident: { Reported: '#DC2626', Received: '#D97706', Dispatched: '#16A34A', Completed: '#64748B' },
-    volunteer: '#2563EB',
-    dispatcher: '#7C3AED',
-};
-
 const localFeatureLabels = {
     boundary: 'Service area',
     road: 'Road',
@@ -43,21 +37,18 @@ async function initializeMap(wrapper) {
 
     map.__resqlinkStatus = 'all';
     map.__resqlinkMarkers = [];
+    map.__resqlinkLocalFeatures = [];
 
     applyBaseLayer(map);
-    bindMapSearch(map, searchInput);
     bindFilterChips(map, wrapper);
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.control.scale({ metric: true, imperial: false, position: 'bottomleft' }).addTo(map);
 
     const localFeatures = await addLocalFeatures(map);
-    const markers = await loadMarkers(
-        map,
-        wrapper.dataset.markerEndpoint,
-        messageElement,
-        wrapper.dataset.initialMarkers,
-    );
+    map.__resqlinkLocalFeatures = localFeatures;
+    bindMapSearch(map, searchInput);
+    const markers = await loadLocalIncidents(map, messageElement);
     map.__resqlinkMarkers = markers;
     applyMarkerFilter(map, map.__resqlinkStatus);
     const fitTargets = markers.length > 0 ? markers : localFeatures.map((feature) => feature.layer).filter(Boolean);
@@ -73,25 +64,7 @@ async function initializeMap(wrapper) {
 }
 
 function applyBaseLayer(map) {
-    const useGoogleMaps = window.USE_GOOGLE_MAPS === true;
-    const apiKey = window.GOOGLE_MAPS_API_KEY || '';
-
-    if (useGoogleMaps && apiKey) {
-        const googleLayer = L.tileLayer(`https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&key=${apiKey}`, {
-            maxZoom: 20,
-            attribution: '&copy; Google',
-        });
-
-        googleLayer.addTo(map);
-        return;
-    }
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        subdomains: 'abcd',
-        minZoom: 5,
-        maxZoom: 20,
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-    }).addTo(map);
+    map.getContainer().classList.add('map-grid');
 }
 
 function bindMapSearch(map, searchInput) {
@@ -104,59 +77,25 @@ function bindMapSearch(map, searchInput) {
         if (!query) return;
 
         const normalized = query.toLowerCase();
-        const viewbox = '116.0,4.5,127.5,21.5';
-        const encodedQuery = encodeURIComponent(query);
+        const match = map.__resqlinkLocalFeatures
+            .map((feature) => ({
+                ...feature,
+                score: feature.name.toLowerCase() === normalized ? 100 : feature.name.toLowerCase().includes(normalized) ? 50 : 0,
+            }))
+            .filter((feature) => feature.score > 0)
+            .sort((first, second) => second.score - first.score)[0];
 
-        fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=ph&viewbox=${viewbox}&bounded=1&q=${encodedQuery}`, {
-            headers: { Accept: 'application/json' },
-        })
-            .then((response) => response.ok ? response.json() : [])
-            .then((results) => {
-                if (!Array.isArray(results) || results.length === 0) {
-                    showMessage(searchInput.closest('[data-resqlink-map]')?.querySelector('[data-map-message]'), 'No matching place was found in the Philippines.', true);
-                    return;
-                }
+        if (!match) {
+            showMessage(searchInput.closest('[data-resqlink-map]')?.querySelector('[data-map-message]'), 'No matching local place was found.', true);
+            return;
+        }
 
-                const rankedResult = results
-                    .map((result) => ({
-                        ...result,
-                        score: scoreSearchResult(result, normalized),
-                    }))
-                    .sort((first, second) => second.score - first.score)[0];
-
-                if (!rankedResult || rankedResult.score <= 0) {
-                    showMessage(searchInput.closest('[data-resqlink-map]')?.querySelector('[data-map-message]'), 'No matching place was found in the Philippines.', true);
-                    return;
-                }
-
-                const latLng = L.latLng(Number(rankedResult.lat), Number(rankedResult.lon));
-                map.setView(latLng, 13, { animate: true });
-                L.popup()
-                    .setLatLng(latLng)
-                    .setContent(`<strong>${escapeHtml(rankedResult.display_name || query)}</strong>`)
-                    .openOn(map);
-            })
-            .catch(() => {
-                showMessage(searchInput.closest('[data-resqlink-map]')?.querySelector('[data-map-message]'), 'Search is temporarily unavailable.', true);
-            });
+        const bounds = typeof match.layer.getBounds === 'function'
+            ? match.layer.getBounds()
+            : L.latLngBounds([match.layer.getLatLng()]);
+        map.fitBounds(bounds.pad(0.35), { maxZoom: 16, animate: true });
+        match.layer.openPopup();
     });
-}
-
-function scoreSearchResult(result, normalizedQuery) {
-    const label = String(result.display_name || '').toLowerCase();
-    let score = 0;
-
-    if (label.includes(normalizedQuery)) score += 50;
-    const tokens = normalizedQuery.split(/\s+/).filter(Boolean);
-    tokens.forEach((token) => {
-        if (label.includes(token)) score += 15;
-    });
-
-    if (result.type === 'city' || result.type === 'administrative') score += 10;
-    if (result.address?.city || result.address?.town || result.address?.municipality) score += 8;
-    if (result.importance) score += Number(result.importance) * 10;
-
-    return score;
 }
 
 function bindFilterChips(map, wrapper) {
@@ -195,20 +134,39 @@ function applyMarkerFilter(map, filter) {
 
 async function addLocalFeatures(map) {
     try {
-        const response = await fetch('/maps/resqlink-map.geojson', { headers: { Accept: 'application/geo+json' } });
-        if (!response.ok) throw new Error('Local map data unavailable');
-
-        const data = await response.json();
+        const [contextData, boundaryData, hazardData] = await Promise.all([
+            fetchLocalGeoJson('/maps/resqlink-map.geojson'),
+            fetchLocalGeoJson('/maps/boundaries.geojson'),
+            fetchLocalGeoJson('/maps/hazards.geojson'),
+        ]);
         const localFeatures = [];
 
-        const roads = L.geoJSON(data, {
+        const roads = L.geoJSON(contextData, {
             filter: (feature) => feature.properties?.kind === 'road',
             style: { color: '#E6EEF5', opacity: 0.95, weight: 7 },
             onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Road'),
         }).addTo(map);
         localFeatures.push(...collectLocalFeatures(roads, 'road'));
 
-        const landmarks = L.geoJSON(data, {
+        const boundaries = L.geoJSON(boundaryData, {
+            style: (feature) => ({
+                color: feature.properties?.color || '#7C3AED',
+                dashArray: feature.properties?.dashed ? '7 7' : undefined,
+                fill: false,
+                opacity: 0.72,
+                weight: 2,
+            }),
+            onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Boundary'),
+        }).addTo(map);
+        localFeatures.push(...collectLocalFeatures(boundaries, 'boundary'));
+
+        const hazards = L.geoJSON(hazardData, {
+            pointToLayer: (feature, latlng) => L.marker(latlng, { icon: buildHazardIcon(), keyboard: false }),
+            onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Hazard'),
+        }).addTo(map);
+        localFeatures.push(...collectLocalFeatures(hazards, 'hazard'));
+
+        const landmarks = L.geoJSON(contextData, {
             filter: (feature) => feature.properties?.kind === 'landmark',
             pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
                 color: '#475569',
@@ -228,11 +186,17 @@ async function addLocalFeatures(map) {
     }
 }
 
+async function fetchLocalGeoJson(path) {
+    const response = await fetch(path, { headers: { Accept: 'application/geo+json' } });
+    if (!response.ok) throw new Error(`Local map data unavailable: ${path}`);
+    return response.json();
+}
+
 function collectLocalFeatures(layerGroup, kind) {
     return layerGroup.getLayers()
-        .filter((layer) => layer.feature?.properties?.name)
+        .filter((layer) => layer.feature?.properties?.name || layer.feature?.properties?.boundaryName)
         .map((layer) => ({
-            name: layer.feature.properties.name,
+            name: layer.feature.properties.name || layer.feature.properties.boundaryName,
             kind,
             layer,
         }));
@@ -280,29 +244,22 @@ function getFeatureDistance(latlng, layer) {
 }
 
 function bindFeaturePopup(layer, feature, type) {
-    layer.bindPopup(`<strong>${escapeHtml(feature.properties?.name || type)}</strong><br>${type} in the Cebu City local dataset.`);
+    const name = feature.properties?.name || feature.properties?.boundaryName || type;
+    layer.bindPopup(`<strong>${escapeHtml(name)}</strong><br>${type} in the local map dataset.`);
 }
 
-async function loadMarkers(map, endpoint, messageElement, initialMarkers = '[]') {
-    const fallbackPoints = JSON.parse(initialMarkers || '[]');
-
+async function loadLocalIncidents(map, messageElement) {
     try {
-        const response = await fetch(endpoint, { headers: { Accept: 'application/json' } });
-        if (!response.ok) throw new Error('Marker endpoint failed');
-
-        const points = (await response.json()).data || [];
-        if (points.length === 0 && Array.isArray(fallbackPoints) && fallbackPoints.length > 0) {
-            return fallbackPoints.flatMap((point) => renderMarker(map, point));
-        }
-        if (points.length === 0) showMessage(messageElement, 'No incident or dispatch points are available yet.', false);
-
+        const data = await fetchLocalGeoJson('/maps/incidents.geojson');
+        const points = data.features.map((feature) => ({
+            ...feature.properties,
+            latitude: feature.geometry.coordinates[1],
+            longitude: feature.geometry.coordinates[0],
+        }));
+        if (points.length === 0) showMessage(messageElement, 'No local incidents are available yet.', false);
         return points.flatMap((point) => renderMarker(map, point));
     } catch {
-        if (Array.isArray(fallbackPoints) && fallbackPoints.length > 0) {
-            return fallbackPoints.flatMap((point) => renderMarker(map, point));
-        }
-
-        showMessage(messageElement, 'Map loaded, but incident data is temporarily unavailable.', true);
+        showMessage(messageElement, 'Local incident data is temporarily unavailable.', true);
         return [];
     }
 }
@@ -310,31 +267,22 @@ async function loadMarkers(map, endpoint, messageElement, initialMarkers = '[]')
 function renderMarker(map, point) {
     if (!Number.isFinite(Number(point.latitude)) || !Number.isFinite(Number(point.longitude))) return [];
 
-    const type = point.type || 'incident';
     const status = normalizeStatus(point.status);
-    const color = type === 'incident' ? markerColors.incident[status] || markerColors.incident.Reported : markerColors[type] || '#2563EB';
     const coordinates = [Number(point.latitude), Number(point.longitude)];
-    const pinIcon = buildMapPin(color);
     const marker = L.marker(coordinates, {
-        icon: pinIcon,
+        icon: buildIncidentIcon(),
         keyboard: false,
     }).addTo(map);
     marker.__resqlinkStatus = status;
-
-    const headline = point.category || point.type || 'Incident';
-    const detailLines = [
-        `Category: ${escapeHtml(headline)}`,
-        point.reporter ? `Reporter: ${escapeHtml(point.reporter)}` : null,
-        point.status ? `Status: ${escapeHtml(status)}` : null,
-        point.reported_at ? `Reported: ${escapeHtml(new Date(point.reported_at).toLocaleString())}` : null,
-    ].filter(Boolean);
-
-    marker.bindPopup(`${detailLines.map((line) => `<div>${line}</div>`).join('')}${point.detail_url ? `<div><a href="${escapeHtml(point.detail_url)}">Open details</a></div>` : ''}`);
+    marker.bindPopup(buildIncidentPopup(point, status), { className: 'resqlink-incident-popup', closeButton: false, closeOnClick: true, autoPan: true });
+    marker.on('popupopen', () => {
+        marker.getPopup()?.getElement()?.querySelector('[data-popup-close]')?.addEventListener('click', () => map.closePopup());
+    });
 
     if (Number(point.impact_radius) > 0) {
         marker.__resqlinkRadius = L.circle(coordinates, {
-            color,
-            fillColor: color,
+            color: '#22C55E',
+            fillColor: '#22C55E',
             fillOpacity: 0.15,
             radius: Number(point.impact_radius),
             weight: 2,
@@ -350,14 +298,33 @@ function normalizeStatus(status) {
     return normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
 }
 
-function buildMapPin(color) {
+function buildIncidentIcon() {
     return L.divIcon({
-        className: 'resqlink-map-pin-wrapper',
-        html: `<div class="resqlink-map-pin" style="--pin-color:${color};"><span class="resqlink-map-pin-core"></span></div>`,
-        iconSize: [20, 26],
-        iconAnchor: [10, 26],
-        popupAnchor: [0, -22],
+        className: 'resqlink-incident-icon',
+        html: '<span></span>',
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+        popupAnchor: [0, -10],
     });
+}
+
+function buildHazardIcon() {
+    return L.divIcon({
+        className: 'resqlink-hazard-icon',
+        html: '<span></span>',
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+    });
+}
+
+function buildIncidentPopup(point, status) {
+    return `<div class="resqlink-popup-card">
+        <button type="button" class="resqlink-popup-close" data-popup-close aria-label="Close incident popup">✕</button>
+        <div class="resqlink-popup-title">${escapeHtml(point.id || 'Incident')} (${escapeHtml(status)})</div>
+        <div class="resqlink-popup-reporter">Reporter: ${escapeHtml(point.reporter || 'Unknown')}</div>
+        <div class="resqlink-popup-category">Category: ${escapeHtml(point.category || 'Unspecified')}</div>
+        <div class="resqlink-popup-members">Members inside: ${escapeHtml(point.membersInside ?? 0)}</div>
+    </div>`;
 }
 
 function showMessage(element, text, isError) {

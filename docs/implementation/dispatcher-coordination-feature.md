@@ -25,13 +25,13 @@ The compatibility migration
 
 ## Map source
 
-The map uses Leaflet bundled locally through Vite and the local Cebu City
-development dataset at `public/maps/resqlink-map.geojson`. The dataset contains
-an approximate service-area boundary, major-road lines, and landmark points. No
-remote tile URLs, paid map APIs, API keys, geocoding services, or external map
-APIs are used. Markers use stored latitude and longitude values, and each
-incident's stored impact radius is rendered as a local circle. Marker selection
-opens the dispatcher incident detail page. The coordinate-grid fallback remains
+The map uses Leaflet bundled locally through Vite and local GeoJSON datasets in
+`public/maps/`: `incidents.geojson`, `hazards.geojson`, and
+`boundaries.geojson`, with `resqlink-map.geojson` retained for local roads and
+landmarks. No remote tile URLs, paid map APIs, API keys, geocoding services, or
+external map APIs are used. Incidents render as stable green circles with
+custom popup cards; hazards render as orange triangles; colored boundaries and
+dashed routes use feature-level styling. The coordinate-grid fallback remains
 available when local GeoJSON data is missing.
 
 ## Phase 2 interface consistency
@@ -48,6 +48,29 @@ dispatcher to verify the protected routes and status workflow. For a direct
 SQLite import of the two demo incidents, run the statements in
 `backend/database/sample-data/incidents.sql` after migrations and reference
 data seeding. The Laravel `SampleIncidentSeeder` remains the recommended
-cross-database option. It checks the columns available in the existing
-`incidents` table before inserting, so it remains safe for databases created
-from earlier compatible schemas.
+cross-database option.
+
+Automated coverage is provided in
+`tests/Feature/DispatcherIncidentCoordinationTest.php` and covers queue
+filtering, details, map rendering, valid and invalid status transitions,
+history persistence, completed visibility, and authorization. The focused
+suite passes with 5 tests and 24 assertions; the full suite passes with 19
+tests and 69 assertions.
+
+## Recommended next enhancements
+
+Manual browser acceptance was completed on 2026-09-09. The verified flow
+included Dispatcher login, dashboard counters and queue, category filtering,
+Clear, incident details, a Reported-to-Received status update with history,
+local map layers, custom popup close behavior, and map status filters.
+
+Recommended next enhancements:
+
+1. Add dispatcher assignment and presence indicators so the response owner is
+	visible separately from the dispatcher who changed status.
+2. Add polling or event-based refresh for active incidents when live
+	integration is approved.
+3. Add conflict handling for concurrent status updates.
+4. Add admin archive/report integration so archived records have an explicit
+	lifecycle state instead of relying only on Completed.
+5. Add audit logging for failed authorization and invalid transition attempts.

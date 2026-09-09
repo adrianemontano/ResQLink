@@ -2,18 +2,15 @@
 
 ## Seeder Credentials — Read First
 
-The current `DatabaseSeeder` creates the roles and development accounts below:
+The current `DatabaseSeeder` creates the roles `admin`, `dispatcher`, and
+`volunteer`, but only the default admin user is seeded:
 
 | Role | Username | Email | Password |
 | --- | --- | --- | --- |
 | Admin | `admin` | `admin@resqlink.local` | `Admin@12345` |
 
-| Dispatcher | `Angela` | `a@gmail.com` | `admin123` |
-| Volunteer | `volunteer` | `volunteer@resqlink.local` | `Volunteer@12345` |
-
-These are development credentials only. The seeded values can be overridden
-with the corresponding `DEFAULT_ADMIN_*`, `DEFAULT_DISPATCHER_*`, and
-`DEFAULT_VOLUNTEER_*` environment variables.
+Use the admin account to create a dispatcher account before testing dispatcher
+features. These are development credentials only.
 
 **Assigned owner:** Angela
 **Primary system user:** Dispatcher  
@@ -85,6 +82,26 @@ map, and recording status changes through completion.
 - `TASK3-007` The dispatcher can distinguish active incidents from completed or
   archived incidents.
 - `TASK3-008` Unauthorized users cannot access dispatcher operations.
+
+## Implementation Checklist
+
+- [x] `TASK3-001` Incident queue is available to authorized dispatchers.
+- [x] `TASK3-002` Queue ordering uses severity, workflow status, and report time.
+- [x] `TASK3-003` Incident details include the required report, location, severity,
+  status, and history information.
+- [x] `TASK3-004` Local Leaflet map renders incident markers and impact-radius
+  circles from local GeoJSON data and stored coordinates.
+- [x] `TASK3-005` Status updates are limited to Reported, Received, Dispatched,
+  and Completed with validated transitions.
+- [x] `TASK3-006` Status history stores the dispatcher, timestamp, status, and notes.
+- [x] `TASK3-007` Status badges and filters distinguish active and completed
+  incidents; archived-record behavior remains coordinated with the admin module.
+- [x] `TASK3-008` Dispatcher routes and operations are protected by authentication
+  and role middleware.
+- [x] Automated Dispatcher feature tests pass: 5 tests and 24 assertions.
+- [x] Manual browser acceptance completed for login, dashboard, queue filters,
+  Clear, incident details, status history, local map layers, popup close
+  behavior, and map status filters.
 
 ## Expected implementation outputs
 
