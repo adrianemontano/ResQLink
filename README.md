@@ -10,6 +10,7 @@ Current users:
 
 * Administrators
 * Dispatchers
+* Verified volunteers through the web incident-reporting workflow
 
 Planned users:
 
@@ -334,7 +335,18 @@ Available web areas:
 * `/login`
 * `/admin/dashboard`
 * `/admin/users`
+* `/admin/incidents`
+* `/admin/reports`
 * `/dispatcher/dashboard`
+* `/dispatcher/incidents`
+* `/dispatcher/map`
+* `/volunteer/dashboard`
+* `/volunteer/incidents/create`
+
+Available API operations:
+
+* `POST /api/incidents` — submit an incident as an authenticated, verified volunteer
+* `GET /api/dispatch-points` — retrieve authorized dispatcher map points
 
 ## Default Development Credentials
 
@@ -419,7 +431,7 @@ Recommended contributor workflow:
 * Password hashing through Laravel casts
 * Role records for Admin, Dispatcher, and Volunteer
 * Admin and Dispatcher web access
-* Volunteer web login denial
+* Verified volunteer web access and incident submission
 * Role middleware for protected routes
 * Default administrator seeder
 * Admin dashboard placeholder metrics
@@ -428,20 +440,28 @@ Recommended contributor workflow:
 * Admin-managed account editing
 * Admin-managed password reset
 * Admin-managed activation and deactivation
-* PHPUnit feature tests for web authentication behavior
-* Implementation documentation for the login feature
+* Volunteer profiles, verification, and required document records
+* Incident validation, persistence, timestamps, and authenticated reporter assignment
+* Preliminary severity assessment using affected population and impact radius
+* Dispatcher incident queue with severity ordering and filters
+* Dispatcher incident details and status workflow: Reported, Received, Dispatched, Completed
+* Incident history with dispatcher and timestamp tracking
+* Local Leaflet map with incident markers and impact-radius circles
+* Admin incident records with search, filters, pagination, and historical access
+* Daily, weekly, and monthly incident reports with category, barangay, status, and frequency summaries
+* PHPUnit feature-test coverage for authentication and admin records/reports
+* Implementation documentation for login, incident reporting, dispatcher coordination, and admin reports
 
-### Planned
+### Remaining work
 
 * Volunteer mobile application
-* Mobile/API authentication
-* Incident reporting
-* Incident queue management
-* Incident maps
-* Incident status workflow
+* Mobile/API authentication for Flutter clients
+* Flutter-to-Laravel integration
 * Notification system
-* Preliminary severity assessment
-* Reports and analytics
+* Full system integration verification
+* Formal test reports and user acceptance testing
+* Complete technical/user documentation and final diagrams
+* Final presentation materials and demonstration script
 
 ## Useful Commands
 
