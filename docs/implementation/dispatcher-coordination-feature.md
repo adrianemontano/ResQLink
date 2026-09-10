@@ -25,14 +25,20 @@ The compatibility migration
 
 ## Map source
 
-The map uses Leaflet bundled locally through Vite and the local Cebu City
-development dataset at `public/maps/resqlink-map.geojson`. The dataset contains
-an approximate service-area boundary, major-road lines, and landmark points. No
-remote tile URLs, paid map APIs, API keys, geocoding services, or external map
-APIs are used. Markers use stored latitude and longitude values, and each
-incident's stored impact radius is rendered as a local circle. Marker selection
-opens the dispatcher incident detail page. The coordinate-grid fallback remains
-available when local GeoJSON data is missing.
+The map uses Leaflet bundled locally through Vite and local GeoJSON assets under
+`public/maps/`. The original `resqlink-map.geojson` contains an approximate
+service-area boundary, major-road lines, and landmark points. Additional local
+assets are prepared at `cebu-city-barangays.geojson`,
+`cebu-city-osm-roads.geojson`, `cebu-city-osm-landmarks.geojson`, and
+`cebu-city-osm-emergency-facilities.geojson`; these additional layers are not
+yet integrated into the map JavaScript. Markers use stored latitude and
+longitude values, and each incident's stored impact radius is rendered as a
+local circle. Marker selection opens the dispatcher incident detail page. The
+coordinate-grid fallback remains available when local GeoJSON data is missing.
+
+The current JavaScript still uses remote CARTO tiles and Nominatim search, so
+the map is not fully offline despite the local GeoJSON assets. No paid map API
+or Google Maps layer is enabled.
 
 ## Phase 2 interface consistency
 

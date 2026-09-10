@@ -4,6 +4,14 @@
 **Task:** Task 3 — Dispatcher Incident Coordination  
 **Status:** Dataset prepared; application integration is pending
 
+## Seeder data
+
+The current `DatabaseSeeder` creates `admin`, `dispatcher`, and `volunteer`
+roles. Development accounts are Admin `admin` / `admin@resqlink.local` /
+`Admin@12345`, Dispatcher `Angela` / `a@gmail.com` / `admin123`, and Volunteer
+`volunteer` / `volunteer@resqlink.local` / `Volunteer@12345`. These credentials
+are for development only.
+
 ## Purpose
 
 This document records the Cebu City barangay boundary dataset prepared for the
@@ -115,3 +123,30 @@ Dataset processing: bendlikeabamboo/barangay-boundaries-repository.
 The processing repository publishes its code under MIT and requests attribution
 to PSA and NAMRIA for the redistributed boundary data. The project should retain
 this attribution when the dataset is used in the application or presentation.
+
+## Additional local OpenStreetMap datasets
+
+The larger BBBike extract used for local map reference data was:
+
+```text
+planet_123.7679,10.1737_124.1319,10.3967.osm.geopackage.zip
+```
+
+It covers longitude `123.7679` to `124.1319` and latitude `10.1737` to `10.3967`.
+The extract was created on September 10, 2026 and contains OpenStreetMap data
+through September 9, 2026. Because BBBike exports a rectangle, nearby areas
+outside Cebu City are included; the prepared outputs were clipped against the
+Cebu City barangay boundaries.
+
+| File | Contents | Feature count |
+| --- | --- | ---: |
+| `cebu-city-osm-roads.geojson` | Roads and paths | 14,067 |
+| `cebu-city-osm-landmarks.geojson` | Named OpenStreetMap points of interest | 3,516 |
+| `cebu-city-osm-emergency-facilities.geojson` | Detected hospitals, clinics, fire stations, police facilities, and shelters | 48 |
+
+The corresponding public paths are `/maps/cebu-city-osm-roads.geojson`,
+`/maps/cebu-city-osm-landmarks.geojson`, and
+`/maps/cebu-city-osm-emergency-facilities.geojson`. These are prepared reference
+layers only and are not yet loaded by the application. Emergency-facility
+coverage depends on OpenStreetMap mapping and must be reviewed before being
+treated as authoritative. OpenStreetMap attribution and ODbL obligations apply.
