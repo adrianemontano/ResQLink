@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['user_id', 'barangay', 'verification_status', 'verified_at'])]
 class VolunteerProfile extends Model
 {
+    protected $primaryKey = 'user_id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'int';
+
     protected function casts(): array
     {
         return ['verified_at' => 'datetime'];
