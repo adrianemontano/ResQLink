@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 class VolunteerSeeder extends Seeder
 {
     /**
-     * Seed the default volunteer account and pending profile.
+     * Seed the default volunteer account and verified development profile.
      */
     public function run(): void
     {
@@ -31,8 +31,8 @@ class VolunteerSeeder extends Seeder
             ['user_id' => $volunteer->id],
             [
                 'barangay' => env('DEFAULT_VOLUNTEER_BARANGAY', 'Lahug'),
-                'verification_status' => 'pending',
-                'verified_at' => null,
+                'verification_status' => 'verified',
+                'verified_at' => now(),
             ],
         );
     }
