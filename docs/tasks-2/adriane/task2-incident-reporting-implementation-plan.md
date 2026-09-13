@@ -1,5 +1,15 @@
 # TASK2 — Adriane: Incident Reporting Implementation Plan
 
+## Development test accounts
+
+| Role | Username | Email | Password | Web access |
+| --- | --- | --- | --- | --- |
+| Admin | `admin` | `admin@resqlink.local` | `Admin@12345` | Yes |
+| Dispatcher | `Angela` | `a@gmail.com` | `admin123` | Yes |
+| Volunteer | `volunteer` | `volunteer@resqlink.local` | `Volunteer@12345` | Yes; verified |
+
+These are development credentials only and can be overridden with the matching `DEFAULT_*` environment variables.
+
 ## Seeder data
 
 The current `DatabaseSeeder` creates `admin`, `dispatcher`, and `volunteer`

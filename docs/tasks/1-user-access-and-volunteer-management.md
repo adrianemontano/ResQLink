@@ -2,20 +2,18 @@
 
 ## Seeder Credentials — Read First
 
-The current `DatabaseSeeder` creates the roles `admin`, `dispatcher`, and
-`volunteer`, but `AdminSeeder` creates only the default admin user:
+The current `DatabaseSeeder` creates the following development accounts:
 
 | Role | Username | Email | Password |
 | --- | --- | --- | --- |
 | Admin | `admin` | `admin@resqlink.local` | `Admin@12345` |
-
 | Dispatcher | `Angela` | `a@gmail.com` | `admin123` |
 | Volunteer | `volunteer` | `volunteer@resqlink.local` | `Volunteer@12345` |
 
 These are development credentials only. The seeded values can be overridden
 with the corresponding `DEFAULT_ADMIN_*`, `DEFAULT_DISPATCHER_*`, and
-`DEFAULT_VOLUNTEER_*` environment variables. The volunteer profile is seeded
-with `pending` verification and requires admin verification before reporting.
+`DEFAULT_VOLUNTEER_*` environment variables. The seeded volunteer is active and
+verified for development web login and incident-reporting demonstrations.
 
 When an admin creates a volunteer, the form records the volunteer's barangay
 and creates the related `volunteer_profiles` row with `verification_status` set
