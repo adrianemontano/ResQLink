@@ -8,15 +8,28 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'username', 'email', 'password', 'role_id', 'is_active'])]
+#[Fillable(['name', 'first_name', 'last_name', 'contact_number', 'username', 'email', 'password', 'role_id', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public function getNameAttribute(?string $value): string
+    {
+        if ($value !== null) {
+            return $value;
+        }
+
+        return trim(implode(' ', array_filter([
+            $this->attributes['first_name'] ?? null,
+            $this->attributes['last_name'] ?? null,
+        ])));
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -40,15 +53,22 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function volunteerProfile(): HasOne
+    {
+        return $this->hasOne(VolunteerProfile::class);
+    }
+
     public function hasRole(string|array $roles): bool
     {
         $roles = (array) $roles;
 
-        return $this->role !== null && in_array($this->role->slug, $roles, true);
+        return $this->role !== null && in_array($this->role->name, $roles, true);
     }
 
     public function canAccessWeb(): bool
     {
-        return $this->is_active && $this->hasRole(['admin', 'dispatcher']);
+        return $this->is_active
+            && $this->hasRole(['admin', 'dispatcher', 'volunteer'])
+            && (! $this->hasRole('volunteer') || $this->volunteerProfile?->verification_status === 'verified');
     }
 }

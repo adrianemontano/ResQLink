@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ResQLink — Volunteer</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --navy-950:#0f1830;
+    --navy-900:#141e3c;
+    --navy-800:#1b2749;
+    --navy-700:#25335c;
+    --red-600:#c8262a;
+    --red-700:#a91f22;
+    --red-50:#fdecec;
+    --amber-500:#e0982b;
+    --green-600:#2f9e5a;
+    --bg:#eef0f5;
+    --paper:#ffffff;
+    --line:#e2e5ec;
+    --ink:#161b2e;
+    --ink-muted:#6b7280;
+    --ink-faint:#9aa1b4;
+    --radius-card:14px;
+    --shadow-card:0 1px 2px rgba(15,24,48,0.06), 0 8px 24px -12px rgba(15,24,48,0.12);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);}
+
+  .app{display:flex;min-height:100vh;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{width:230px;flex-shrink:0;background:var(--navy-950);color:#c7cde3;display:flex;flex-direction:column;padding:20px 14px;}
+  .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 22px;}
+  .brand-mark{width:30px;height:30px;border-radius:8px;background:var(--red-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .brand-mark svg{width:16px;height:16px;}
+  .brand-name{font-weight:700;font-size:15px;color:#fff;line-height:1.1;}
+  .brand-sub{font-size:11px;color:#8890ac;margin-top:2px;}
+  .nav-label{font-size:11px;color:#6b7395;padding:14px 10px 6px;letter-spacing:.02em;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;color:#c7cde3;text-decoration:none;margin-bottom:2px;cursor:pointer;border-left:3px solid transparent;}
+  .nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.85;}
+  .nav-item.active{background:var(--navy-700);color:#fff;border-left:3px solid var(--red-600);}
+  .nav-item:hover:not(.active){background:var(--navy-800);}
+  .sidebar-spacer{flex:1;}
+  .who{padding:10px;font-size:11px;color:#7c84a3;}
+  .who strong{display:block;color:#fff;font-size:13px;font-weight:600;margin-top:2px;}
+  .logout{margin-top:10px;width:100%;padding:9px 10px;border-radius:8px;border:1px solid #2a3660;background:transparent;color:#c7cde3;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .logout:hover{background:var(--navy-800);}
+
+  /* ---------- Main ---------- */
+  .main{flex:1;padding:28px 32px 60px;min-width:0;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;}
+  .topbar h1{font-size:22px;margin:0 0 4px;letter-spacing:-0.01em;}
+  .topbar p{margin:0;color:var(--ink-muted);font-size:13.5px;}
+  .btn-primary{background:var(--red-600);color:#fff;border:none;padding:10px 18px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 1px 2px rgba(200,38,42,.25);}
+  .btn-primary:hover{background:var(--red-700);}
+  .btn-primary:disabled{background:#e8b3b4;cursor:not-allowed;box-shadow:none;}
+
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow-card);}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---------- Dashboard view ---------- */
+  .dash-grid{display:grid;grid-template-columns:minmax(300px,380px);gap:20px;}
+  .report-card{padding:22px;max-width:420px;}
+  .tag{font-size:11px;font-weight:700;color:var(--red-600);margin-bottom:8px;}
+  .report-card h2{font-size:16px;margin:0 0 8px;}
+  .report-card p{font-size:13px;color:var(--ink-muted);line-height:1.55;margin:0 0 16px;}
+  .btn-secondary{background:var(--red-600);color:#fff;border:none;padding:10px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;width:100%;}
+  .btn-secondary:hover{background:var(--red-700);}
+
+  /* ---------- Submit incident view ---------- */
+  .grid{display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:start;}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr;} }
+
+  .form-card{padding:24px 26px;}
+  .section-head{font-size:13px;font-weight:700;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:18px;}
+  .section-head.second{margin-top:26px;}
+
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1 / -1;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--ink);}
+
+  input[type=text], input[type=number], select, textarea{
+    border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13.5px;
+    font-family:inherit;color:var(--ink);background:#fff;width:100%;
+  }
+  input:focus, select:focus, textarea:focus{outline:2px solid #c8262a33;border-color:var(--red-600);}
+  textarea{resize:vertical;min-height:90px;}
+
+  input.synced{background:#f7f8fb;color:var(--ink-muted);}
+  input.synced:focus{outline:none;border-color:var(--line);}
+
+  .synced-note{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-faint);margin-top:-8px;margin-bottom:18px;}
+  .synced-note svg{width:12px;height:12px;flex-shrink:0;}
+
+  .form-footer{display:flex;justify-content:flex-end;margin-top:8px;}
+
+  .map-card{overflow:hidden;display:flex;flex-direction:column;position:sticky;top:28px;height:calc(100vh - 56px);max-height:700px;}
+  .map-card-head{padding:16px 18px 12px;border-bottom:1px solid var(--line);}
+  .map-card-head h3{font-size:14.5px;margin:0 0 3px;}
+  .map-card-head span{font-size:12px;color:var(--ink-muted);}
+  .map-wrap{position:relative;flex:1;}
+  #map{position:absolute;inset:0;}
+
+  .no-pin-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--ink-faint);font-size:13px;pointer-events:none;z-index:400;text-align:center;padding:0 30px;}
+
+  .map-controls{position:absolute;left:12px;right:12px;bottom:12px;z-index:500;background:rgba(255,255,255,.98);border:1px solid var(--line);border-radius:11px;padding:14px 16px;box-shadow:var(--shadow-card);}
+  .map-controls-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .map-controls-top .label{font-size:12.5px;font-weight:600;color:var(--ink);}
+  .map-controls-top .value{font-size:12.5px;color:var(--ink-muted);}
+
+  input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--green-600),var(--amber-500),var(--red-600));outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;border:2.5px solid var(--navy-900);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.3);margin-top:-1px;}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:2.5px solid var(--navy-900);cursor:pointer;}
+
+  .legend-row{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);}
+  .legend-swatch{width:9px;height:9px;border-radius:50%;}
+
+  .severity-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:600;}
+  .sev-low{background:#eaf7ef;color:var(--green-600);}
+  .sev-med{background:#fdf3e4;color:var(--amber-500);}
+  .sev-high{background:var(--red-50);color:var(--red-600);}
+  .dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+
+  .search-box{position:absolute;top:12px;left:12px;right:12px;z-index:500;}
+  .search-box input{width:100%;padding:9px 12px;border-radius:9px;border:1px solid var(--line);box-shadow:var(--shadow-card);font-size:13px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.7 5.3L19 9l-5.3 1.7L12 16l-1.7-5.3L5 9l5.3-1.7L12 2z"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">ResQLink</div>
+        <div class="brand-sub">Volunteer Incident Reporting</div>
+      </div>
+    </div>
+
+    <div class="nav-label">MAIN</div>
+    <div class="nav-item active" id="navDashboard" onclick="showView('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Dashboard
+    </div>
+
+    <div class="nav-label">INCIDENTS</div>
+    <div class="nav-item" id="navSubmit" onclick="showView('submit')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      Submit Incident
+    </div>
+
+    <div class="sidebar-spacer"></div>
+    <div class="who">Logged in as<strong>Community Volunteer</strong></div>
+    <button class="logout">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      Logout
+    </button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ============ DASHBOARD VIEW (cards only, no map) ============ -->
+    <div class="view active" id="view-dashboard">
+      <div class="topbar">
+        <div>
+          <h1>Volunteer Dashboard</h1>
+          <p>Submit a complete incident report for dispatcher review.</p>
+        </div>
+        <button class="btn-primary" onclick="showView('submit')">Submit Incident</button>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card report-card">
+          <div class="tag">VERIFIED VOLUNTEER ACCESS</div>
+          <h2>Report an emergency situation</h2>
+          <p>Include the location, affected population, and impact radius so the response team can assess it quickly.</p>
+          <button class="btn-secondary" onclick="showView('submit')">Create Incident Report</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SUBMIT INCIDENT VIEW (form + map) ============ -->
+    <div class="view" id="view-submit">
+      <div class="topbar">
+        <div>
+          <h1>Submit Incident</h1>
+          <p>Provide accurate details. Dispatchers will review the preliminary assessment.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+
+        <!-- LEFT: form -->
+        <div class="card form-card">
+          <div class="section-head">Incident details</div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="category">Category</label>
+              <select id="category">
+                <option value="">Select category</option>
+                <option>Flooding</option>
+                <option>Fire</option>
+                <option>Landslide</option>
+                <option>Medical emergency</option>
+                <option>Road accident</option>
+                <option>Structural damage</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="barangay">Barangay</label>
+              <input type="text" id="barangay" placeholder="e.g. Lahug">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="landmark">Nearest landmark</label>
+              <input type="text" id="landmark" placeholder="e.g. Robinsons Cybergate">
+            </div>
+            <div class="field">
+              <label for="affected">Affected persons</label>
+              <input type="number" id="affected" min="0" placeholder="Estimated count">
+            </div>
+          </div>
+
+          <div class="section-head second">
+            Location &amp; severity
+            <span style="float:right;font-weight:400;color:var(--ink-muted);font-size:12px;">Set on the map →</span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="lat">Latitude</label>
+              <input type="text" id="lat" class="synced" readonly placeholder="Pin on map">
+            </div>
+            <div class="field">
+              <label for="lng">Longitude</label>
+              <input type="text" id="lng" class="synced" readonly placeholder="Pin on map">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field full">
+              <label for="radiusField">Impact radius (metres)</label>
+              <input type="text" id="radiusField" class="synced" readonly placeholder="Set radius on map">
+            </div>
+          </div>
+          <div class="synced-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            These fields fill in automatically once you pin the incident on the map.
+          </div>
+
+          <div class="field-row">
+            <div class="field full">
+              <label for="notes">Notes</label>
+              <textarea id="notes" placeholder="Anything dispatchers should know before they respond"></textarea>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <button class="btn-primary" id="submitBtn" disabled>Submit Incident Report</button>
+          </div>
+        </div>
+
+        <!-- RIGHT: map -->
+        <div class="card map-card">
+          <div class="map-card-head">
+            <h3>Mark the incident</h3>
+            <span>Tap to place a pin, drag the slider to set radius</span>
+          </div>
+          <div class="map-wrap">
+            <div class="search-box">
+              <input type="text" placeholder="Search an address or place…">
+            </div>
+            <div id="map"></div>
+            <div class="no-pin-msg" id="noPinMsg">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+              <div>Tap anywhere on the map to place the incident location</div>
+            </div>
+
+            <div class="map-controls">
+              <div class="map-controls-top">
+                <span class="label">Impact radius</span>
+                <span class="value"><span id="radiusVal">300</span> m &nbsp; <span id="sevPill" class="severity-pill sev-low"><span class="dot"></span>Low</span></span>
+              </div>
+              <input type="range" id="radiusSlider" min="100" max="3000" step="50" value="300">
+              <div class="legend-row">
+                <div class="legend-item"><span class="legend-swatch" style="background:#2f9e5a"></span>Low · &lt;800m</div>
+                <div class="legend-item"><span class="legend-swatch" style="background:#e0982b"></span>Medium · 800–1800m</div>
+                <div class="legend-item"><span class="legend-swatch" style="background:#c8262a"></span>High · &gt;1800m</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ---------- View switching ----------
+  let map = null;
+  let mapInitialized = false;
+
+  function showView(name){
+    document.getElementById('view-dashboard').classList.toggle('active', name === 'dashboard');
+    document.getElementById('view-submit').classList.toggle('active', name === 'submit');
+    document.getElementById('navDashboard').classList.toggle('active', name === 'dashboard');
+    document.getElementById('navSubmit').classList.toggle('active', name === 'submit');
+
+    if (name === 'submit') {
+      if (!mapInitialized) {
+        initMap();
+        mapInitialized = true;
+      }
+      // Leaflet needs a resize nudge since it was hidden when first sized
+      setTimeout(() => { if (map) map.invalidateSize(); }, 50);
+    }
+  }
+
+  // ---------- Map + form logic (only relevant on the Submit Incident view) ----------
+  function initMap(){
+    map = L.map('map', { zoomControl: true }).setView([10.3157, 123.8854], 13); // Cebu City default
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = null;
+    let circle = null;
+    const noPinMsg = document.getElementById('noPinMsg');
+    const slider = document.getElementById('radiusSlider');
+    const radiusVal = document.getElementById('radiusVal');
+    const sevPill = document.getElementById('sevPill');
+    const latField = document.getElementById('lat');
+    const lngField = document.getElementById('lng');
+    const radiusField = document.getElementById('radiusField');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function severityFor(r){
+      if (r < 800) return {label:'Low', cls:'sev-low', color:'#2f9e5a'};
+      if (r < 1800) return {label:'Medium', cls:'sev-med', color:'#e0982b'};
+      return {label:'High', cls:'sev-high', color:'#c8262a'};
+    }
+
+    function checkFormReady(){
+      submitBtn.disabled = !marker;
+    }
+
+    function updateCircleStyle(){
+      const r = parseInt(slider.value, 10);
+      const sev = severityFor(r);
+      if (circle) {
+        circle.setRadius(r);
+        circle.setStyle({ color: sev.color, fillColor: sev.color, fillOpacity: 0.18 });
+      }
+      radiusVal.textContent = r;
+      sevPill.className = 'severity-pill ' + sev.cls;
+      sevPill.innerHTML = '<span class="dot"></span>' + sev.label;
+
+      if (marker) {
+        radiusField.value = r + ' m';
+      }
+    }
+
+    function placePin(latlng){
+      noPinMsg.style.display = 'none';
+      const r = parseInt(slider.value, 10);
+      const sev = severityFor(r);
+
+      if (marker) {
+        marker.setLatLng(latlng);
+      } else {
+        marker = L.marker(latlng, { draggable: true }).addTo(map);
+        marker.on('drag', (e) => {
+          const p = e.target.getLatLng();
+          circle.setLatLng(p);
+          latField.value = p.lat.toFixed(5);
+          lngField.value = p.lng.toFixed(5);
+        });
+      }
+
+      if (circle) {
+        circle.setLatLng(latlng);
+      } else {
+        circle = L.circle(latlng, { radius: r, color: sev.color, fillColor: sev.color, fillOpacity: 0.18, weight: 2 }).addTo(map);
+      }
+
+      latField.value = latlng.lat.toFixed(5);
+      lngField.value = latlng.lng.toFixed(5);
+      updateCircleStyle();
+      checkFormReady();
+    }
+
+    map.on('click', (e) => placePin(e.latlng));
+    slider.addEventListener('input', updateCircleStyle);
+
+    submitBtn.addEventListener('click', () => {
+      if (submitBtn.disabled) return;
+      submitBtn.textContent = 'Submitted ✓';
+      setTimeout(() => {
+        submitBtn.textContent = 'Submit Incident Report';
+        showView('dashboard');
+      }, 1200);
+    });
+
+    updateCircleStyle();
+  }
+</script>
+</body>
+</html>

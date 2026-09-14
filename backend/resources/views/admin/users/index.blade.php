@@ -4,7 +4,7 @@
     <div class="header-row">
         <div>
             <h1>User Accounts</h1>
-            <p>Admin-managed dispatcher and volunteer accounts.</p>
+            <p>Admin-managed administrator, dispatcher, and volunteer accounts.</p>
         </div>
         <a class="button" href="{{ route('admin.users.create') }}">Create User</a>
     </div>
@@ -48,7 +48,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6">No dispatcher or volunteer accounts have been created yet.</td>
+                        <td colspan="6">No managed user accounts have been created yet.</td>
                     </tr>
                 @endforelse
             </tbody>

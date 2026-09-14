@@ -116,6 +116,16 @@ Use this document to understand the team's development process.
 
 ---
 
+## 📄 naming-conventions.md
+
+Defines the naming rules for Laravel classes, routes, Blade views, database
+objects, frontend assets, tests, documentation, branches, and commits.
+
+Use this document before adding or renaming project files so code names stay
+consistent across the system.
+
+---
+
 # Documentation Guidelines
 
 To maintain consistency across the project:
@@ -137,6 +147,7 @@ If you are joining the project for the first time, read the documents in the fol
 2. **system-requirements.md**
 3. **tech-stack.md**
 4. **project-lifecycle.md**
+5. **naming-conventions.md**
 
 Following this order provides a complete understanding of the project before development begins.
 

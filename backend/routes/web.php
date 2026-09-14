@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\Dispatcher\DashboardController as DispatcherDashboardController;
 use App\Http\Controllers\Dispatcher\IncidentController as DispatcherIncidentController;
+use App\Http\Controllers\Volunteer\DashboardController as VolunteerDashboardController;
+use App\Http\Controllers\Volunteer\IncidentController as VolunteerIncidentController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -33,7 +35,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('users', UserController::class)->except(['show', 'destroy']);
         Route::patch('/users/{user}/password', [UserController::class, 'resetPassword'])->name('users.password');
         Route::patch('/users/{user}/activation', [UserController::class, 'toggleActivation'])->name('users.activation');
+        Route::post('/users/{user}/documents', [UserController::class, 'uploadDocument'])->name('users.documents.store');
+        Route::patch('/users/{user}/verification', [UserController::class, 'toggleVerification'])->name('users.verification');
         Route::get('/incidents', [AdminIncidentController::class, 'index'])->name('incidents.index');
+        Route::get('/incidents/{incident}', [AdminIncidentController::class, 'show'])->name('incidents.show');
         Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
     });
 
@@ -43,5 +48,16 @@ Route::middleware(['auth', 'role:dispatcher'])
     ->group(function (): void {
         Route::get('/dashboard', DispatcherDashboardController::class)->name('dashboard');
         Route::get('/incidents', [DispatcherIncidentController::class, 'index'])->name('incidents.index');
+        Route::get('/incidents/{incident}', [DispatcherIncidentController::class, 'show'])->name('incidents.show');
+        Route::patch('/incidents/{incident}/status', [DispatcherIncidentController::class, 'updateStatus'])->name('incidents.status');
         Route::get('/map', [DispatcherIncidentController::class, 'map'])->name('map');
+    });
+
+Route::middleware(['auth', 'role:volunteer'])
+    ->prefix('volunteer')
+    ->name('volunteer.')
+    ->group(function (): void {
+        Route::get('/dashboard', VolunteerDashboardController::class)->name('dashboard');
+        Route::get('/incidents/create', [VolunteerIncidentController::class, 'create'])->name('incidents.create');
+        Route::post('/incidents', [VolunteerIncidentController::class, 'store'])->name('incidents.store');
     });
