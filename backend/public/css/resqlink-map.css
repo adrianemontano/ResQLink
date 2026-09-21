@@ -339,6 +339,26 @@
     padding: 4px 8px;
 }
 
+.resqlink-barangay-tooltip {
+    background: rgba(15, 23, 42, .92);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1.4;
+    padding: 6px 10px;
+}
+
+.resqlink-barangay-tooltip::before {
+    border-top-color: rgba(15, 23, 42, .92) !important;
+}
+
+.resqlink-barangay-popup {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 @media (max-width: 760px) {
     .map-controls {
         align-items: stretch;

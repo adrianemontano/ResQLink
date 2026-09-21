@@ -1,8 +1,10 @@
 @props([
     'mapId' => 'incident-map',
+    'focusLat' => null,
+    'focusLng' => null,
 ])
 
-<div class="resqlink-map-wrap" data-resqlink-map>
+<div class="resqlink-map-wrap" data-resqlink-map @if($focusLat) data-focus-lat="{{ $focusLat }}" @endif @if($focusLng) data-focus-lng="{{ $focusLng }}" @endif>
     <div class="map-controls">
         <div class="map-search-box" aria-label="Map search">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M16 16l5 5"></path></svg>

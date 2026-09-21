@@ -26,7 +26,7 @@
             </dl>
             @if ($incident->latitude !== null && $incident->longitude !== null)
                 <h3>Incident Location</h3>
-                <x-incident-map map-id="incident-mini-map" />
+                <x-incident-map map-id="incident-mini-map" :focus-lat="$incident->latitude" :focus-lng="$incident->longitude" />
             @endif
         </section>
 

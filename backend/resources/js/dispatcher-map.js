@@ -1,16 +1,18 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { addBarangayLayer } from './map/barangay-layer';
 
 const PHILIPPINES = {
-    center: [12.8797, 121.7740],
+    center: [10.3157, 123.8854], // Center on Cebu City
     bounds: L.latLngBounds([4.5, 116.0], [21.5, 127.5]),
-    initialZoom: 6,
+    initialZoom: 12,
 };
 
 const localFeatureLabels = {
     boundary: 'Service area',
     road: 'Road',
     landmark: 'Landmark',
+    hazard: 'Hazard',
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -45,29 +47,48 @@ async function initializeMap(wrapper) {
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.control.scale({ metric: true, imperial: false, position: 'bottomleft' }).addTo(map);
 
+    const barangayManager = await addBarangayLayer(map);
+    map.__resqlinkBarangays = barangayManager;
+
     const localFeatures = await addLocalFeatures(map);
     map.__resqlinkLocalFeatures = localFeatures;
-    bindMapSearch(map, searchInput);
+
+    bindMapSearch(map, searchInput, barangayManager);
     const markers = await loadLocalIncidents(map, messageElement);
     map.__resqlinkMarkers = markers;
     applyMarkerFilter(map, map.__resqlinkStatus);
-    const fitTargets = markers.length > 0 ? markers : localFeatures.map((feature) => feature.layer).filter(Boolean);
+
+    fitMapView(map, wrapper, markers, barangayManager, localFeatures);
+
+    map.on('click', (event) => showLocationPopup(map, event.latlng, localFeatures, barangayManager));
+}
+
+function fitMapView(map, wrapper, markers, barangayManager, localFeatures) {
+    const focusLat = parseFloat(wrapper.dataset.focusLat);
+    const focusLng = parseFloat(wrapper.dataset.focusLng);
+
+    if (Number.isFinite(focusLat) && Number.isFinite(focusLng)) {
+        map.setView([focusLat, focusLng], 15);
+        return;
+    }
+
+    const fitTargets = markers.length > 0
+        ? markers
+        : (barangayManager.layer ? [barangayManager.layer] : localFeatures.map((f) => f.layer).filter(Boolean));
 
     if (fitTargets.length > 0) {
         const bounds = L.featureGroup(fitTargets).getBounds();
         if (bounds.isValid()) {
-            map.fitBounds(bounds.pad(0.18), { maxZoom: 15, animate: true });
+            map.fitBounds(bounds.pad(0.12), { maxZoom: 15, animate: true });
         }
     }
-
-    map.on('click', (event) => showLocationPopup(map, event.latlng, localFeatures));
 }
 
 function applyBaseLayer(map) {
     map.getContainer().classList.add('map-grid');
 }
 
-function bindMapSearch(map, searchInput) {
+function bindMapSearch(map, searchInput, barangayManager) {
     if (!searchInput) return;
 
     searchInput.addEventListener('keydown', (event) => {
@@ -75,6 +96,14 @@ function bindMapSearch(map, searchInput) {
 
         const query = searchInput.value.trim();
         if (!query) return;
+
+        const matchedBarangays = barangayManager?.search(query) || [];
+        if (matchedBarangays.length > 0) {
+            const match = matchedBarangays[0];
+            map.fitBounds(match.layer.getBounds().pad(0.15), { maxZoom: 16, animate: true });
+            match.layer.openPopup();
+            return;
+        }
 
         const normalized = query.toLowerCase();
         const match = map.__resqlinkLocalFeatures
@@ -86,7 +115,7 @@ function bindMapSearch(map, searchInput) {
             .sort((first, second) => second.score - first.score)[0];
 
         if (!match) {
-            showMessage(searchInput.closest('[data-resqlink-map]')?.querySelector('[data-map-message]'), 'No matching local place was found.', true);
+            showMessage(searchInput.closest('[data-resqlink-map]')?.querySelector('[data-map-message]'), 'No matching barangay or place found.', true);
             return;
         }
 
@@ -143,7 +172,7 @@ async function addLocalFeatures(map) {
 
         const roads = L.geoJSON(contextData, {
             filter: (feature) => feature.properties?.kind === 'road',
-            style: { color: '#E6EEF5', opacity: 0.95, weight: 7 },
+            style: { color: '#CBD5E1', opacity: 0.8, weight: 4 },
             onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Road'),
         }).addTo(map);
         localFeatures.push(...collectLocalFeatures(roads, 'road'));
@@ -172,7 +201,7 @@ async function addLocalFeatures(map) {
                 color: '#475569',
                 fillColor: '#F59E0B',
                 fillOpacity: 1,
-                radius: 7,
+                radius: 6,
                 weight: 2,
             }),
             onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Landmark'),
@@ -202,7 +231,12 @@ function collectLocalFeatures(layerGroup, kind) {
         }));
 }
 
-function showLocationPopup(map, latlng, localFeatures) {
+function showLocationPopup(map, latlng, localFeatures, barangayManager) {
+    const matchedBarangay = barangayManager?.findBarangay(latlng);
+    const barangayText = matchedBarangay
+        ? `<strong>Barangay: ${escapeHtml(matchedBarangay.name)}</strong><br><span style="color:#64748b;font-size:11px;">NAMRIA: ${escapeHtml(matchedBarangay.code)}</span><br>`
+        : '<span style="color:#64748b;">Barangay: Outside Cebu City boundary</span><br>';
+
     const nearby = localFeatures
         .map((feature) => ({
             ...feature,
@@ -212,34 +246,27 @@ function showLocationPopup(map, latlng, localFeatures) {
         .sort((first, second) => first.distance - second.distance);
 
     const nearest = nearby[0];
-    const matchingText = nearby.length > 0
-        ? nearby.slice(0, 3).map(({ name, kind }) => `${localFeatureLabels[kind] || kind}: ${escapeHtml(name)}`).join('<br>')
-        : 'No named local feature at this location.';
-
     const nearestLabel = nearest
-        ? `<br>Nearest local feature: <strong>${escapeHtml(nearest.name)}</strong> (${localFeatureLabels[nearest.kind] || nearest.kind})`
+        ? `Nearest feature: <strong>${escapeHtml(nearest.name)}</strong> (${localFeatureLabels[nearest.kind] || nearest.kind})<br>`
         : '';
 
     map.openPopup(
-        `<strong>Selected location</strong><br>Latitude: ${latlng.lat.toFixed(6)}<br>Longitude: ${latlng.lng.toFixed(6)}${nearestLabel}<br><br>${matchingText}`,
+        `<div class="resqlink-popup-card">
+            ${barangayText}
+            ${nearestLabel}
+            <span style="font-size:11px;color:#64748b;">Coordinates: ${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}</span>
+        </div>`,
         latlng,
     );
 }
 
 function getFeatureDistance(latlng, layer) {
     if (!layer) return Number.POSITIVE_INFINITY;
-
-    if (typeof layer.getLatLng === 'function') {
-        return latlng.distanceTo(layer.getLatLng());
-    }
-
+    if (typeof layer.getLatLng === 'function') return latlng.distanceTo(layer.getLatLng());
     if (typeof layer.getBounds === 'function') {
         const bounds = layer.getBounds();
-        if (bounds && bounds.isValid()) {
-            return latlng.distanceTo(bounds.getCenter());
-        }
+        if (bounds && bounds.isValid()) return latlng.distanceTo(bounds.getCenter());
     }
-
     return Number.POSITIVE_INFINITY;
 }
 
@@ -294,7 +321,6 @@ function renderMarker(map, point) {
 
 function normalizeStatus(status) {
     const normalizedStatus = String(status || 'Reported').trim().toLowerCase();
-
     return normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
 }
 
@@ -323,6 +349,7 @@ function buildIncidentPopup(point, status) {
         <div class="resqlink-popup-title">${escapeHtml(point.id || 'Incident')} (${escapeHtml(status)})</div>
         <div class="resqlink-popup-reporter">Reporter: ${escapeHtml(point.reporter || 'Unknown')}</div>
         <div class="resqlink-popup-category">Category: ${escapeHtml(point.category || 'Unspecified')}</div>
+        <div class="resqlink-popup-category">Barangay: ${escapeHtml(point.barangay || 'Unknown')}</div>
         <div class="resqlink-popup-members">Members inside: ${escapeHtml(point.membersInside ?? 0)}</div>
     </div>`;
 }

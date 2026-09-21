@@ -24,15 +24,22 @@ The compatibility migration
 `severity_id`.
 
 ## Map source
-
+ 
 The map uses Leaflet bundled locally through Vite and local GeoJSON datasets in
-`public/maps/`: `incidents.geojson`, `hazards.geojson`, and
+`public/maps/`: `cebu-city-barangays.geojson` (80 Cebu City barangay administrative
+boundaries with hover highlighting, name and code tooltips/popups, search indexing,
+and spatial point-in-polygon lookup), `incidents.geojson`, `hazards.geojson`, and
 `boundaries.geojson`, with `resqlink-map.geojson` retained for local roads and
-landmarks. No remote tile URLs, paid map APIs, API keys, geocoding services, or
-external map APIs are used. Incidents render as stable green circles with
-custom popup cards; hazards render as orange triangles; colored boundaries and
-dashed routes use feature-level styling. The coordinate-grid fallback remains
-available when local GeoJSON data is missing.
+landmarks. Additional local reference assets are prepared at
+`cebu-city-osm-roads.geojson`, `cebu-city-osm-landmarks.geojson`, and
+`cebu-city-osm-emergency-facilities.geojson`.
+
+No remote tile URLs, paid map APIs, API keys, geocoding services, or external
+map APIs are required. Incidents render as stable markers with custom popup
+cards; hazards render as orange markers; barangay boundaries and dashed routes
+use feature-level styling. Markers use stored latitude and longitude values,
+and each incident's stored impact radius is rendered as a local circle. The
+coordinate-grid fallback remains available when local GeoJSON data is missing.
 
 ## Phase 2 interface consistency
 
