@@ -1,14 +1,116 @@
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
-const DEFAULT_CENTER = [10.3157, 123.8854];
+const CENTER = [123.8854, 10.3157];
+const STYLE_URL = window.RESQLINK_LOCAL_MAP_STYLE_URL || 'http://localhost:8080/styles/basic-preview/style.json';
+const DATASETS = {
+    barangays: '/maps/cebu-city-barangays.geojson',
+    roads: '/maps/cebu-city-osm-roads.geojson',
+    landmarks: '/maps/cebu-city-osm-landmarks.geojson',
+    facilities: '/maps/cebu-city-osm-emergency-facilities.geojson',
+};
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-volunteer-map]').forEach((wrapper) => initializeVolunteerMap(wrapper));
-});
+document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('[data-volunteer-map]').forEach(initializeMap));
 
-async function initializeVolunteerMap(wrapper) {
-    const map = L.map(wrapper.querySelector('[data-map-canvas]'), { zoomControl: true }).setView(DEFAULT_CENTER, 13);
+async function initializeMap(wrapper) {
+    const map = new maplibregl.Map({
+        container: wrapper.querySelector('[data-map-canvas]'),
+        style: STYLE_URL,
+        center: CENTER,
+        zoom: 13,
+        attributionControl: false,
+    });
+    map.addControl(new maplibregl.NavigationControl(), 'top-left');
+    map.addControl(new maplibregl.AttributionControl({ customAttribution: window.RESQLINK_LOCAL_MAP_ATTRIBUTION }), 'bottom-right');
+
+    const datasetsPromise = loadDatasets(wrapper);
+    map.on('load', async () => {
+        const datasets = await datasetsPromise;
+        addOverlayLayers(map, datasets);
+    });
+    bindFormControls(map, wrapper);
+}
+
+async function loadDatasets(wrapper) {
+    const datasets = {};
+    for (const [name, url] of Object.entries(DATASETS)) {
+        try {
+            const response = await fetch(url, { headers: { Accept: 'application/geo+json' } });
+            if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+            datasets[name] = await response.json();
+        } catch (error) {
+            showMapError(wrapper, `${name} overlay unavailable.`);
+            console.error(`Unable to load volunteer ${name} overlay.`, error);
+        }
+    }
+    return datasets;
+}
+
+function addOverlayLayers(map, datasets) {
+    const hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, className: 'volunteer-hover-popup' });
+    if (datasets.roads) addGeoJsonLayer(map, 'volunteer-roads', datasets.roads, { type: 'line', paint: { 'line-color': '#64748b', 'line-opacity': 0.55, 'line-width': 1.2 } });
+    if (datasets.barangays) addBarangayLayers(map, datasets.barangays, hoverPopup);
+    if (datasets.landmarks) addGeoJsonLayer(map, 'volunteer-landmarks', datasets.landmarks, { type: 'circle', paint: { 'circle-radius': 3, 'circle-color': '#f59e0b', 'circle-opacity': 0.55, 'circle-stroke-color': '#64748b', 'circle-stroke-opacity': 0.55, 'circle-stroke-width': 1 } }, true, hoverPopup);
+    if (datasets.facilities) addGeoJsonLayer(map, 'volunteer-facilities', datasets.facilities, { type: 'circle', paint: { 'circle-radius': 7, 'circle-color': '#2563eb', 'circle-opacity': 0.7, 'circle-stroke-color': '#fff', 'circle-stroke-opacity': 0.7, 'circle-stroke-width': 2 } }, true, hoverPopup);
+}
+
+function addBarangayLayers(map, data, hoverPopup) {
+    map.addSource('volunteer-barangays', { type: 'geojson', data, generateId: true });
+    map.addLayer({ id: 'volunteer-barangay-fill', source: 'volunteer-barangays', type: 'fill', paint: { 'fill-color': '#2563eb', 'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.12, 0] } });
+    map.addLayer({ id: 'volunteer-barangay-outline', source: 'volunteer-barangays', type: 'line', paint: { 'line-color': '#1d4ed8', 'line-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0], 'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2.5, 0] } });
+    bindBarangayHover(map, hoverPopup);
+}
+
+function bindBarangayHover(map, hoverPopup) {
+    let hoveredId = null;
+    const enterBarangay = (event) => {
+        map.getCanvas().style.cursor = 'pointer';
+        hoveredId = event.features[0]?.id;
+        if (hoveredId !== undefined) map.setFeatureState({ source: 'volunteer-barangays', id: hoveredId }, { hover: true });
+        showFeaturePopup(map, event, event.features[0], 'Barangay', hoverPopup);
+    };
+    const moveBarangay = (event) => {
+        if (event.features[0]) showFeaturePopup(map, event, event.features[0], 'Barangay', hoverPopup);
+    };
+    const leaveBarangay = () => {
+        map.getCanvas().style.cursor = '';
+        if (hoveredId !== null) map.setFeatureState({ source: 'volunteer-barangays', id: hoveredId }, { hover: false });
+        hoveredId = null;
+        hoverPopup.remove();
+    };
+    ['volunteer-barangay-fill', 'volunteer-barangay-outline'].forEach((layer) => {
+        map.on('mouseenter', layer, enterBarangay);
+        map.on('mousemove', layer, moveBarangay);
+        map.on('mouseleave', layer, leaveBarangay);
+    });
+}
+
+function addGeoJsonLayer(map, name, data, layer, interactive = false, hoverPopup = null) {
+    map.addSource(name, { type: 'geojson', data, generateId: true });
+    map.addLayer({ id: name, source: name, ...layer });
+    if (interactive) {
+        map.on('mouseenter', name, (event) => {
+            map.getCanvas().style.cursor = 'pointer';
+            showFeaturePopup(map, event, event.features[0], name === 'volunteer-facilities' ? 'Emergency facility' : 'Landmark', hoverPopup);
+        });
+        map.on('mouseleave', name, () => { map.getCanvas().style.cursor = ''; hoverPopup?.remove(); });
+    }
+}
+
+function showFeaturePopup(map, event, feature, type, popup) {
+    const properties = feature?.properties || {};
+    const name = properties.ADM4_EN || properties.psgc_name || properties.name || properties.NAME || properties.fname || properties.amenity || type;
+    popup
+        .setLngLat(event.lngLat)
+        .setHTML(`<strong>${escapeHtml(type)}</strong><br>${escapeHtml(name)}`)
+        .addTo(map);
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character]));
+}
+
+function bindFormControls(map, wrapper) {
     const latitude = document.querySelector('[name="latitude"]');
     const longitude = document.querySelector('[name="longitude"]');
     const radius = document.querySelector('[name="impact_radius"]');
@@ -16,103 +118,50 @@ async function initializeVolunteerMap(wrapper) {
     const radiusValue = wrapper.querySelector('[data-radius-value]');
     const noPin = wrapper.querySelector('[data-no-pin]');
     const submit = document.querySelector('[data-submit-incident]');
-    let marker = null;
-    let circle = null;
+    let marker;
+    let circleSource;
 
-    const localLayers = await loadLocalMapData(map, wrapper);
-    bindBarangaySearch(wrapper, map, localLayers.barangays);
-
-    function updateRadius() {
-        const value = Number(slider.value);
-        radiusValue.textContent = value;
-        radius.value = value;
-        if (circle) circle.setRadius(value);
-    }
-
-    function placePin(position) {
+    const updateRadius = () => {
+        radiusValue.textContent = slider.value;
+        radius.value = slider.value;
+        if (circleSource) circleSource.setData(radiusPolygon(marker.getLngLat(), Number(slider.value)));
+    };
+    const placePin = (event) => {
         noPin.hidden = true;
+        const position = event.lngLat;
         if (!marker) {
-            marker = L.marker(position, { draggable: true }).addTo(map);
-            marker.on('drag', () => placePin(marker.getLatLng()));
-            circle = L.circle(position, { radius: Number(slider.value), className: 'volunteer-boundary-active', weight: 2 }).addTo(map);
-        } else {
-            marker.setLatLng(position);
-            circle.setLatLng(position);
-        }
-        latitude.value = position.lat.toFixed(7);
-        longitude.value = position.lng.toFixed(7);
-        updateRadius();
+            marker = new maplibregl.Marker({ color: '#2563eb', draggable: true }).setLngLat(position).addTo(map);
+            map.addSource('volunteer-impact-radius', { type: 'geojson', data: radiusPolygon(position, Number(slider.value)) });
+            map.addLayer({ id: 'volunteer-impact-radius', source: 'volunteer-impact-radius', type: 'fill', paint: { 'fill-color': '#2563eb', 'fill-opacity': 0.16 } });
+            circleSource = map.getSource('volunteer-impact-radius');
+            marker.on('drag', () => syncPosition(marker.getLngLat()));
+        } else marker.setLngLat(position);
+        syncPosition(position);
+    };
+    const syncPosition = (position) => {
+        latitude.value = Number(position.lat).toFixed(7);
+        longitude.value = Number(position.lng).toFixed(7);
         submit.disabled = false;
-    }
-
-    map.on('click', (event) => placePin(event.latlng));
+    };
+    map.on('click', placePin);
     slider.addEventListener('input', updateRadius);
     updateRadius();
 }
 
-async function loadLocalMapData(map, wrapper) {
-    const sources = {
-        barangays: '/maps/cebu-city-barangays.geojson',
-        roads: '/maps/cebu-city-osm-roads.geojson',
-        landmarks: '/maps/cebu-city-osm-landmarks.geojson',
-        facilities: '/maps/cebu-city-osm-emergency-facilities.geojson',
-    };
-
-    const data = {};
-    const failedLayers = [];
-    for (const [key, url] of Object.entries(sources)) {
-        try {
-            const response = await fetch(url, { headers: { Accept: 'application/geo+json' } });
-            if (!response.ok) throw new Error(`${key} map data unavailable`);
-            data[key] = await response.json();
-        } catch (error) {
-            failedLayers.push(key);
-            console.error(`Unable to load volunteer ${key} map data.`, error);
-        }
+function radiusPolygon(position, radius) {
+    const points = [];
+    const latitudeFactor = 111320;
+    const longitudeFactor = 111320 * Math.cos((position.lat * Math.PI) / 180);
+    for (let index = 0; index <= 64; index += 1) {
+        const angle = (index / 64) * Math.PI * 2;
+        points.push([position.lng + (Math.cos(angle) * radius) / longitudeFactor, position.lat + (Math.sin(angle) * radius) / latitudeFactor]);
     }
-
-    try {
-        const barangays = data.barangays ? L.geoJSON(data.barangays, {
-            style: { color: '#2563eb', fillColor: '#93c5fd', fillOpacity: 0.12, weight: 1.5 },
-            onEachFeature: (feature, boundary) => {
-                const properties = feature.properties || {};
-                const name = properties.ADM4_EN || properties.psgc_name || 'Barangay';
-                const code = properties.ADM4_PCODE || properties.psgc_code || '';
-                boundary.bindTooltip(`${name}${code ? ` (${code})` : ''}`);
-                boundary.on({ mouseover: (event) => event.target.setStyle({ color: '#c8262a', fillColor: '#fca5a5', fillOpacity: 0.25, weight: 2 }), mouseout: (event) => event.target.setStyle({ color: '#2563eb', fillColor: '#93c5fd', fillOpacity: 0.12, weight: 1.5 }) });
-                boundary.feature.__searchName = name.toLowerCase();
-            },
-        }).addTo(map) : L.featureGroup().addTo(map);
-        if (data.roads) L.geoJSON(data.roads, { style: { color: '#94a3b8', opacity: 0.55, weight: 1.2 } }).addTo(map);
-        if (data.landmarks) L.geoJSON(data.landmarks, { pointToLayer: (feature, latlng) => L.circleMarker(latlng, { radius: 2.5, color: '#64748b', fillColor: '#f59e0b', fillOpacity: 0.8, weight: 1 }), onEachFeature: (feature, layer) => layer.bindTooltip(feature.properties?.name || 'Landmark') }).addTo(map);
-        if (data.facilities) L.geoJSON(data.facilities, { pointToLayer: (feature, latlng) => L.marker(latlng), onEachFeature: (feature, layer) => layer.bindTooltip(feature.properties?.name || 'Emergency facility') }).addTo(map);
-        const bounds = barangays.getBounds();
-        if (bounds.isValid()) map.fitBounds(bounds.pad(0.08));
-        if (failedLayers.length) showLayerWarning(wrapper, failedLayers);
-        return { barangays };
-    } catch (error) {
-        const message = document.createElement('small');
-        message.className = 'volunteer-map-error';
-        message.textContent = 'Local volunteer map data could not be displayed.';
-        wrapper.append(message);
-        console.error('Unable to load local barangay map data.', error);
-        return { barangays: L.featureGroup().addTo(map) };
-    }
+    return { type: 'Feature', geometry: { type: 'Polygon', coordinates: [points] }, properties: {} };
 }
 
-function showLayerWarning(wrapper, failedLayers) {
-    const message = document.createElement('small');
-    message.className = 'volunteer-map-error';
-    message.textContent = `Some local map layers are unavailable: ${failedLayers.join(', ')}.`;
-    wrapper.append(message);
-}
-
-function bindBarangaySearch(wrapper, map, layer) {
-    const input = wrapper.querySelector('[data-barangay-search]');
-    input.addEventListener('change', () => {
-        const query = input.value.trim().toLowerCase();
-        if (!query) return;
-        const match = layer.getLayers().find((item) => item.feature?.__searchName?.includes(query));
-        if (match?.getBounds) map.fitBounds(match.getBounds(), { maxZoom: 16 });
-    });
+function showMapError(wrapper, message) {
+    const error = document.createElement('small');
+    error.className = 'volunteer-map-error';
+    error.textContent = message;
+    wrapper.append(error);
 }

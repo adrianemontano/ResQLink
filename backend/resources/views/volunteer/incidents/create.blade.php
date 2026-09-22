@@ -2,7 +2,8 @@
 
 @push('styles')
     @vite('resources/css/volunteer-report.css')
-    <style>.volunteer-map { background: #fff !important; background-image: none !important; }</style>
+    <style>.volunteer-map { background: #fff !important; background-image: none !important; } .volunteer-hover-popup .maplibregl-popup-content { padding: 5px 7px; font-size: 10px; line-height: 1.25; } .volunteer-hover-popup .maplibregl-popup-tip { display: none; }</style>
+    <script>window.RESQLINK_LOCAL_MAP_STYLE_URL = @json(config('local_map.style_url')); window.RESQLINK_LOCAL_MAP_ATTRIBUTION = @json(config('local_map.attribution'));</script>
 @endpush
 
 @push('scripts')
