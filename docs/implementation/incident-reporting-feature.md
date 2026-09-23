@@ -75,3 +75,17 @@ external map APIs are not permitted.
 - `TASK2-001`–`TASK2-005`: `StoreIncidentRequest` and API incident controller.
 - `TASK2-006`–`TASK2-007`: `IncidentSeverityService` and this document.
 - `TASK2-008`: API controller assigns `Reported` and `reported_at`.
+
+## TASK2 volunteer map behavior
+
+The volunteer map uses the bundled Cebu City barangay GeoJSON for local
+barangay search and selection. Selecting a barangay navigates to its boundary,
+briefly highlights it, and synchronizes the form field. Dropping or dragging an
+incident pin resolves the containing barangay into that field. The impact
+radius is hidden while the pin is being dragged and is rendered again after the
+pin is released.
+
+The nearest-landmark field is also populated from the local landmark dataset.
+After pin placement, its searchable options are limited to landmarks contained
+by the selected barangay polygon, with the closest available landmark selected.
+The selected landmark is emphasized on the map with a red highlight.
