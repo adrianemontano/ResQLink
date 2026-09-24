@@ -10,15 +10,13 @@ return new class extends Migration
     {
         if (! Schema::hasTable('volunteer_profiles')) {
             Schema::create('volunteer_profiles', function (Blueprint $table): void {
-                $table->id();
-                $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+                $table->foreignId('user_id')->primary()->constrained('users')->cascadeOnDelete();
                 $table->string('barangay', 100);
                 $table->enum('verification_status', ['pending', 'verified', 'rejected'])->default('pending');
                 $table->timestamp('verified_at')->nullable();
                 $table->timestamps();
             });
         }
-
     }
 
     public function down(): void

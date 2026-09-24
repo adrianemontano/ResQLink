@@ -16,6 +16,9 @@ return new class extends Migration
 
         if (Schema::hasTable('users')) {
             Schema::table('users', function (Blueprint $table): void {
+                if (Schema::hasColumn('users', 'name')) {
+                    $table->string('name')->nullable()->change();
+                }
                 if (! Schema::hasColumn('users', 'first_name')) {
                     $table->string('first_name', 100)->nullable()->after('password');
                 }

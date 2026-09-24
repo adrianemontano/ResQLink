@@ -140,7 +140,7 @@ class UserController extends Controller
         abort_if($user->volunteerProfile->documents()->where('document_type', $data['document_type'])->exists(), 422, 'This document type already exists.');
         $file = $request->file('document');
         VolunteerDocument::query()->create([
-            'volunteer_profile_id' => $user->volunteerProfile->id,
+            'volunteer_profile_id' => $user->volunteerProfile->getKey(),
             'document_type' => $data['document_type'],
             'file_path' => $file->store('volunteer-documents'),
             'original_filename' => $file->getClientOriginalName(),
