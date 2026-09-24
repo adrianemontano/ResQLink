@@ -171,6 +171,10 @@ Download: https://code.visualstudio.com/
 
 These steps set up the project from a fresh clone.
 
+For the complete fresh-clone checklist, post-pull/post-merge checklist, local
+map server setup, and Windows troubleshooting, see
+[`docs/development-setup.md`](docs/development-setup.md).
+
 ### 1. Clone the Repository
 
 Clone the repository to your machine.
@@ -286,7 +290,8 @@ npm.cmd run build
 
 ### 10. Start the Development Servers
 
-Use separate terminals for the backend server and Vite development server.
+Use three separate terminals for Laravel, Vite, and the local volunteer map
+server.
 
 Terminal 1:
 
@@ -304,6 +309,12 @@ Or:
 
 ```bash
 npm.cmd run dev
+```
+
+Terminal 3:
+
+```bash
+npx.cmd tileserver-gl-light public/maps/osm-2020-02-10-v3.11_philippines_cebu.mbtiles --port 8080
 ```
 
 Open the Laravel URL shown by `php artisan serve`, usually:
@@ -327,6 +338,15 @@ Frontend development server:
 ```bash
 npm run dev
 ```
+
+Volunteer map server:
+
+```bash
+npx.cmd tileserver-gl-light public/maps/osm-2020-02-10-v3.11_philippines_cebu.mbtiles --port 8080
+```
+
+The tile server is available at `http://localhost:8080`. Keep all three
+processes running while using the volunteer incident map.
 
 The web application redirects `/` to `/login`.
 
