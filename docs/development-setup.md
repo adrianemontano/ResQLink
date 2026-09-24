@@ -14,6 +14,35 @@ The volunteer incident form and dispatcher incident map share MapLibre and a
 local TileServer GL process. Their packages are declared in
 `backend/package.json`.
 
+## Map view quick start
+
+Run the dependency installation once from the repository root:
+
+```powershell
+cd backend
+npm.cmd install --ignore-scripts=false
+```
+
+Then keep three PowerShell terminals open. In each terminal, change to the
+`backend/` directory and run one of these commands:
+
+```powershell
+# Terminal 1: Laravel application server
+php artisan serve
+
+# Terminal 2: Vite frontend asset server
+npm.cmd run dev
+
+# Terminal 3: local map tile server
+npx.cmd tileserver-gl-light public/maps/osm-2020-02-10-v3.11_philippines_cebu.mbtiles --port 8080
+```
+
+All three processes must remain running for the map page and its local map
+background to render during development. Open the application at
+`http://127.0.0.1:8000`, then visit the volunteer incident form or dispatcher
+map. If this is a fresh clone, complete the full setup below before starting
+the servers.
+
 ## After a fresh clone
 
 From the repository root:
