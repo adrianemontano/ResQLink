@@ -25,7 +25,7 @@ If future technology changes are approved by the project team, this document mus
 | CSS Framework | Bootstrap 5 |
 | Database | MySQL |
 | Mobile Application | Flutter |
-| Interactive Maps | Leaflet.js |
+| Interactive Maps | MapLibre GL |
 | Version Control | Git |
 | Repository Hosting | GitHub |
 
@@ -59,7 +59,7 @@ If future technology changes are approved by the project team, this document mus
          |                                           |
          +-------------------+-----------------------+
                              |
-                       Leaflet Map
+                       MapLibre Map
                   (Incident Visualization)
 ```
 
@@ -182,11 +182,11 @@ MySQL serves as the centralized relational database.
 
 ## Technology
 
-- Leaflet.js
+- MapLibre GL
 
 ## Purpose
 
-Leaflet provides interactive map visualization for both the mobile application and the dispatcher dashboard.
+MapLibre provides interactive map visualization for both the volunteer workflow and the dispatcher dashboard.
 
 ## Features
 
@@ -280,7 +280,7 @@ Merge into Main Branch
 | Authentication | Laravel |
 | Business Logic | Laravel |
 | Database | MySQL |
-| Incident Mapping | Leaflet |
+| Incident Mapping | MapLibre GL |
 | Team Collaboration | GitHub |
 | Version Control | Git |
 
@@ -347,7 +347,7 @@ Chosen because:
 
 ---
 
-## Leaflet
+## MapLibre GL
 
 Chosen because:
 
@@ -392,7 +392,7 @@ Chosen because:
 | Web Frontend | Blade + Bootstrap |
 | Mobile | Flutter |
 | Database | MySQL |
-| Maps | Leaflet |
+| Maps | MapLibre GL |
 | Version Control | Git |
 | Repository | GitHub |
 

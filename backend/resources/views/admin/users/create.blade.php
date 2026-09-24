@@ -4,7 +4,7 @@
     <div class="header-row">
         <div>
             <h1>Create User</h1>
-            <p>Create dispatcher or volunteer accounts. Public registration is disabled.</p>
+            <p>Create administrator, dispatcher, or volunteer accounts. Public registration is disabled.</p>
         </div>
         <a class="button secondary" href="{{ route('admin.users.index') }}">Back to Users</a>
     </div>

@@ -2,6 +2,9 @@
 
 Welcome to the **ResQLink** project documentation.
 
+Developer setup: [fresh clone, pull/merge, and local map server
+runbook](development-setup.md).
+
 This directory serves as the **single source of truth** for the project's technical documentation, system requirements, architecture, development workflow, and technology stack. Team members should refer to these documents throughout the development lifecycle to ensure consistency and alignment.
 
 ---
@@ -79,7 +82,7 @@ Documents all technologies used throughout the project.
 
 **Map Visualization**
 
-* Leaflet
+* MapLibre GL
 
 **Mobile Application**
 
@@ -116,6 +119,16 @@ Use this document to understand the team's development process.
 
 ---
 
+## 📄 naming-conventions.md
+
+Defines the naming rules for Laravel classes, routes, Blade views, database
+objects, frontend assets, tests, documentation, branches, and commits.
+
+Use this document before adding or renaming project files so code names stay
+consistent across the system.
+
+---
+
 # Documentation Guidelines
 
 To maintain consistency across the project:
@@ -137,6 +150,7 @@ If you are joining the project for the first time, read the documents in the fol
 2. **system-requirements.md**
 3. **tech-stack.md**
 4. **project-lifecycle.md**
+5. **naming-conventions.md**
 
 Following this order provides a complete understanding of the project before development begins.
 

@@ -7,6 +7,14 @@
 </div>
 
 <div class="field">
+    <label for="barangay">Barangay (required for volunteers)</label>
+    <input id="barangay" name="barangay" value="{{ old('barangay', $managedUser?->volunteerProfile?->barangay) }}" maxlength="100">
+    @error('barangay')
+        <div class="error-text">{{ $message }}</div>
+    @enderror
+</div>
+
+<div class="field">
     <label for="username">Username</label>
     <input id="username" name="username" value="{{ old('username', $managedUser?->username) }}" autocomplete="username">
     @error('username')

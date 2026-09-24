@@ -12,8 +12,8 @@ class DashboardController extends Controller
     public function __invoke(): View
     {
         return view('admin.dashboard', [
-            'totalVolunteers' => User::query()->whereRelation('role', 'slug', 'volunteer')->count(),
-            'totalDispatchers' => User::query()->whereRelation('role', 'slug', 'dispatcher')->count(),
+            'totalVolunteers' => User::query()->whereRelation('role', 'name', 'volunteer')->count(),
+            'totalDispatchers' => User::query()->whereRelation('role', 'name', 'dispatcher')->count(),
             'totalIncidents' => Incident::query()->count(),
         ]);
     }

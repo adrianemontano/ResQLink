@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class RoleSeeder extends Seeder
 {
@@ -12,12 +13,18 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach ([
-            ['name' => 'Admin', 'slug' => 'admin'],
-            ['name' => 'Dispatcher', 'slug' => 'dispatcher'],
-            ['name' => 'Volunteer', 'slug' => 'volunteer'],
-        ] as $role) {
-            Role::query()->updateOrCreate(['slug' => $role['slug']], $role);
+        $roles = [
+            ['name' => 'admin', 'description' => 'System administrator', 'slug' => 'admin'],
+            ['name' => 'dispatcher', 'description' => 'Incident dispatcher', 'slug' => 'dispatcher'],
+            ['name' => 'volunteer', 'description' => 'Community responder', 'slug' => 'volunteer'],
+        ];
+
+        foreach ($roles as $role) {
+            if (! Schema::hasColumn('roles', 'slug')) {
+                unset($role['slug']);
+            }
+
+            Role::query()->updateOrCreate(['name' => $role['name']], $role);
         }
     }
 }

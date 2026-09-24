@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResQGroup — Emergency Alert System</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --red: #DC2626; --red-light: #FEE2E2; --red-dark: #991B1B;
+    --blue: #2563EB; --blue-light: #DBEAFE; --blue-dark: #1E40AF;
+    --navy: #1E3A5F; --navy-light: #2d5080;
+    --green: #16A34A; --green-light: #DCFCE7;
+    --amber: #D97706; --amber-light: #FEF3C7;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280;
+    --gray-700: #374151; --gray-800: #1F2937; --gray-900: #111827;
+    --white: #ffffff;
+    --border: 1px solid var(--gray-200);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.15);
+  }
+  body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: var(--gray-900); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+  /* TOP NAV */
+  #top-nav { background: var(--navy); display: flex; align-items: center; padding: 0 24px; height: 56px; gap: 0; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+  .nav-logo { color: white; font-weight: 700; font-size: 18px; letter-spacing: -0.3px; margin-right: 32px; display: flex; align-items: center; gap: 8px; }
+  .nav-logo span { color: var(--red); }
+  .nav-btn { background: transparent; border: none; color: rgba(255,255,255,0.65); padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; white-space: nowrap; }
+  .nav-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+  .nav-btn.active { background: rgba(255,255,255,0.15); color: white; }
+
+  /* VIEWS */
+  .view { display: none; margin-top: 56px; min-height: calc(100vh - 56px); }
+  .view.active { display: block; }
+
+  /* ========= MOBILE VIEW ========= */
+  #view-mobile { background: #e8eaf0; display: none; justify-content: center; padding: 40px 20px; min-height: calc(100vh - 56px); }
+  #view-mobile.active { display: flex; }
+  .phone-frame { width: 390px; min-height: 780px; background: #1a1a1a; border-radius: 44px; padding: 10px; box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05); position: relative; }
+  .phone-screen { background: var(--white); border-radius: 36px; overflow: hidden; min-height: 760px; position: relative; display: flex; flex-direction: column; }
+  .phone-notch { width: 120px; height: 30px; background: #1a1a1a; border-radius: 0 0 20px 20px; margin: 0 auto; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; }
+  .mobile-screen { display: none; flex-direction: column; flex: 1; padding: 50px 20px 20px; }
+  .mobile-screen.active { display: flex; }
+
+  /* Mobile Login */
+  .m-logo-area { text-align: center; padding: 30px 0 24px; }
+  .m-logo-icon { width: 70px; height: 70px; background: var(--red); border-radius: 20px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; }
+  .m-logo-icon svg { width: 38px; height: 38px; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .m-title { font-size: 26px; font-weight: 800; color: var(--gray-900); letter-spacing: -0.5px; }
+  .m-subtitle { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+  .m-form { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+  .m-input { width: 100%; padding: 13px 16px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-md); font-size: 15px; color: var(--gray-900); outline: none; background: var(--gray-50); transition: border-color 0.15s; }
+  .m-input:focus { border-color: var(--blue); background: white; }
+  .m-btn-primary { width: 100%; padding: 14px; background: var(--red); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.15s; }
+  .m-btn-primary:hover { background: var(--red-dark); }
+  .m-btn-ghost { background: transparent; border: none; color: var(--blue); font-size: 14px; cursor: pointer; padding: 8px; text-align: center; width: 100%; }
+
+  /* Mobile Dashboard */
+  .m-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 16px; }
+  .m-header-title { font-size: 16px; font-weight: 700; color: var(--gray-900); }
+  .m-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+  .m-greeting { font-size: 13px; color: var(--gray-500); margin-bottom: 2px; }
+  .m-name { font-size: 20px; font-weight: 800; color: var(--gray-900); margin-bottom: 16px; }
+  .m-info-card { background: var(--gray-50); border: var(--border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+  .m-info-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .m-info-icon.green { background: var(--green-light); }
+  .m-info-icon.blue { background: var(--blue-light); }
+  .m-info-label { font-size: 11px; color: var(--gray-500); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .m-info-value { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+  .sos-btn { width: 100%; padding: 28px 20px; background: var(--red); color: white; border: none; border-radius: var(--radius-lg); font-size: 22px; font-weight: 900; letter-spacing: 1px; cursor: pointer; margin: 18px 0; position: relative; text-transform: uppercase; animation: sos-pulse 2s ease-in-out infinite; }
+  @keyframes sos-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,0.5)} 50%{box-shadow:0 0 0 18px rgba(220,38,38,0)} }
+  .sos-btn:active { transform: scale(0.98); }
+  .sos-subtitle { font-size: 11px; font-weight: 400; opacity: 0.85; margin-top: 4px; display: block; letter-spacing: 0.5px; }
+
+  /* Mobile Bottom Nav */
+  .m-bottom-nav { border-top: var(--border); display: flex; background: white; margin: auto -20px -20px; padding: 8px 0 4px; }
+  .m-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; cursor: pointer; color: var(--gray-400); font-size: 10px; font-weight: 500; transition: color 0.15s; border: none; background: transparent; }
+  .m-nav-item.active, .m-nav-item:hover { color: var(--red); }
+  .m-nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Category Selection */
+  .m-section-title { font-size: 18px; font-weight: 800; color: var(--gray-900); margin-bottom: 6px; }
+  .m-section-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 20px; }
+  .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cat-card { background: white; border: 1.5px solid var(--gray-200); border-radius: var(--radius-lg); padding: 16px 12px; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .cat-card:hover, .cat-card:active { border-color: var(--red); background: var(--red-light); }
+  .cat-icon { font-size: 28px; margin-bottom: 8px; }
+  .cat-name { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+  .cat-examples { font-size: 10px; color: var(--gray-500); line-height: 1.4; }
+  .m-back-btn { background: transparent; border: none; color: var(--blue); font-size: 14px; cursor: pointer; padding: 6px 0; margin-bottom: 12px; text-align: left; display: flex; align-items: center; gap: 6px; }
+
+  /* SOS Confirmation */
+  .sos-success-icon { width: 80px; height: 80px; background: var(--green-light); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
+  .sos-success-icon svg { width: 44px; height: 44px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .sos-confirm-title { text-align: center; font-size: 22px; font-weight: 800; color: var(--gray-900); }
+  .sos-confirm-id { text-align: center; font-size: 13px; color: var(--gray-500); margin: 4px 0 20px; }
+  .sos-detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: var(--border); font-size: 13px; }
+  .sos-detail-row:last-child { border-bottom: none; }
+  .sos-detail-label { color: var(--gray-500); }
+  .sos-detail-val { font-weight: 600; color: var(--gray-900); }
+  .detection-box { background: var(--green-light); border: 1px solid #86EFAC; border-radius: var(--radius-md); padding: 12px 14px; margin: 14px 0; }
+  .detection-title { font-weight: 700; color: #15803D; font-size: 13px; margin-bottom: 6px; }
+  .detection-members { font-size: 12px; color: #166534; }
+  .detecting-box { background: var(--amber-light); border: 1px solid #FCD34D; border-radius: var(--radius-md); padding: 12px 14px; margin: 14px 0; }
+  .detecting-text { font-size: 13px; color: #92400E; }
+
+  /* My Group & Incidents */
+  .m-member-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: var(--border); }
+  .m-member-item:last-child { border-bottom: none; }
+  .m-member-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .m-member-name { font-weight: 600; font-size: 14px; }
+  .m-member-loc { font-size: 12px; color: var(--gray-500); }
+  .m-incident-row { padding: 12px 0; border-bottom: var(--border); cursor: pointer; }
+  .m-incident-row:last-child { border-bottom: none; }
+  .m-incident-id { font-weight: 700; font-size: 13px; color: var(--blue); }
+  .m-incident-meta { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+
+  /* Status Badges */
+  .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge-pending { background: var(--red-light); color: var(--red-dark); }
+  .badge-received { background: var(--amber-light); color: #92400E; }
+  .badge-dispatched { background: var(--green-light); color: #166534; }
+  .badge-active { background: var(--blue-light); color: var(--blue-dark); }
+
+  /* ========= DISPATCHER VIEW ========= */
+  #view-dispatcher { display: none; flex: 1; }
+  #view-dispatcher.active { display: flex; min-height: calc(100vh - 56px); }
+  .sidebar { width: 240px; background: var(--navy); display: flex; flex-direction: column; min-height: calc(100vh - 56px); position: fixed; top: 56px; left: 0; z-index: 100; }
+  .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .sidebar-logo-text { color: white; font-weight: 800; font-size: 16px; }
+  .sidebar-logo-sub { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 12px 0; }
+  .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 20px; color: rgba(255,255,255,0.65); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; border: none; background: transparent; width: 100%; text-align: left; }
+  .sidebar-item:hover { background: rgba(255,255,255,0.08); color: white; }
+  .sidebar-item.active { background: rgba(255,255,255,0.12); color: white; border-left: 3px solid var(--red); }
+  .sidebar-item svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .sidebar-user { color: rgba(255,255,255,0.7); font-size: 12px; margin-bottom: 8px; }
+  .sidebar-user strong { color: white; display: block; font-size: 13px; }
+  .sidebar-logout { background: rgba(255,255,255,0.1); border: none; color: rgba(255,255,255,0.7); padding: 7px 14px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; width: 100%; }
+  .sidebar-logout:hover { background: rgba(255,255,255,0.18); color: white; }
+  .d-main { margin-left: 240px; flex: 1; padding: 28px; min-height: calc(100vh - 56px); }
+  .d-tab { display: none; }
+  .d-tab.active { display: block; }
+  .d-page-title { font-size: 22px; font-weight: 800; color: var(--gray-900); margin-bottom: 6px; }
+  .d-page-sub { font-size: 14px; color: var(--gray-500); margin-bottom: 24px; }
+
+  /* Stat Cards */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: white; border: var(--border); border-radius: var(--radius-lg); padding: 20px; }
+  .stat-label { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .stat-value { font-size: 32px; font-weight: 800; }
+  .stat-sub { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+  .stat-red .stat-value { color: var(--red); }
+  .stat-amber .stat-value { color: var(--amber); }
+  .stat-green .stat-value { color: var(--green); }
+  .stat-blue .stat-value { color: var(--blue); }
+
+  /* Table */
+  .table-card { background: white; border: var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .table-header { padding: 18px 20px; border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .table-title { font-size: 16px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { background: var(--gray-50); padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: var(--border); white-space: nowrap; }
+  tbody td { padding: 13px 16px; border-bottom: var(--border); font-size: 13px; color: var(--gray-800); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--gray-50); }
+  .td-id { font-family: monospace; font-weight: 700; color: var(--blue); font-size: 13px; }
+  .td-group-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--blue-light); color: var(--blue-dark); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .action-btn { padding: 5px 12px; border-radius: var(--radius-sm); border: var(--border); background: white; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--gray-700); transition: all 0.15s; margin-right: 4px; }
+  .action-btn:hover { background: var(--gray-100); }
+  .action-btn.primary { background: var(--blue); color: white; border-color: var(--blue); }
+  .action-btn.primary:hover { background: var(--blue-dark); }
+  .action-btn.danger { background: var(--red); color: white; border-color: var(--red); }
+  .action-btn.danger:hover { background: var(--red-dark); }
+  .action-btn.success { background: var(--green); color: white; border-color: var(--green); }
+  .action-btn.success:hover { background: #15803D; }
+  .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Map */
+  #dispatcher-map { width: 100%; height: 520px; border-radius: var(--radius-lg); border: var(--border); }
+  .map-legend { background: white; padding: 12px 16px; border-radius: var(--radius-md); border: var(--border); margin-bottom: 14px; display: flex; gap: 20px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-700); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  /* Filters */
+  .filter-row { display: flex; gap: 12px; margin-bottom: 18px; align-items: center; flex-wrap: wrap; }
+  .filter-select { padding: 8px 12px; border: var(--border); border-radius: var(--radius-sm); font-size: 13px; background: white; color: var(--gray-800); outline: none; }
+  .filter-select:focus { border-color: var(--blue); }
+  .filter-input { padding: 8px 12px; border: var(--border); border-radius: var(--radius-sm); font-size: 13px; background: white; color: var(--gray-800); outline: none; }
+  .filter-input:focus { border-color: var(--blue); }
+
+  /* Detail Panel */
+  .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; }
+  .detail-overlay.active { display: block; }
+  .detail-panel { position: fixed; top: 56px; right: 0; width: 480px; bottom: 0; background: white; box-shadow: var(--shadow-lg); overflow-y: auto; z-index: 501; transform: translateX(100%); transition: transform 0.25s ease; }
+  .detail-panel.open { transform: translateX(0); }
+  .detail-header { padding: 20px 24px; border-bottom: var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--navy); color: white; }
+  .detail-header-title { font-size: 16px; font-weight: 700; }
+  .detail-close { background: rgba(255,255,255,0.15); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .detail-close:hover { background: rgba(255,255,255,0.25); }
+  .detail-body { padding: 24px; }
+  .detail-section { margin-bottom: 24px; }
+  .detail-section-title { font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; padding-bottom: 6px; border-bottom: var(--border); }
+  .detail-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 7px 0; font-size: 13px; }
+  .detail-label { color: var(--gray-500); }
+  .detail-val { font-weight: 600; text-align: right; max-width: 60%; }
+  .member-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--blue-light); color: var(--blue-dark); padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; margin: 2px; }
+  #detail-mini-map { height: 180px; border-radius: var(--radius-md); border: var(--border); margin-top: 10px; }
+  .detail-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ========= ADMIN VIEW ========= */
+  #view-admin { display: none; }
+  #view-admin.active { display: flex; min-height: calc(100vh - 56px); }
+  .admin-sidebar { width: 240px; background: #1a3a6b; display: flex; flex-direction: column; min-height: calc(100vh - 56px); position: fixed; top: 56px; left: 0; z-index: 100; }
+  .admin-main { margin-left: 240px; flex: 1; padding: 28px; }
+  .a-tab-nav { display: flex; gap: 0; margin-bottom: 24px; background: white; border: var(--border); border-radius: var(--radius-md); padding: 4px; width: fit-content; }
+  .a-tab-btn { padding: 8px 20px; border-radius: var(--radius-sm); border: none; background: transparent; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--gray-600); transition: all 0.15s; }
+  .a-tab-btn.active { background: var(--blue); color: white; }
+  .a-tab-content { display: none; }
+  .a-tab-content.active { display: block; }
+  .add-btn { background: var(--blue); color: white; border: none; padding: 9px 18px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .add-btn:hover { background: var(--blue-dark); }
+
+  /* Reports */
+  .report-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  .report-stat { background: white; border: var(--border); border-radius: var(--radius-lg); padding: 18px; text-align: center; }
+  .report-stat-val { font-size: 30px; font-weight: 800; color: var(--blue); }
+  .report-stat-label { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+  .chart-card { background: white; border: var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 18px; }
+  .chart-title { font-size: 15px; font-weight: 700; margin-bottom: 18px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .bar-label { width: 130px; font-size: 13px; color: var(--gray-700); flex-shrink: 0; }
+  .bar-track { flex: 1; background: var(--gray-100); border-radius: 4px; height: 24px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: white; }
+  .pie-container { display: flex; align-items: center; gap: 30px; }
+  .pie-chart { width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(var(--blue) 0% 75%, var(--amber-light) 75% 100%); flex-shrink: 0; }
+  .pie-legend { display: flex; flex-direction: column; gap: 10px; }
+  .pie-legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .pie-legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .insight-box { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 16px 20px; margin-top: 20px; }
+  .insight-title { font-size: 13px; font-weight: 700; color: var(--blue-dark); margin-bottom: 4px; }
+  .insight-text { font-size: 13px; color: #1E40AF; line-height: 1.5; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: white; border-radius: var(--radius-xl); padding: 28px; width: 460px; max-width: 90vw; box-shadow: var(--shadow-lg); }
+  .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
+  .modal-field { margin-bottom: 14px; }
+  .modal-label { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 5px; display: block; }
+  .modal-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 14px; outline: none; }
+  .modal-input:focus { border-color: var(--blue); }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  .modal-cancel { padding: 9px 18px; border: var(--border); border-radius: var(--radius-sm); background: white; cursor: pointer; font-size: 13px; font-weight: 500; }
+  .modal-save { padding: 9px 18px; background: var(--blue); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-weight: 600; }
+
+  /* Group badge in detail */
+  .group-alert { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px; font-size: 13px; color: #9A3412; }
+  .group-alert strong { display: block; font-size: 14px; margin-bottom: 2px; }
+
+  /* Leaflet popup tweak */
+  .leaflet-popup-content { font-size: 13px !important; }
+  .pop-id { font-weight: 700; color: var(--navy); font-size: 14px; margin-bottom: 6px; }
+  .pop-row { display: flex; gap: 6px; margin-bottom: 3px; }
+  .pop-label { color: var(--gray-500); }
+  .pop-val { font-weight: 600; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2,1fr); }
+    .report-stat-grid { grid-template-columns: repeat(2,1fr); }
+    .sidebar, .admin-sidebar { width: 200px; }
+    .d-main, .admin-main { margin-left: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<nav id="top-nav">
+  <div class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="28" height="28" rx="7" fill="#DC2626"/>
+      <path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z" fill="white"/>
+    </svg>
+    ResQ<span>Group</span>
+  </div>
+  <button class="nav-btn active" onclick="switchView('mobile')">📱 Mobile App</button>
+  <button class="nav-btn" onclick="switchView('dispatcher')">🖥️ Dispatcher Dashboard</button>
+  <button class="nav-btn" onclick="switchView('admin')">⚙️ Admin Panel</button>
+</nav>
+
+<!-- =================== MOBILE VIEW =================== -->
+<div id="view-mobile" class="view active">
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="phone-notch"></div>
+
+      <!-- Login Screen -->
+      <div class="mobile-screen active" id="m-login">
+        <div class="m-logo-area">
+          <div class="m-logo-icon">
+            <svg viewBox="0 0 38 38"><path d="M19 4l3 8h8l-6.5 5 2.5 8L19 20l-7 5 2.5-8L8 12h8z" stroke-width="2"/></svg>
+          </div>
+          <div class="m-title">ResQGroup</div>
+          <div class="m-subtitle">Safety. Together. Fast.</div>
+        </div>
+        <div class="m-form">
+          <input class="m-input" id="m-email" type="email" placeholder="Email" value="juan@email.com">
+          <input class="m-input" id="m-pass" type="password" placeholder="Password" value="••••••••">
+          <button class="m-btn-primary" onclick="mScreen('dashboard')">Login</button>
+          <button class="m-btn-ghost">Register</button>
+        </div>
+      </div>
+
+      <!-- Dashboard Screen -->
+      <div class="mobile-screen" id="m-dashboard">
+        <div class="m-header">
+          <div class="m-header-title">ResQGroup</div>
+          <div class="m-avatar">JD</div>
+        </div>
+        <div class="m-greeting">Welcome back,</div>
+        <div class="m-name">Juan Dela Cruz</div>
+        <div class="m-info-card">
+          <div class="m-info-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="m-info-label">Safety Group</div>
+            <div class="m-info-value">Family Group A — 4 members</div>
+          </div>
+        </div>
+        <div class="m-info-card">
+          <div class="m-info-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <div>
+            <div class="m-info-label">GPS Status</div>
+            <div class="m-info-value">Active — Lahug, Cebu City</div>
+          </div>
+        </div>
+        <button class="sos-btn" onclick="mScreen('category')">
+          🚨 EMERGENCY SOS
+          <span class="sos-subtitle">Tap to send alert immediately</span>
+        </button>
+        <div class="m-bottom-nav">
+          <button class="m-nav-item active" onclick="mTab(this,'dashboard')">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </button>
+          <button class="m-nav-item" onclick="mTab(this,'mygroup')">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            My Group
+          </button>
+          <button class="m-nav-item" onclick="mTab(this,'myincidents')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Incidents
+          </button>
+        </div>
+      </div>
+
+      <!-- My Group Sub-screen (inside dashboard) -->
+      <div class="mobile-screen" id="m-mygroup">
+        <div class="m-header">
+          <button class="m-back-btn" onclick="mTab(null,'dashboard')">← Back</button>
+          <div class="m-avatar">JD</div>
+        </div>
+        <div class="m-section-title">Family Group A</div>
+        <div class="m-section-sub">4 members · Barangay Lahug</div>
+        <div style="margin-bottom:14px;">
+          <div class="m-member-item">
+            <div class="m-member-avatar" style="background:#DC2626">JD</div>
+            <div><div class="m-member-name">Juan Dela Cruz <span style="font-size:11px;background:#DCFCE7;color:#166534;padding:1px 7px;border-radius:99px;margin-left:4px;">You</span></div><div class="m-member-loc">📍 Lahug, Cebu · Now</div></div>
+          </div>
+          <div class="m-member-item">
+            <div class="m-member-avatar" style="background:#2563EB">MS</div>
+            <div><div class="m-member-name">Maria Santos</div><div class="m-member-loc">📍 Lahug, Cebu · 2m ago</div></div>
+          </div>
+          <div class="m-member-item">
+            <div class="m-member-avatar" style="background:#16A34A">PR</div>
+            <div><div class="m-member-name">Pedro Reyes</div><div class="m-member-loc">📍 Lahug, Cebu · 5m ago</div></div>
+          </div>
+          <div class="m-member-item">
+            <div class="m-member-avatar" style="background:#D97706">AC</div>
+            <div><div class="m-member-name">Ana Cruz</div><div class="m-member-loc">📍 Lahug, Cebu · 8m ago</div></div>
+          </div>
+        </div>
+        <button class="m-btn-primary" style="background:var(--blue);margin-top:auto;">+ Invite Member</button>
+        <div class="m-bottom-nav">
+          <button class="m-nav-item" onclick="mTab(this,'dashboard')">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </button>
+          <button class="m-nav-item active" onclick="mTab(this,'mygroup')">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            My Group
+          </button>
+          <button class="m-nav-item" onclick="mTab(this,'myincidents')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+            Incidents
+          </button>
+        </div>
+      </div>
+
+      <!-- My Incidents Sub-screen -->
+      <div class="mobile-screen" id="m-myincidents">
+        <div class="m-header">
+          <button class="m-back-btn" onclick="mTab(null,'dashboard')">← Back</button>
+          <div class="m-avatar">JD</div>
+        </div>
+        <div class="m-section-title">My Incidents</div>
+        <div class="m-section-sub" style="margin-bottom:16px;">Your reported emergencies</div>
+        <div class="m-incident-row">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="m-incident-id">INC-001</div>
+            <span class="badge badge-pending">Pending</span>
+          </div>
+          <div class="m-incident-meta">🌊 Natural Disaster — Flood · Today 08:32 AM · 4 persons</div>
+        </div>
+        <div class="m-incident-row">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="m-incident-id">INC-003</div>
+            <span class="badge badge-dispatched">Dispatched</span>
+          </div>
+          <div class="m-incident-meta">🚑 Medical — Heart Attack · Yesterday 03:45 PM · 1 person</div>
+        </div>
+        <div class="m-bottom-nav">
+          <button class="m-nav-item" onclick="mTab(this,'dashboard')">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </button>
+          <button class="m-nav-item" onclick="mTab(this,'mygroup')">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            My Group
+          </button>
+          <button class="m-nav-item active" onclick="mTab(this,'myincidents')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Incidents
+          </button>
+        </div>
+      </div>
+
+      <!-- Category Screen -->
+      <div class="mobile-screen" id="m-category">
+        <button class="m-back-btn" onclick="mScreen('dashboard')">← Back to Dashboard</button>
+        <div class="m-section-title">Select Emergency Type</div>
+        <div class="m-section-sub">Choose the category that best describes your emergency</div>
+        <div class="cat-grid">
+          <div class="cat-card" onclick="selectCat('Medical','Heart attack, Injury, Unconscious')">
+            <div class="cat-icon">🚑</div>
+            <div class="cat-name">Medical</div>
+            <div class="cat-examples">Heart attack<br>Injury, Unconscious</div>
+          </div>
+          <div class="cat-card" onclick="selectCat('Fire','House fire, Building fire')">
+            <div class="cat-icon">🔥</div>
+            <div class="cat-name">Fire</div>
+            <div class="cat-examples">House fire<br>Electrical fire</div>
+          </div>
+          <div class="cat-card" onclick="selectCat('Natural Disaster','Flood, Landslide, Earthquake')">
+            <div class="cat-icon">🌊</div>
+            <div class="cat-name">Natural Disaster</div>
+            <div class="cat-examples">Flood, Landslide<br>Earthquake, Typhoon</div>
+          </div>
+          <div class="cat-card" onclick="selectCat('Other / Rescue','Trapped, Missing person')">
+            <div class="cat-icon">⚠️</div>
+            <div class="cat-name">Other / Rescue</div>
+            <div class="cat-examples">Trapped person<br>Vehicular accident</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmation Screen -->
+      <div class="mobile-screen" id="m-confirm">
+        <div style="overflow-y:auto;flex:1;">
+          <div class="sos-success-icon">
+            <svg viewBox="0 0 44 44"><polyline points="8 22 17 31 36 13"/></svg>
+          </div>
+          <div class="sos-confirm-title">SOS Submitted</div>
+          <div class="sos-confirm-id">Incident ID: <strong>INC-005</strong></div>
+          <div id="m-detecting" class="detecting-box">
+            <div class="detecting-text">⏳ Detecting nearby group members within 50m...</div>
+          </div>
+          <div id="m-detected" class="detection-box" style="display:none;">
+            <div class="detection-title">✅ 4 members detected within 50m</div>
+            <div class="detection-members">Juan Dela Cruz · Maria Santos · Pedro Reyes · Ana Cruz</div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:var(--radius-md);padding:14px;margin-top:8px;">
+            <div class="sos-detail-row"><span class="sos-detail-label">Category</span><span class="sos-detail-val" id="m-confirm-cat">—</span></div>
+            <div class="sos-detail-row"><span class="sos-detail-label">GPS</span><span class="sos-detail-val">10.3200, 123.9030</span></div>
+            <div class="sos-detail-row"><span class="sos-detail-label">Barangay</span><span class="sos-detail-val">Lahug, Cebu City</span></div>
+            <div class="sos-detail-row"><span class="sos-detail-label">Time</span><span class="sos-detail-val" id="m-confirm-time">—</span></div>
+            <div class="sos-detail-row"><span class="sos-detail-label">Reporter</span><span class="sos-detail-val">Juan Dela Cruz</span></div>
+          </div>
+        </div>
+        <button class="m-btn-primary" style="margin-top:14px;" onclick="mScreen('dashboard')">Return to Dashboard</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- =================== DISPATCHER VIEW =================== -->
+<div id="view-dispatcher" class="view">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">ResQGroup</div>
+      <div class="sidebar-logo-sub">Dispatch Control Center</div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" onclick="dTab('overview',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Overview
+      </button>
+      <button class="sidebar-item" onclick="dTab('incidents',this)">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Incidents
+      </button>
+      <button class="sidebar-item" onclick="dTab('mapview',this)">
+        <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        Map View
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">Logged in as<strong>Dispatcher Maria Lim</strong></div>
+      <button class="sidebar-logout">Logout</button>
+    </div>
+  </div>
+
+  <div class="d-main">
+    <!-- Overview Tab -->
+    <div class="d-tab active" id="d-overview">
+      <div class="d-page-title">Dispatch Overview</div>
+      <div class="d-page-sub">Real-time incident monitoring — Cebu City Emergency Services</div>
+      <div class="stat-grid" id="stat-grid">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">Active Incidents</div>
+        </div>
+        <table id="overview-table">
+          <thead>
+            <tr>
+              <th>Incident ID</th><th>Reporter</th><th>Category</th><th>Persons</th><th>Barangay</th><th>Time</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="overview-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Incidents Tab -->
+    <div class="d-tab" id="d-incidents">
+      <div class="d-page-title">Incident Management</div>
+      <div class="d-page-sub">Filter, search and manage all reported incidents</div>
+      <div class="filter-row">
+        <select class="filter-select" id="filter-cat" onchange="renderIncidentTable()">
+          <option value="">All Categories</option>
+          <option>Medical</option><option>Fire</option><option>Natural Disaster</option><option>Other / Rescue</option>
+        </select>
+        <select class="filter-select" id="filter-status" onchange="renderIncidentTable()">
+          <option value="">All Statuses</option>
+          <option>Pending</option><option>Received</option><option>Dispatched</option>
+        </select>
+        <input class="filter-input" id="filter-barangay" placeholder="Search barangay..." oninput="renderIncidentTable()">
+      </div>
+      <div class="table-card">
+        <table id="incidents-table">
+          <thead>
+            <tr><th>Incident ID</th><th>Reporter</th><th>Category</th><th>Persons</th><th>Barangay</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="incidents-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Map View Tab -->
+    <div class="d-tab" id="d-mapview">
+      <div class="d-page-title">Incident Map</div>
+      <div class="d-page-sub">Live incident locations — Cebu City</div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#DC2626;"></div>Pending</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#D97706;"></div>Received</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#16A34A;"></div>Dispatched</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(37,99,235,0.3);border:2px dashed #2563EB;border-radius:50%;"></div>50m detection radius</div>
+      </div>
+      <div id="dispatcher-map"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Incident Detail Panel -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <div class="detail-header-title" id="dp-title">Incident Details</div>
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+</div>
+
+<!-- =================== ADMIN VIEW =================== -->
+<div id="view-admin" class="view">
+  <div class="admin-sidebar sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">ResQGroup</div>
+      <div class="sidebar-logo-sub">Admin Control Panel</div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" onclick="adminSideNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        User Management
+      </button>
+      <button class="sidebar-item" onclick="adminSideNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Incident Records
+      </button>
+      <button class="sidebar-item" onclick="adminSideNav(this)">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">Logged in as<strong>Admin Rey Santos</strong></div>
+      <button class="sidebar-logout">Logout</button>
+    </div>
+  </div>
+
+  <div class="admin-main">
+    <div class="a-tab-content active" id="a-user-mgmt">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <div class="d-page-title">User Management</div>
+          <div class="d-page-sub">Manage residents, dispatchers, and administrators</div>
+        </div>
+        <button class="add-btn" onclick="openAddUser()">+ Add User</button>
+      </div>
+      <div class="filter-row">
+        <input class="filter-input" id="admin-search" placeholder="Search by name or email..." oninput="renderUserTable()" style="width:280px;">
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Safety Group</th><th>Barangay</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="user-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="a-tab-content" id="a-incident-records">
+      <div class="d-page-title">Incident Records</div>
+      <div class="d-page-sub">Complete historical log of all incidents</div>
+      <div class="filter-row">
+        <select class="filter-select" id="ar-cat" onchange="renderAdminIncidents()"><option value="">All Categories</option><option>Medical</option><option>Fire</option><option>Natural Disaster</option><option>Other / Rescue</option></select>
+        <select class="filter-select" id="ar-status" onchange="renderAdminIncidents()"><option value="">All Statuses</option><option>Pending</option><option>Received</option><option>Dispatched</option></select>
+        <button class="action-btn" onclick="alert('Export feature coming soon')">↓ Export</button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Reporter</th><th>Category</th><th>Type</th><th>Group</th><th>Members</th><th>Barangay</th><th>Landmark</th><th>Time</th><th>Status</th></tr>
+          </thead>
+          <tbody id="admin-incidents-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="a-tab-content" id="a-reports">
+      <div class="d-page-title">System Reports</div>
+      <div class="d-page-sub">Summary statistics and incident analytics</div>
+      <div class="report-stat-grid">
+        <div class="report-stat"><div class="report-stat-val">4</div><div class="report-stat-label">Total Incidents This Month</div></div>
+        <div class="report-stat"><div class="report-stat-val" style="color:var(--blue);">3</div><div class="report-stat-label">Group-Triggered (75%)</div></div>
+        <div class="report-stat"><div class="report-stat-val" style="color:var(--amber);">1</div><div class="report-stat-label">Individual Incidents (25%)</div></div>
+        <div class="report-stat"><div class="report-stat-val" style="color:var(--green);">2.25</div><div class="report-stat-label">Avg. Members Detected</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Incidents by Category</div>
+        <div class="bar-row"><div class="bar-label">🚑 Medical</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--blue);">1</div></div></div>
+        <div class="bar-row"><div class="bar-label">🔥 Fire</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--red);">1</div></div></div>
+        <div class="bar-row"><div class="bar-label">🌊 Natural Disaster</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--navy);">1</div></div></div>
+        <div class="bar-row"><div class="bar-label">⚠️ Other / Rescue</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--amber);">1</div></div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Incidents by Status</div>
+        <div class="bar-row"><div class="bar-label">Pending</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--red);">1</div></div></div>
+        <div class="bar-row"><div class="bar-label">Received</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--amber);">1</div></div></div>
+        <div class="bar-row"><div class="bar-label">Dispatched</div><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--green);">2</div></div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Group-Triggered vs Individual Incidents</div>
+        <div class="pie-container">
+          <div class="pie-chart"></div>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><div class="pie-legend-dot" style="background:var(--blue);"></div><div><strong>Group-triggered: 75%</strong><div style="font-size:12px;color:var(--gray-500);">3 incidents — multiple persons detected</div></div></div>
+            <div class="pie-legend-item"><div class="pie-legend-dot" style="background:var(--amber-light);border:1px solid var(--amber);"></div><div><strong>Individual: 25%</strong><div style="font-size:12px;color:var(--gray-500);">1 incident — single person</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-box">
+        <div class="insight-title">💡 ResQGroup Advantage</div>
+        <div class="insight-text">ResQGroup detected an average of <strong>2.25 persons per incident</strong>, compared to 1 person in traditional single-alert systems. Group-based detection covered <strong>75% of incidents</strong> this month, enabling dispatchers to better prepare rescue teams before arrival.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal-overlay" id="add-user-modal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Add New User</div>
+    <div class="modal-field"><label class="modal-label">Full Name</label><input class="modal-input" id="nu-name" placeholder="e.g. Rosa Flores"></div>
+    <div class="modal-field"><label class="modal-label">Email</label><input class="modal-input" id="nu-email" type="email" placeholder="rosa@email.com"></div>
+    <div class="modal-field"><label class="modal-label">Role</label>
+      <select class="modal-input" id="nu-role"><option>Resident</option><option>Dispatcher</option><option>Admin</option></select>
+    </div>
+    <div class="modal-field"><label class="modal-label">Safety Group</label><input class="modal-input" id="nu-group" placeholder="e.g. Family Group A"></div>
+    <div class="modal-field"><label class="modal-label">Barangay</label><input class="modal-input" id="nu-barangay" placeholder="e.g. Lahug"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('add-user-modal')">Cancel</button>
+      <button class="modal-save" onclick="addUser()">Save User</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+const state = {
+  currentView: 'mobile',
+  currentMobileScreen: 'login',
+  selectedCategory: '',
+  incidents: [
+    { id:'INC-001', reporter:'Juan Dela Cruz', category:'Natural Disaster', type:'Flood', group:'Family Group A', members:4, memberNames:['Juan Dela Cruz','Maria Santos','Pedro Reyes','Ana Cruz'], barangay:'Lahug', landmark:'Lahug Elementary School', lat:10.3200, lng:123.9030, time:'Today, 08:32 AM', status:'Pending', groupTriggered:true },
+    { id:'INC-002', reporter:'Carlos Mendoza', category:'Fire', type:'House Fire', group:'Neighborhood Watch B', members:2, memberNames:['Carlos Mendoza','Elena Ramos'], barangay:'Talamban', landmark:'Talamban Barangay Hall', lat:10.3450, lng:123.9120, time:'Today, 09:15 AM', status:'Received', groupTriggered:true },
+    { id:'INC-003', reporter:'Ana Cruz', category:'Medical', type:'Heart Attack', group:'Family Group A', members:1, memberNames:['Ana Cruz'], barangay:'Lahug', landmark:'Vicente Sotto Memorial Medical Center', lat:10.3180, lng:123.9010, time:'Yesterday, 03:45 PM', status:'Dispatched', groupTriggered:false },
+    { id:'INC-004', reporter:'Elena Ramos', category:'Other / Rescue', type:'Vehicular Accident', group:'Neighborhood Watch B', members:2, memberNames:['Elena Ramos','Carlos Mendoza'], barangay:'Talamban', landmark:'Talamban Public Market', lat:10.3460, lng:123.9130, time:'Yesterday, 11:20 AM', status:'Dispatched', groupTriggered:true }
+  ],
+  users: [
+    { id:'USR-001', name:'Juan Dela Cruz', email:'juan@email.com', role:'Resident', group:'Family Group A', barangay:'Lahug', status:'Active' },
+    { id:'USR-002', name:'Maria Santos', email:'maria@email.com', role:'Resident', group:'Family Group A', barangay:'Lahug', status:'Active' },
+    { id:'USR-003', name:'Pedro Reyes', email:'pedro@email.com', role:'Resident', group:'Family Group A', barangay:'Lahug', status:'Active' },
+    { id:'USR-004', name:'Ana Cruz', email:'ana@email.com', role:'Resident', group:'Family Group A', barangay:'Lahug', status:'Active' },
+    { id:'USR-005', name:'Carlos Mendoza', email:'carlos@email.com', role:'Resident', group:'Neighborhood Watch B', barangay:'Talamban', status:'Active' },
+    { id:'USR-006', name:'Elena Ramos', email:'elena@email.com', role:'Resident', group:'Neighborhood Watch B', barangay:'Talamban', status:'Active' },
+    { id:'USR-007', name:'Dispatcher Maria Lim', email:'dispatcher1@resq.gov', role:'Dispatcher', group:'—', barangay:'Cebu City', status:'Active' },
+    { id:'USR-008', name:'Dispatcher Jose Torres', email:'dispatcher2@resq.gov', role:'Dispatcher', group:'—', barangay:'Cebu City', status:'Active' },
+    { id:'USR-009', name:'Admin Rey Santos', email:'admin@resq.gov', role:'Admin', group:'—', barangay:'Cebu City', status:'Active' }
+  ],
+  dispatcherMap: null,
+  detailMap: null
+};
+
+// ===== VIEW SWITCHING =====
+function switchView(v) {
+  state.currentView = v;
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#top-nav .nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  const btns = document.querySelectorAll('#top-nav .nav-btn');
+  const idx = {'mobile':0,'dispatcher':1,'admin':2}[v];
+  btns[idx].classList.add('active');
+  if(v === 'dispatcher') { renderStatCards(); renderOverviewTable(); renderIncidentTable(); }
+  if(v === 'admin') { renderUserTable(); renderAdminIncidents(); }
+}
+
+// ===== MOBILE NAVIGATION =====
+function mScreen(s) {
+  document.querySelectorAll('.mobile-screen').forEach(el => el.classList.remove('active'));
+  document.getElementById('m-' + s).classList.add('active');
+  state.currentMobileScreen = s;
+  if(s === 'confirm') {
+    document.getElementById('m-confirm-time').textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    document.getElementById('m-detecting').style.display = 'block';
+    document.getElementById('m-detected').style.display = 'none';
+    setTimeout(() => {
+      document.getElementById('m-detecting').style.display = 'none';
+      document.getElementById('m-detected').style.display = 'block';
+    }, 1500);
+  }
+}
+
+function mTab(btn, tab) {
+  if(btn) {
+    document.querySelectorAll('.m-nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  mScreen(tab);
+}
+
+function selectCat(cat) {
+  state.selectedCategory = cat;
+  document.getElementById('m-confirm-cat').textContent = cat;
+  mScreen('confirm');
+}
+
+// ===== STATUS HELPERS =====
+function badgeHtml(status) {
+  const cls = { 'Pending':'badge-pending','Received':'badge-received','Dispatched':'badge-dispatched' };
+  return `<span class="badge ${cls[status]||''}">${status}</span>`;
+}
+
+function statusColor(status) {
+  return { 'Pending':'#DC2626','Received':'#D97706','Dispatched':'#16A34A' }[status] || '#888';
+}
+
+// ===== STAT CARDS =====
+function renderStatCards() {
+  const active = state.incidents.filter(i => i.status === 'Pending').length;
+  const received = state.incidents.filter(i => i.status === 'Received').length;
+  const dispatched = state.incidents.filter(i => i.status === 'Dispatched').length;
+  const total = state.users.filter(u => u.role === 'Resident').length;
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="stat-card stat-red"><div class="stat-label">Active / Pending</div><div class="stat-value">${active}</div><div class="stat-sub">Awaiting dispatcher</div></div>
+    <div class="stat-card stat-amber"><div class="stat-label">Received</div><div class="stat-value">${received}</div><div class="stat-sub">In review</div></div>
+    <div class="stat-card stat-green"><div class="stat-label">Dispatched</div><div class="stat-value">${dispatched}</div><div class="stat-sub">Help on the way</div></div>
+    <div class="stat-card stat-blue"><div class="stat-label">Registered Users</div><div class="stat-value">${total}</div><div class="stat-sub">Active residents</div></div>
+  `;
+}
+
+// ===== TABLE RENDERERS =====
+function incidentRow(inc, showActions) {
+  const advBtn = inc.status === 'Pending'
+    ? `<button class="action-btn danger" onclick="advanceStatus('${inc.id}')">Receive</button>`
+    : inc.status === 'Received'
+    ? `<button class="action-btn success" onclick="advanceStatus('${inc.id}')">Dispatch</button>`
+    : `<button class="action-btn" disabled>Dispatched</button>`;
+  const groupTag = inc.groupTriggered ? `<span class="td-group-badge">👥 Group</span>` : '';
+  return `<tr>
+    <td class="td-id">${inc.id}</td>
+    <td>${inc.reporter}</td>
+    <td>${inc.category} ${groupTag}</td>
+    <td style="font-weight:700;">${inc.members}</td>
+    <td>${inc.barangay}</td>
+    <td>${inc.time}</td>
+    <td>${badgeHtml(inc.status)}</td>
+    <td>${showActions ? `<button class="action-btn primary" onclick="openDetail('${inc.id}')">View</button>${advBtn}` : ''}</td>
+  </tr>`;
+}
+
+function renderOverviewTable() {
+  document.getElementById('overview-tbody').innerHTML = state.incidents.map(i => incidentRow(i, true)).join('');
+}
+
+function renderIncidentTable() {
+  const cat = document.getElementById('filter-cat').value;
+  const status = document.getElementById('filter-status').value;
+  const bgy = document.getElementById('filter-barangay').value.toLowerCase();
+  const filtered = state.incidents.filter(i =>
+    (!cat || i.category === cat) &&
+    (!status || i.status === status) &&
+    (!bgy || i.barangay.toLowerCase().includes(bgy))
+  );
+  document.getElementById('incidents-tbody').innerHTML = filtered.map(i => incidentRow(i, true)).join('');
+}
+
+function renderAdminIncidents() {
+  const cat = document.getElementById('ar-cat').value;
+  const status = document.getElementById('ar-status').value;
+  const filtered = state.incidents.filter(i => (!cat || i.category === cat) && (!status || i.status === status));
+  document.getElementById('admin-incidents-tbody').innerHTML = filtered.map(i => `<tr>
+    <td class="td-id">${i.id}</td><td>${i.reporter}</td><td>${i.category}</td><td>${i.type}</td>
+    <td>${i.group}</td><td style="font-weight:700;">${i.members}</td><td>${i.barangay}</td>
+    <td style="max-width:140px;font-size:12px;">${i.landmark}</td><td>${i.time}</td><td>${badgeHtml(i.status)}</td>
+  </tr>`).join('');
+}
+
+function renderUserTable() {
+  const q = (document.getElementById('admin-search').value || '').toLowerCase();
+  const filtered = state.users.filter(u => !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+  document.getElementById('user-tbody').innerHTML = filtered.map((u,i) => {
+    const statusBadge = u.status === 'Active'
+      ? `<span class="badge" style="background:#DCFCE7;color:#166534;">Active</span>`
+      : `<span class="badge" style="background:#F3F4F6;color:#6B7280;">Disabled</span>`;
+    const toggleBtn = u.status === 'Active'
+      ? `<button class="action-btn" onclick="toggleUser('${u.id}')">Disable</button>`
+      : `<button class="action-btn success" onclick="toggleUser('${u.id}')">Enable</button>`;
+    const roleBadge = { 'Admin':'background:#EDE9FE;color:#5B21B6;', 'Dispatcher':'background:#DBEAFE;color:#1E40AF;', 'Resident':'background:#F3F4F6;color:#374151;' }[u.role] || '';
+    return `<tr>
+      <td style="font-size:12px;color:var(--gray-400);">${u.id}</td>
+      <td style="font-weight:600;">${u.name}</td>
+      <td style="font-size:12px;">${u.email}</td>
+      <td><span class="badge" style="${roleBadge}padding:3px 10px;">${u.role}</span></td>
+      <td style="font-size:12px;">${u.group}</td>
+      <td>${u.barangay}</td>
+      <td>${statusBadge}</td>
+      <td>${toggleBtn}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== ACTIONS =====
+function advanceStatus(id) {
+  const inc = state.incidents.find(i => i.id === id);
+  if(!inc) return;
+  if(inc.status === 'Pending') inc.status = 'Received';
+  else if(inc.status === 'Received') inc.status = 'Dispatched';
+  renderStatCards();
+  renderOverviewTable();
+  renderIncidentTable();
+  if(state.dispatcherMap) refreshMapMarkers();
+}
+
+function toggleUser(id) {
+  const u = state.users.find(u => u.id === id);
+  if(u) { u.status = u.status === 'Active' ? 'Disabled' : 'Active'; renderUserTable(); }
+}
+
+// ===== DETAIL PANEL =====
+function openDetail(id) {
+  const inc = state.incidents.find(i => i.id === id);
+  if(!inc) return;
+  document.getElementById('dp-title').textContent = inc.id + ' — ' + inc.type;
+  const advBtn = inc.status === 'Pending'
+    ? `<button class="action-btn danger" onclick="advanceStatus('${inc.id}');updateDetailStatus('${inc.id}')">Mark as Received</button>`
+    : inc.status === 'Received'
+    ? `<button class="action-btn success" onclick="advanceStatus('${inc.id}');updateDetailStatus('${inc.id}')">Mark as Dispatched</button>`
+    : `<button class="action-btn" disabled>Fully Dispatched</button>`;
+  const groupAlert = inc.groupTriggered
+    ? `<div class="group-alert"><strong>👥 Group-Triggered Incident</strong>Multiple Safety Group members detected within 50m at time of SOS.</div>`
+    : `<div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:var(--radius-md);padding:12px 14px;margin-bottom:14px;font-size:13px;color:#166534;">👤 Individual Incident — single reporter, no nearby group members detected</div>`;
+  const membersHtml = inc.memberNames.map(n => `<span class="member-chip">👤 ${n}</span>`).join('');
+  document.getElementById('detail-body').innerHTML = `
+    ${groupAlert}
+    <div class="detail-section">
+      <div class="detail-section-title">Incident Information</div>
+      <div class="detail-row"><span class="detail-label">Incident ID</span><span class="detail-val td-id">${inc.id}</span></div>
+      <div class="detail-row"><span class="detail-label">Reporter</span><span class="detail-val">${inc.reporter}</span></div>
+      <div class="detail-row"><span class="detail-label">Category</span><span class="detail-val">${inc.category}</span></div>
+      <div class="detail-row"><span class="detail-label">Type</span><span class="detail-val">${inc.type}</span></div>
+      <div class="detail-row"><span class="detail-label">GPS Coordinates</span><span class="detail-val">${inc.lat}, ${inc.lng}</span></div>
+      <div class="detail-row"><span class="detail-label">Time Reported</span><span class="detail-val">${inc.time}</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-val">${badgeHtml(inc.status)}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Group & Persons</div>
+      <div class="detail-row"><span class="detail-label">Safety Group</span><span class="detail-val">${inc.group}</span></div>
+      <div class="detail-row"><span class="detail-label">Total Persons</span><span class="detail-val" style="font-size:18px;color:var(--red);">${inc.members}</span></div>
+      <div style="margin-top:8px;">${membersHtml}</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Location</div>
+      <div class="detail-row"><span class="detail-label">Barangay</span><span class="detail-val">${inc.barangay}, Cebu City</span></div>
+      <div class="detail-row"><span class="detail-label">Nearest Landmark</span><span class="detail-val">${inc.landmark}</span></div>
+      <div id="detail-mini-map"></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Actions</div>
+      <div class="detail-actions">${advBtn}<button class="action-btn" onclick="closeDetail()">Close</button></div>
+    </div>
+  `;
+  document.getElementById('detail-overlay').classList.add('active');
+  document.getElementById('detail-panel').classList.add('open');
+  setTimeout(() => {
+    if(state.detailMap) { state.detailMap.remove(); state.detailMap = null; }
+    const el = document.getElementById('detail-mini-map');
+    if(el) {
+      state.detailMap = L.map('detail-mini-map', { zoomControl: true, scrollWheelZoom: false }).setView([inc.lat, inc.lng], 16);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(state.detailMap);
+      L.circleMarker([inc.lat, inc.lng], { color: '#DC2626', fillColor: '#DC2626', fillOpacity: 0.9, radius: 8 }).addTo(state.detailMap).bindPopup(inc.id).openPopup();
+      L.circle([inc.lat, inc.lng], { color: '#2563EB', fillColor: '#2563EB', fillOpacity: 0.1, radius: 50, dashArray: '5,5' }).addTo(state.detailMap);
+    }
+  }, 200);
+}
+
+function updateDetailStatus(id) {
+  setTimeout(() => openDetail(id), 50);
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('active');
+  document.getElementById('detail-panel').classList.remove('open');
+  if(state.detailMap) { state.detailMap.remove(); state.detailMap = null; }
+}
+
+// ===== DISPATCHER TABS =====
+function dTab(tab, btn) {
+  document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('d-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if(tab === 'mapview') {
+    setTimeout(() => initDispatcherMap(), 100);
+  }
+}
+
+// ===== MAP =====
+function initDispatcherMap() {
+  if(state.dispatcherMap) { state.dispatcherMap.remove(); state.dispatcherMap = null; }
+  const el = document.getElementById('dispatcher-map');
+  if(!el || el.offsetWidth === 0) return;
+  state.dispatcherMap = L.map('dispatcher-map').setView([10.3157, 123.8854], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(state.dispatcherMap);
+  refreshMapMarkers();
+}
+
+function refreshMapMarkers() {
+  if(!state.dispatcherMap) return;
+  state.dispatcherMap.eachLayer(layer => {
+    if(!(layer instanceof L.TileLayer)) state.dispatcherMap.removeLayer(layer);
+  });
+  // 50m radius for INC-001
+  const inc1 = state.incidents.find(i => i.id === 'INC-001');
+  if(inc1) {
+    L.circle([inc1.lat, inc1.lng], { color:'#2563EB', fillColor:'#2563EB', fillOpacity:0.08, radius:50, dashArray:'6,4', weight:2 }).addTo(state.dispatcherMap);
+  }
+  state.incidents.forEach(inc => {
+    const color = statusColor(inc.status);
+    const marker = L.circleMarker([inc.lat, inc.lng], { color, fillColor: color, fillOpacity: 0.85, radius: 12, weight: 2 })
+      .addTo(state.dispatcherMap);
+    marker.bindPopup(`
+      <div style="min-width:200px;">
+        <div class="pop-id">${inc.id} — ${inc.type}</div>
+        <div class="pop-row"><span class="pop-label">Reporter:</span><span class="pop-val">${inc.reporter}</span></div>
+        <div class="pop-row"><span class="pop-label">Category:</span><span class="pop-val">${inc.category}</span></div>
+        <div class="pop-row"><span class="pop-label">Persons:</span><span class="pop-val" style="color:#DC2626;font-size:15px;">${inc.members}</span></div>
+        <div class="pop-row"><span class="pop-label">Barangay:</span><span class="pop-val">${inc.barangay}</span></div>
+        <div class="pop-row"><span class="pop-label">Status:</span><span class="pop-val">${inc.status}</span></div>
+        <div class="pop-row"><span class="pop-label">GPS:</span><span class="pop-val">${inc.lat}, ${inc.lng}</span></div>
+      </div>
+    `);
+  });
+}
+
+// ===== ADMIN TABS =====
+function adminSideNav(btn) {
+  document.querySelectorAll('.admin-sidebar .sidebar-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const tabs = ['a-user-mgmt','a-incident-records','a-reports'];
+  document.querySelectorAll('.a-tab-content').forEach(t => t.classList.remove('active'));
+  const idx = Array.from(document.querySelectorAll('.admin-sidebar .sidebar-item')).indexOf(btn);
+  document.getElementById(tabs[idx]).classList.add('active');
+}
+
+// ===== ADD USER MODAL =====
+function openAddUser() {
+  document.getElementById('add-user-modal').classList.add('active');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+function addUser() {
+  const name = document.getElementById('nu-name').value.trim();
+  const email = document.getElementById('nu-email').value.trim();
+  const role = document.getElementById('nu-role').value;
+  const group = document.getElementById('nu-group').value.trim() || '—';
+  const barangay = document.getElementById('nu-barangay').value.trim() || 'Cebu City';
+  if(!name || !email) { alert('Please fill in at least Name and Email.'); return; }
+  const newId = 'USR-' + String(state.users.length + 1).padStart(3,'0');
+  state.users.push({ id:newId, name, email, role, group, barangay, status:'Active' });
+  closeModal('add-user-modal');
+  document.getElementById('nu-name').value = '';
+  document.getElementById('nu-email').value = '';
+  document.getElementById('nu-group').value = '';
+  document.getElementById('nu-barangay').value = '';
+  renderUserTable();
+}
+
+// Click outside modal to close
+document.getElementById('add-user-modal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal('add-user-modal');
+});
+
+// ===== INIT =====
+renderStatCards();
+renderOverviewTable();
+renderIncidentTable();
+renderUserTable();
+renderAdminIncidents();
+</script>
+</body>
+</html>

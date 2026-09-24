@@ -3,10 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? config('app.name', 'ResQLink') }}</title>
     <link rel="stylesheet" href="{{ asset('css/resqlink-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}">
     @stack('styles')
 </head>
 <body>
