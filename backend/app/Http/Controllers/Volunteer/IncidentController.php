@@ -22,6 +22,10 @@ class IncidentController extends Controller
         $incident = $submissionService->submit($request->validated(), $request->user());
 
         return redirect()->route('volunteer.incidents.create')
-            ->with('incident', $incident);
+            ->with('incident', [
+                'id' => $incident->getKey(),
+                'status' => $incident->status,
+                'severity' => $incident->severity,
+            ]);
     }
 }

@@ -12,7 +12,7 @@
 
 @section('content')
     <div class="volunteer-topbar"><div><h1>Submit Incident</h1><p>Provide accurate details. Dispatchers will review the preliminary assessment.</p></div></div>
-    @if (session('incident')) @php($incident = session('incident'))<div class="alert success">Incident <strong>INC-{{ str_pad((string) $incident->id, 4, '0', STR_PAD_LEFT) }}</strong> was submitted. Status: <strong>{{ $incident->status }}</strong>. Preliminary severity: <strong>{{ $incident->severity }}</strong>.</div>@endif
+    @if (session('incident')) @php($incident = session('incident'))<div class="alert success">Incident <strong>INC-{{ str_pad((string) $incident['id'], 4, '0', STR_PAD_LEFT) }}</strong> was submitted. Status: <strong>{{ $incident['status'] }}</strong>. Preliminary severity: <strong>{{ $incident['severity'] }}</strong>.</div>@endif
     @if ($errors->any())<div class="alert error">Please correct the highlighted fields before submitting.</div>@endif
     <div class="volunteer-report-grid">
         <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}">
