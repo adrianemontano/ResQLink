@@ -41,6 +41,19 @@ classification for an active, verified volunteer.
 8. Confirm the dispatcher map/details handoff and document the local offline map
    contract without implementing mobile screens.
 
+## Dispatcher map handoff
+
+The TASK2 incident record is exposed to the authenticated TASK3 dispatcher map
+as GeoJSON through `GET /dispatcher/map/incidents`. The feed includes database
+coordinates, impact radius, workflow status, preliminary severity, reporter,
+category, barangay, affected population, and the dispatcher detail URL. It does
+not use the demonstration `public/maps/incidents.geojson` file.
+
+The volunteer and dispatcher workflows share the MapLibre local-map helpers,
+TileServer style configuration, and Cebu City reference datasets. The volunteer
+map remains editable for location reporting; the dispatcher map remains
+read-only for coordination.
+
 ## Acceptance criteria
 
 - Only active, verified volunteers can submit complete reports.

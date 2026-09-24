@@ -14,18 +14,18 @@ features. These are development credentials only.
 
 **Assigned owner:** Angela
 **Primary system user:** Dispatcher  
-**Platform:** Laravel Blade, Bootstrap 5, and Leaflet.js web dashboard  
+**Platform:** Laravel Blade, Bootstrap 5, and MapLibre GL web dashboard
 **Priority:** Must
 
 ## Local map requirement
 
-The Dispatcher `Map View` and incident detail mini-map must work fully offline.
-Leaflet assets are bundled locally, and the Cebu City boundary, roads, and
-landmarks are served from `public/maps/resqlink-map.geojson`. Do not use remote
-tile URLs, paid map APIs, API keys, geocoding services, or external map APIs.
-Incident markers and impact-radius circles must be rendered from the locally
-stored latitude, longitude, and radius values. A coordinate-grid fallback is
-shown if the local GeoJSON file is unavailable.
+The Dispatcher `Map View` and incident detail mini-map use the same locally
+served MapLibre basemap as the volunteer reporting workflow. MapLibre assets
+are bundled locally, and Cebu City barangays, roads, landmarks, and emergency
+facilities are served from `public/maps/`. Do not use remote tile URLs, paid
+map APIs, API keys, geocoding services, or external map APIs. Incident markers
+and impact-radius polygons are rendered from authenticated database incident
+data containing stored latitude, longitude, and radius values.
 
 Before implementation, document the selected local tile/data source and storage
 path. The application must show a clear local fallback (such as a coordinate
@@ -41,8 +41,8 @@ The page structure follows the Dispatcher Control Center in
 | --- | --- |
 | Dispatcher sidebar | `Dashboard`, `Incidents`, and `Map View` navigation items; visible only to Dispatcher |
 | Dispatcher — Dashboard tab | Summary/stat cards and an Active Incidents table with reporter, category, persons, barangay, time, status, and actions |
-| Dispatcher — Incidents tab | Incident Management page with category, status, and barangay filters; complete incident table; detail/open action |
-| Dispatcher — Map View tab | Local Leaflet map, incident markers, impact-radius circles, and map legend for active/historical incidents |
+| Dispatcher — Incidents tab | Incident Management page with category and status filters, a searchable mapped-barangay selector, complete incident table, and detail/open action |
+| Dispatcher — Map View tab | Local MapLibre map, incident markers, impact-radius polygons, and map legend for active/historical incidents |
 | Incident Details side panel | Incident information, reporter, location, mini-map, radius, severity, notes, current status, history, and status action buttons |
 | Shared dashboard footer | Logged-in dispatcher identity and Logout action |
 
@@ -74,7 +74,7 @@ map, and recording status changes through completion.
   volunteer, reported date/time, affected persons, location, barangay,
   landmark, impact radius, notes, severity, and status.
 - `TASK3-004` The dashboard displays active and historical incidents on a
-  Leaflet map using markers and impact-radius visualization.
+  MapLibre map using markers and impact-radius visualization.
 - `TASK3-005` A dispatcher can update status only through Reported, Received,
   Dispatched, and Completed.
 - `TASK3-006` Every status change records the dispatcher and timestamp in the
@@ -89,8 +89,8 @@ map, and recording status changes through completion.
 - [x] `TASK3-002` Queue ordering uses severity, workflow status, and report time.
 - [x] `TASK3-003` Incident details include the required report, location, severity,
   status, and history information.
-- [x] `TASK3-004` Local Leaflet map renders incident markers and impact-radius
-  circles from local GeoJSON data and stored coordinates.
+- [x] `TASK3-004` Local MapLibre map renders database incident markers and
+  impact-radius polygons from stored coordinates.
 - [x] `TASK3-005` Status updates are limited to Reported, Received, Dispatched,
   and Completed with validated transitions.
 - [x] `TASK3-006` Status history stores the dispatcher, timestamp, status, and notes.
@@ -109,7 +109,7 @@ map, and recording status changes through completion.
 - Dispatcher controllers, policies, requests/services, and Blade views.
 - Views under `resources/views/dispatcher/dashboard/`,
   `resources/views/dispatcher/incidents/`, and map-related partials.
-- `dispatcher-map.js` or equivalent Leaflet asset using the project naming
+- `dispatcher-map.js` MapLibre asset using the project naming
   conventions.
 - Incident status history presentation and update behavior.
 
@@ -126,7 +126,7 @@ The feature is complete when:
 
 - A dispatcher can see incoming incidents in a severity-aware queue.
 - A dispatcher can open every required incident detail.
-- Active and historical incidents render correctly on the Leaflet map with
+- Active and historical incidents render correctly on the MapLibre map with
   location markers and impact-radius indicators.
 - A dispatcher can make valid status changes only in the approved lifecycle.
 - Each change is persisted with actor and timestamp history.
@@ -152,9 +152,9 @@ each requirement; no requirements are added.
 - **`TASK3-003`** Dispatchers can view complete incident summaries and details.
   - Frontend: Build the incident details view.
   - Backend: Return all required summary fields.
-- **`TASK3-004`** Active and historical incidents are shown on the local Leaflet map.
-  - Frontend: Render local markers and impact-radius circles.
-  - Backend: Supply authorized coordinates and radius values.
+- **`TASK3-004`** Active and historical incidents are shown on the local MapLibre map.
+  - Frontend: Render status-colored markers and impact-radius polygons.
+  - Backend: Supply authenticated incident GeoJSON with coordinates and radius values.
 - **`TASK3-005`** Workflow status is limited to Reported, Received, Dispatched, and Completed.
   - Frontend: Provide only the four allowed status controls.
   - Backend: Validate and reject other status values.

@@ -6,8 +6,10 @@
 
 Dispatcher routes are protected by authentication and the `dispatcher` role.
 The incident queue is ordered by preliminary severity, then workflow sequence
-and reported time, with category, status, and barangay filters. Dispatchers can
-open a full incident summary and update status only through `Reported`,
+and reported time, with category, status, and a searchable barangay selector.
+The selector uses the barangay names from the local Cebu City map dataset, so
+the incident list can be filtered by an existing mapped barangay. Dispatchers
+can open a full incident summary and update status only through `Reported`,
 `Received`, `Dispatched`, and `Completed`.
 
 Each accepted status change stores the acting dispatcher, timestamp, status
@@ -25,21 +27,23 @@ The compatibility migration
 
 ## Map source
  
-The map uses Leaflet bundled locally through Vite and local GeoJSON datasets in
-`public/maps/`: `cebu-city-barangays.geojson` (80 Cebu City barangay administrative
-boundaries with hover highlighting, name and code tooltips/popups, search indexing,
-and spatial point-in-polygon lookup), `incidents.geojson`, `hazards.geojson`, and
-`boundaries.geojson`, with `resqlink-map.geojson` retained for local roads and
-landmarks. Additional local reference assets are prepared at
+The dispatcher and volunteer maps share MapLibre, the configured local
+TileServer GL style, and reusable local-map helpers bundled through Vite. The
+dispatcher overlays `cebu-city-barangays.geojson`,
 `cebu-city-osm-roads.geojson`, `cebu-city-osm-landmarks.geojson`, and
-`cebu-city-osm-emergency-facilities.geojson`.
+`cebu-city-osm-emergency-facilities.geojson` from `public/maps/`.
 
-No remote tile URLs, paid map APIs, API keys, geocoding services, or external
-map APIs are required. Incidents render as stable markers with custom popup
-cards; hazards render as orange markers; barangay boundaries and dashed routes
-use feature-level styling. Markers use stored latitude and longitude values,
-and each incident's stored impact radius is rendered as a local circle. The
-coordinate-grid fallback remains available when local GeoJSON data is missing.
+Dispatcher incidents are no longer read from the demonstration
+`public/maps/incidents.geojson` file. The authenticated
+`GET /dispatcher/map/incidents` route creates GeoJSON from current database
+records that have coordinates. Status-colored markers, impact-radius polygons,
+popup summaries, and incident-detail links use that feed. The incident-details
+mini-map filters the same feed to the selected incident.
+
+No remote tile URL, paid map API, API key, or geocoding service is required.
+The configured local TileServer process must be running for the detailed
+background style; application-owned GeoJSON overlays are served directly by
+Laravel's public assets.
 
 ## Phase 2 interface consistency
 

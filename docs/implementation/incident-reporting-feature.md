@@ -65,9 +65,9 @@ dispatcher judgment or an official emergency assessment.
 
 The incident record stores latitude, longitude, and impact radius independently
 of map rendering. The approved fallback for this backend task is a local
-coordinate grid served by the application; it requires no external tiles or
-network access. A packaged local Leaflet/basemap may be added by Task 3 under a
-documented `public/maps/` path. Remote tile URLs, CDNs, geocoding services, and
+MapLibre basemap served by the local TileServer process, with application-owned
+GeoJSON overlays under the documented `public/maps/` path. Remote tile URLs,
+CDNs, geocoding services, and
 external map APIs are not permitted.
 
 ## Requirement mapping

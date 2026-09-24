@@ -1,357 +1,224 @@
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { addBarangayLayer } from './map/barangay-layer';
+import {
+    addLocalMapControls, createLocalMap, escapeHtml, featureBounds, featureName,
+    loadGeoJson, loadLocalMapDatasets, maplibregl, radiusPolygon,
+} from './map/local-map';
 
-const PHILIPPINES = {
-    center: [10.3157, 123.8854], // Center on Cebu City
-    bounds: L.latLngBounds([4.5, 116.0], [21.5, 127.5]),
-    initialZoom: 12,
-};
-
-const localFeatureLabels = {
-    boundary: 'Service area',
-    road: 'Road',
-    landmark: 'Landmark',
-    hazard: 'Hazard',
+const STATUS_COLORS = {
+    Reported: '#dc2626', Received: '#d97706', Dispatched: '#16a34a', Completed: '#64748b',
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-resqlink-map]').forEach((wrapper) => initializeMap(wrapper));
+    document.querySelectorAll('[data-resqlink-map]').forEach(initializeMap);
 });
 
 async function initializeMap(wrapper) {
-    const mapElement = wrapper.querySelector('.resqlink-map');
-    const messageElement = wrapper.querySelector('[data-map-message]');
-    const searchInput = wrapper.querySelector('.map-search-box input');
-    const map = L.map(mapElement, {
-        maxBounds: PHILIPPINES.bounds,
-        maxBoundsViscosity: 0.75,
-        minZoom: 5,
-        maxZoom: 18,
-        zoomControl: false,
-        attributionControl: false,
-        scrollWheelZoom: true,
-        doubleClickZoom: true,
-        zoomSnap: 0.25,
-        worldCopyJump: false,
-        preferCanvas: true,
-    }).setView(PHILIPPINES.center, PHILIPPINES.initialZoom);
+    const message = wrapper.querySelector('[data-map-message]');
+    const map = createLocalMap(wrapper.querySelector('.resqlink-map'));
+    addLocalMapControls(map, 'bottom-right');
+    map.on('error', () => showMessage(message, 'The local map background is unavailable. Check the local tile server.', true));
 
-    map.__resqlinkStatus = 'all';
-    map.__resqlinkMarkers = [];
-    map.__resqlinkLocalFeatures = [];
+    const datasetsPromise = loadLocalMapDatasets((name) => {
+        showMessage(message, `${formatName(name)} map data is unavailable.`, true);
+    });
 
-    applyBaseLayer(map);
-    bindFilterChips(map, wrapper);
+    map.on('load', async () => {
+        const datasets = await datasetsPromise;
+        addReferenceLayers(map, datasets);
+        bindSearch(map, wrapper, datasets);
 
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-    L.control.scale({ metric: true, imperial: false, position: 'bottomleft' }).addTo(map);
-
-    const barangayManager = await addBarangayLayer(map);
-    map.__resqlinkBarangays = barangayManager;
-
-    const localFeatures = await addLocalFeatures(map);
-    map.__resqlinkLocalFeatures = localFeatures;
-
-    bindMapSearch(map, searchInput, barangayManager);
-    const markers = await loadLocalIncidents(map, messageElement);
-    map.__resqlinkMarkers = markers;
-    applyMarkerFilter(map, map.__resqlinkStatus);
-
-    fitMapView(map, wrapper, markers, barangayManager, localFeatures);
-
-    map.on('click', (event) => showLocationPopup(map, event.latlng, localFeatures, barangayManager));
-}
-
-function fitMapView(map, wrapper, markers, barangayManager, localFeatures) {
-    const focusLat = parseFloat(wrapper.dataset.focusLat);
-    const focusLng = parseFloat(wrapper.dataset.focusLng);
-
-    if (Number.isFinite(focusLat) && Number.isFinite(focusLng)) {
-        map.setView([focusLat, focusLng], 15);
-        return;
-    }
-
-    const fitTargets = markers.length > 0
-        ? markers
-        : (barangayManager.layer ? [barangayManager.layer] : localFeatures.map((f) => f.layer).filter(Boolean));
-
-    if (fitTargets.length > 0) {
-        const bounds = L.featureGroup(fitTargets).getBounds();
-        if (bounds.isValid()) {
-            map.fitBounds(bounds.pad(0.12), { maxZoom: 15, animate: true });
-        }
-    }
-}
-
-function applyBaseLayer(map) {
-    map.getContainer().classList.add('map-grid');
-}
-
-function bindMapSearch(map, searchInput, barangayManager) {
-    if (!searchInput) return;
-
-    searchInput.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
-
-        const query = searchInput.value.trim();
-        if (!query) return;
-
-        const matchedBarangays = barangayManager?.search(query) || [];
-        if (matchedBarangays.length > 0) {
-            const match = matchedBarangays[0];
-            map.fitBounds(match.layer.getBounds().pad(0.15), { maxZoom: 16, animate: true });
-            match.layer.openPopup();
-            return;
-        }
-
-        const normalized = query.toLowerCase();
-        const match = map.__resqlinkLocalFeatures
-            .map((feature) => ({
-                ...feature,
-                score: feature.name.toLowerCase() === normalized ? 100 : feature.name.toLowerCase().includes(normalized) ? 50 : 0,
-            }))
-            .filter((feature) => feature.score > 0)
-            .sort((first, second) => second.score - first.score)[0];
-
-        if (!match) {
-            showMessage(searchInput.closest('[data-resqlink-map]')?.querySelector('[data-map-message]'), 'No matching barangay or place found.', true);
-            return;
-        }
-
-        const bounds = typeof match.layer.getBounds === 'function'
-            ? match.layer.getBounds()
-            : L.latLngBounds([match.layer.getLatLng()]);
-        map.fitBounds(bounds.pad(0.35), { maxZoom: 16, animate: true });
-        match.layer.openPopup();
+        const incidents = await loadIncidents(wrapper, message);
+        const visibleIncidents = selectIncidentFeatures(incidents, wrapper.dataset.focusIncidentId);
+        addIncidentLayers(map, visibleIncidents);
+        bindIncidentPopups(map);
+        bindStatusFilters(map, wrapper);
+        setInitialView(map, wrapper, visibleIncidents, datasets.barangays);
+        bindMapInspection(map);
     });
 }
 
-function bindFilterChips(map, wrapper) {
-    const chips = wrapper.querySelectorAll('[data-map-filter]');
-    if (!chips.length) return;
+function addReferenceLayers(map, datasets) {
+    addGeoJsonLayer(map, 'dispatcher-roads', datasets.roads, 'line', {
+        'line-color': '#64748b', 'line-opacity': 0.55, 'line-width': 1.2,
+    });
+    addGeoJsonLayer(map, 'dispatcher-barangay-fill', datasets.barangays, 'fill', {
+        'fill-color': '#2563eb',
+        'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.12, 0],
+    }, true);
+    addGeoJsonLayer(map, 'dispatcher-barangay-outline', datasets.barangays, 'line', {
+        'line-color': '#1d4ed8',
+        'line-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.25],
+        'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2.5, 1],
+    }, true);
+    addGeoJsonLayer(map, 'dispatcher-landmarks', datasets.landmarks, 'circle', {
+        'circle-radius': 3, 'circle-color': '#f59e0b', 'circle-opacity': 0.65,
+        'circle-stroke-color': '#64748b', 'circle-stroke-width': 1,
+    });
+    addGeoJsonLayer(map, 'dispatcher-facilities', datasets.facilities, 'circle', {
+        'circle-radius': 7, 'circle-color': '#2563eb', 'circle-opacity': 0.78,
+        'circle-stroke-color': '#fff', 'circle-stroke-width': 2,
+    });
+    bindBarangayHover(map);
+}
 
-    chips.forEach((chip) => {
-        chip.addEventListener('click', () => {
-            const selectedFilter = chip.dataset.mapFilter || 'all';
-            map.__resqlinkStatus = selectedFilter;
+function addGeoJsonLayer(map, id, data, type, paint, generateId = false) {
+    if (!data) return;
+    const sourceId = id.includes('barangay') ? 'dispatcher-barangays' : id;
+    if (!map.getSource(sourceId)) map.addSource(sourceId, { type: 'geojson', data, generateId });
+    map.addLayer({ id, source: sourceId, type, paint });
+}
 
-            chips.forEach((button) => button.classList.toggle('active', button === chip));
-            applyMarkerFilter(map, selectedFilter);
+function bindBarangayHover(map) {
+    let hoveredId = null;
+    const layers = ['dispatcher-barangay-fill', 'dispatcher-barangay-outline'];
+    const clear = () => {
+        if (hoveredId !== null) map.setFeatureState({ source: 'dispatcher-barangays', id: hoveredId }, { hover: false });
+        hoveredId = null;
+        map.getCanvas().style.cursor = '';
+    };
+    layers.forEach((layer) => {
+        map.on('mousemove', layer, (event) => {
+            clear();
+            hoveredId = event.features[0]?.id ?? null;
+            if (hoveredId !== null) map.setFeatureState({ source: 'dispatcher-barangays', id: hoveredId }, { hover: true });
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', layer, clear);
+    });
+}
+
+async function loadIncidents(wrapper, message) {
+    try {
+        const incidents = await loadGeoJson(wrapper.dataset.incidentsUrl);
+        if (!incidents.features?.length) showMessage(message, 'No reported incidents have map coordinates yet.', false);
+        return incidents;
+    } catch (error) {
+        showMessage(message, 'Incident locations could not be loaded.', true);
+        console.error('Unable to load dispatcher incidents.', error);
+        return { type: 'FeatureCollection', features: [] };
+    }
+}
+
+function selectIncidentFeatures(collection, focusIncidentId) {
+    if (!focusIncidentId) return collection;
+    return {
+        ...collection,
+        features: collection.features.filter((feature) => String(feature.properties?.id) === String(focusIncidentId)),
+    };
+}
+
+function addIncidentLayers(map, incidents) {
+    const radiusFeatures = incidents.features
+        .filter((feature) => Number(feature.properties?.impact_radius) > 0)
+        .map((feature) => ({
+            ...radiusPolygon({ lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }, Number(feature.properties.impact_radius)),
+            properties: { status: feature.properties.status },
+        }));
+
+    map.addSource('dispatcher-impact-radii', {
+        type: 'geojson', data: { type: 'FeatureCollection', features: radiusFeatures },
+    });
+    map.addLayer({
+        id: 'dispatcher-impact-radii', source: 'dispatcher-impact-radii', type: 'fill',
+        paint: { 'fill-color': statusColorExpression(), 'fill-opacity': 0.16 },
+    });
+    map.addSource('dispatcher-incidents', { type: 'geojson', data: incidents });
+    map.addLayer({
+        id: 'dispatcher-incidents', source: 'dispatcher-incidents', type: 'circle',
+        paint: {
+            'circle-radius': 9, 'circle-color': statusColorExpression(),
+            'circle-stroke-color': '#fff', 'circle-stroke-width': 3,
+        },
+    });
+}
+
+function statusColorExpression() {
+    return ['match', ['get', 'status'],
+        'Reported', STATUS_COLORS.Reported,
+        'Received', STATUS_COLORS.Received,
+        'Dispatched', STATUS_COLORS.Dispatched,
+        'Completed', STATUS_COLORS.Completed,
+        '#2563eb'];
+}
+
+function bindIncidentPopups(map) {
+    map.on('mouseenter', 'dispatcher-incidents', () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', 'dispatcher-incidents', () => { map.getCanvas().style.cursor = ''; });
+    map.on('click', 'dispatcher-incidents', (event) => {
+        event.originalEvent.cancelBubble = true;
+        const feature = event.features[0];
+        new maplibregl.Popup({ closeButton: true, className: 'resqlink-incident-popup' })
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(incidentPopup(feature.properties))
+            .addTo(map);
+    });
+}
+
+function incidentPopup(incident) {
+    return `<div class="resqlink-popup-card">
+        <div class="resqlink-popup-title">${escapeHtml(incident.reference)} (${escapeHtml(incident.status)})</div>
+        <div class="resqlink-popup-reporter">Reporter: ${escapeHtml(incident.reporter)}</div>
+        <div class="resqlink-popup-category">${escapeHtml(incident.category)} · ${escapeHtml(incident.barangay)}</div>
+        <div class="resqlink-popup-members">Affected persons: ${escapeHtml(incident.affected_population)}</div>
+        <div><a href="${escapeHtml(incident.detail_url)}">Open incident details</a></div>
+    </div>`;
+}
+
+function bindStatusFilters(map, wrapper) {
+    wrapper.querySelectorAll('[data-map-filter]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const status = button.dataset.mapFilter;
+            wrapper.querySelectorAll('[data-map-filter]').forEach((item) => item.classList.toggle('active', item === button));
+            const filter = status === 'all' ? null : ['==', ['get', 'status'], status];
+            map.setFilter('dispatcher-incidents', filter);
+            map.setFilter('dispatcher-impact-radii', filter);
         });
     });
 }
 
-function applyMarkerFilter(map, filter) {
-    if (!Array.isArray(map.__resqlinkMarkers)) return;
-
-    const normalizedFilter = String(filter || 'all').toLowerCase();
-    map.__resqlinkMarkers.forEach((marker) => {
-        const status = String(marker.__resqlinkStatus || 'Reported').toLowerCase();
-        const shouldShow = normalizedFilter === 'all' || status === normalizedFilter;
-        const radius = marker.__resqlinkRadius;
-
-        if (shouldShow) {
-            marker.addTo(map);
-            radius?.addTo(map);
-        } else {
-            map.removeLayer(marker);
-            if (radius) map.removeLayer(radius);
-        }
+function bindSearch(map, wrapper, datasets) {
+    const input = wrapper.querySelector('.map-search-box input');
+    input?.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        const query = input.value.trim().toLowerCase();
+        const features = [...(datasets.barangays?.features || []), ...(datasets.landmarks?.features || [])];
+        const match = features.find((feature) => featureName(feature).toLowerCase() === query)
+            || features.find((feature) => featureName(feature).toLowerCase().includes(query));
+        const bounds = featureBounds(match);
+        if (bounds) map.fitBounds(bounds, { padding: 45, maxZoom: 16 });
+        else showMessage(wrapper.querySelector('[data-map-message]'), 'No matching barangay or landmark was found.', true);
     });
 }
 
-async function addLocalFeatures(map) {
-    try {
-        const [contextData, boundaryData, hazardData] = await Promise.all([
-            fetchLocalGeoJson('/maps/resqlink-map.geojson'),
-            fetchLocalGeoJson('/maps/boundaries.geojson'),
-            fetchLocalGeoJson('/maps/hazards.geojson'),
-        ]);
-        const localFeatures = [];
-
-        const roads = L.geoJSON(contextData, {
-            filter: (feature) => feature.properties?.kind === 'road',
-            style: { color: '#CBD5E1', opacity: 0.8, weight: 4 },
-            onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Road'),
-        }).addTo(map);
-        localFeatures.push(...collectLocalFeatures(roads, 'road'));
-
-        const boundaries = L.geoJSON(boundaryData, {
-            style: (feature) => ({
-                color: feature.properties?.color || '#7C3AED',
-                dashArray: feature.properties?.dashed ? '7 7' : undefined,
-                fill: false,
-                opacity: 0.72,
-                weight: 2,
-            }),
-            onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Boundary'),
-        }).addTo(map);
-        localFeatures.push(...collectLocalFeatures(boundaries, 'boundary'));
-
-        const hazards = L.geoJSON(hazardData, {
-            pointToLayer: (feature, latlng) => L.marker(latlng, { icon: buildHazardIcon(), keyboard: false }),
-            onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Hazard'),
-        }).addTo(map);
-        localFeatures.push(...collectLocalFeatures(hazards, 'hazard'));
-
-        const landmarks = L.geoJSON(contextData, {
-            filter: (feature) => feature.properties?.kind === 'landmark',
-            pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
-                color: '#475569',
-                fillColor: '#F59E0B',
-                fillOpacity: 1,
-                radius: 6,
-                weight: 2,
-            }),
-            onEachFeature: (feature, layer) => bindFeaturePopup(layer, feature, 'Landmark'),
-        }).addTo(map);
-        localFeatures.push(...collectLocalFeatures(landmarks, 'landmark'));
-
-        return localFeatures;
-    } catch {
-        map.getContainer().classList.add('map-grid');
-        return [];
+function setInitialView(map, wrapper, incidents, barangays) {
+    const focusLat = Number(wrapper.dataset.focusLat);
+    const focusLng = Number(wrapper.dataset.focusLng);
+    if (Number.isFinite(focusLat) && Number.isFinite(focusLng)) {
+        map.flyTo({ center: [focusLng, focusLat], zoom: 15 });
+        return;
     }
-}
-
-async function fetchLocalGeoJson(path) {
-    const response = await fetch(path, { headers: { Accept: 'application/geo+json' } });
-    if (!response.ok) throw new Error(`Local map data unavailable: ${path}`);
-    return response.json();
-}
-
-function collectLocalFeatures(layerGroup, kind) {
-    return layerGroup.getLayers()
-        .filter((layer) => layer.feature?.properties?.name || layer.feature?.properties?.boundaryName)
-        .map((layer) => ({
-            name: layer.feature.properties.name || layer.feature.properties.boundaryName,
-            kind,
-            layer,
-        }));
-}
-
-function showLocationPopup(map, latlng, localFeatures, barangayManager) {
-    const matchedBarangay = barangayManager?.findBarangay(latlng);
-    const barangayText = matchedBarangay
-        ? `<strong>Barangay: ${escapeHtml(matchedBarangay.name)}</strong><br><span style="color:#64748b;font-size:11px;">NAMRIA: ${escapeHtml(matchedBarangay.code)}</span><br>`
-        : '<span style="color:#64748b;">Barangay: Outside Cebu City boundary</span><br>';
-
-    const nearby = localFeatures
-        .map((feature) => ({
-            ...feature,
-            distance: getFeatureDistance(latlng, feature.layer),
-        }))
-        .filter((feature) => Number.isFinite(feature.distance))
-        .sort((first, second) => first.distance - second.distance);
-
-    const nearest = nearby[0];
-    const nearestLabel = nearest
-        ? `Nearest feature: <strong>${escapeHtml(nearest.name)}</strong> (${localFeatureLabels[nearest.kind] || nearest.kind})<br>`
-        : '';
-
-    map.openPopup(
-        `<div class="resqlink-popup-card">
-            ${barangayText}
-            ${nearestLabel}
-            <span style="font-size:11px;color:#64748b;">Coordinates: ${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}</span>
-        </div>`,
-        latlng,
-    );
-}
-
-function getFeatureDistance(latlng, layer) {
-    if (!layer) return Number.POSITIVE_INFINITY;
-    if (typeof layer.getLatLng === 'function') return latlng.distanceTo(layer.getLatLng());
-    if (typeof layer.getBounds === 'function') {
-        const bounds = layer.getBounds();
-        if (bounds && bounds.isValid()) return latlng.distanceTo(bounds.getCenter());
+    const coordinates = incidents.features.map((feature) => feature.geometry.coordinates);
+    if (coordinates.length) {
+        const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+        map.fitBounds(bounds, { padding: 60, maxZoom: 15 });
+        return;
     }
-    return Number.POSITIVE_INFINITY;
-}
-
-function bindFeaturePopup(layer, feature, type) {
-    const name = feature.properties?.name || feature.properties?.boundaryName || type;
-    layer.bindPopup(`<strong>${escapeHtml(name)}</strong><br>${type} in the local map dataset.`);
-}
-
-async function loadLocalIncidents(map, messageElement) {
-    try {
-        const data = await fetchLocalGeoJson('/maps/incidents.geojson');
-        const points = data.features.map((feature) => ({
-            ...feature.properties,
-            latitude: feature.geometry.coordinates[1],
-            longitude: feature.geometry.coordinates[0],
-        }));
-        if (points.length === 0) showMessage(messageElement, 'No local incidents are available yet.', false);
-        return points.flatMap((point) => renderMarker(map, point));
-    } catch {
-        showMessage(messageElement, 'Local incident data is temporarily unavailable.', true);
-        return [];
-    }
-}
-
-function renderMarker(map, point) {
-    if (!Number.isFinite(Number(point.latitude)) || !Number.isFinite(Number(point.longitude))) return [];
-
-    const status = normalizeStatus(point.status);
-    const coordinates = [Number(point.latitude), Number(point.longitude)];
-    const marker = L.marker(coordinates, {
-        icon: buildIncidentIcon(),
-        keyboard: false,
-    }).addTo(map);
-    marker.__resqlinkStatus = status;
-    marker.bindPopup(buildIncidentPopup(point, status), { className: 'resqlink-incident-popup', closeButton: false, closeOnClick: true, autoPan: true });
-    marker.on('popupopen', () => {
-        marker.getPopup()?.getElement()?.querySelector('[data-popup-close]')?.addEventListener('click', () => map.closePopup());
+    const bounds = featureBounds({
+        geometry: { coordinates: barangays?.features?.map((feature) => feature.geometry.coordinates) || [] },
     });
-
-    if (Number(point.impact_radius) > 0) {
-        marker.__resqlinkRadius = L.circle(coordinates, {
-            color: '#22C55E',
-            fillColor: '#22C55E',
-            fillOpacity: 0.15,
-            radius: Number(point.impact_radius),
-            weight: 2,
-        }).addTo(map);
-    }
-
-    return [marker];
+    if (bounds) map.fitBounds(bounds, { padding: 35, maxZoom: 13 });
 }
 
-function normalizeStatus(status) {
-    const normalizedStatus = String(status || 'Reported').trim().toLowerCase();
-    return normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
-}
-
-function buildIncidentIcon() {
-    return L.divIcon({
-        className: 'resqlink-incident-icon',
-        html: '<span></span>',
-        iconSize: [18, 18],
-        iconAnchor: [9, 9],
-        popupAnchor: [0, -10],
+function bindMapInspection(map) {
+    map.on('click', (event) => {
+        if (map.queryRenderedFeatures(event.point, { layers: ['dispatcher-incidents'] }).length) return;
+        const barangay = map.queryRenderedFeatures(event.point, { layers: ['dispatcher-barangay-fill'] })[0];
+        const name = barangay ? featureName(barangay) : 'Outside mapped Cebu City barangays';
+        new maplibregl.Popup()
+            .setLngLat(event.lngLat)
+            .setHTML(`<strong>${escapeHtml(name)}</strong><br>${event.lngLat.lat.toFixed(5)}, ${event.lngLat.lng.toFixed(5)}`)
+            .addTo(map);
     });
-}
-
-function buildHazardIcon() {
-    return L.divIcon({
-        className: 'resqlink-hazard-icon',
-        html: '<span></span>',
-        iconSize: [18, 18],
-        iconAnchor: [9, 9],
-    });
-}
-
-function buildIncidentPopup(point, status) {
-    return `<div class="resqlink-popup-card">
-        <button type="button" class="resqlink-popup-close" data-popup-close aria-label="Close incident popup">✕</button>
-        <div class="resqlink-popup-title">${escapeHtml(point.id || 'Incident')} (${escapeHtml(status)})</div>
-        <div class="resqlink-popup-reporter">Reporter: ${escapeHtml(point.reporter || 'Unknown')}</div>
-        <div class="resqlink-popup-category">Category: ${escapeHtml(point.category || 'Unspecified')}</div>
-        <div class="resqlink-popup-category">Barangay: ${escapeHtml(point.barangay || 'Unknown')}</div>
-        <div class="resqlink-popup-members">Members inside: ${escapeHtml(point.membersInside ?? 0)}</div>
-    </div>`;
 }
 
 function showMessage(element, text, isError) {
@@ -361,12 +228,6 @@ function showMessage(element, text, isError) {
     element.classList.toggle('error', isError);
 }
 
-function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, (character) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;',
-    }[character]));
+function formatName(value) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
 }

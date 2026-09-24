@@ -1,27 +1,17 @@
-import maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
-
-const CENTER = [123.8854, 10.3157];
-const STYLE_URL = window.RESQLINK_LOCAL_MAP_STYLE_URL || 'http://localhost:8080/styles/basic-preview/style.json';
-const DATASETS = {
-    barangays: '/maps/cebu-city-barangays.geojson',
-    roads: '/maps/cebu-city-osm-roads.geojson',
-    landmarks: '/maps/cebu-city-osm-landmarks.geojson',
-    facilities: '/maps/cebu-city-osm-emergency-facilities.geojson',
-};
+import {
+    addLocalMapControls,
+    createLocalMap,
+    featureBounds,
+    loadLocalMapDatasets,
+    maplibregl,
+    radiusPolygon,
+} from './map/local-map';
 
 document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('[data-volunteer-map]').forEach(initializeMap));
 
 async function initializeMap(wrapper) {
-    const map = new maplibregl.Map({
-        container: wrapper.querySelector('[data-map-canvas]'),
-        style: STYLE_URL,
-        center: CENTER,
-        zoom: 13,
-        attributionControl: false,
-    });
-    map.addControl(new maplibregl.NavigationControl(), 'top-right');
-    map.addControl(new maplibregl.AttributionControl({ customAttribution: window.RESQLINK_LOCAL_MAP_ATTRIBUTION }), 'bottom-right');
+    const map = createLocalMap(wrapper.querySelector('[data-map-canvas]'));
+    addLocalMapControls(map);
 
     const datasetsPromise = loadDatasets(wrapper);
     map.on('load', async () => {
@@ -33,18 +23,10 @@ async function initializeMap(wrapper) {
 }
 
 async function loadDatasets(wrapper) {
-    const datasets = {};
-    for (const [name, url] of Object.entries(DATASETS)) {
-        try {
-            const response = await fetch(url, { headers: { Accept: 'application/geo+json' } });
-            if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-            datasets[name] = await response.json();
-        } catch (error) {
-            showMapError(wrapper, `${name} overlay unavailable.`);
-            console.error(`Unable to load volunteer ${name} overlay.`, error);
-        }
-    }
-    return datasets;
+    return loadLocalMapDatasets((name, error) => {
+        showMapError(wrapper, `${name} overlay unavailable.`);
+        console.error(`Unable to load volunteer ${name} overlay.`, error);
+    });
 }
 
 function addOverlayLayers(map, datasets) {
@@ -98,14 +80,6 @@ function bindBarangaySearch(map, wrapper, data) {
 function barangayName(feature) {
     const properties = feature.properties || {};
     return properties.ADM4_EN || properties.psgc_name || properties.name || properties.NAME || '';
-}
-
-function featureBounds(feature) {
-    const coordinates = [];
-    const visit = (value) => Array.isArray(value[0]) ? value.forEach(visit) : coordinates.push(value);
-    visit(feature.geometry?.coordinates || []);
-    if (!coordinates.length) return null;
-    return coordinates.reduce((bounds, coordinate) => bounds.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
 }
 
 function highlightBarangay(map, feature) {
@@ -276,17 +250,6 @@ function pointInPolygon([x, y], polygon) {
         if (intersects) inside = !inside;
     }
     return inside;
-}
-
-function radiusPolygon(position, radius) {
-    const points = [];
-    const latitudeFactor = 111320;
-    const longitudeFactor = 111320 * Math.cos((position.lat * Math.PI) / 180);
-    for (let index = 0; index <= 64; index += 1) {
-        const angle = (index / 64) * Math.PI * 2;
-        points.push([position.lng + (Math.cos(angle) * radius) / longitudeFactor, position.lat + (Math.sin(angle) * radius) / latitudeFactor]);
-    }
-    return { type: 'Feature', geometry: { type: 'Polygon', coordinates: [points] }, properties: {} };
 }
 
 function showMapError(wrapper, message) {

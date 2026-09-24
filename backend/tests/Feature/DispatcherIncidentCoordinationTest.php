@@ -17,14 +17,23 @@ class DispatcherIncidentCoordinationTest extends TestCase
     {
         $dispatcher = $this->userWithRole('dispatcher');
         $this->seedReferenceData();
-        $this->createIncident(['category' => 'Flood', 'barangay' => 'Lahug', 'severity' => 'Critical']);
+        $this->createIncident(['category' => 'Flood', 'barangay' => 'Lahug (Pob.)', 'severity' => 'Critical']);
         $this->createIncident(['category' => 'Fire', 'barangay' => 'Mabolo', 'severity' => 'Low']);
 
         $this->actingAs($dispatcher)->get(route('dispatcher.incidents.index'))
-            ->assertOk()->assertSee('Flood')->assertSee('Fire');
+            ->assertOk()
+            ->assertSee('Flood')
+            ->assertSee('Fire')
+            ->assertSee('<option value="Adlaon"></option>', false);
 
         $this->actingAs($dispatcher)->get(route('dispatcher.incidents.index', ['category' => 'Fire']))
-            ->assertOk()->assertSee('Mabolo')->assertDontSee('Lahug');
+            ->assertOk()->assertSee('Mabolo')->assertDontSee('Lahug (Pob.)');
+
+        $this->actingAs($dispatcher)->get(route('dispatcher.incidents.index', ['barangay' => 'Lahug (Pob.)']))
+            ->assertOk()->assertSee('Lahug (Pob.)')->assertDontSee('Mabolo');
+
+        $this->actingAs($dispatcher)->get(route('dispatcher.incidents.index', ['barangay' => 'Lahu']))
+            ->assertOk()->assertDontSee('Lahug (Pob.)')->assertDontSee('Mabolo');
     }
 
     public function test_dispatcher_can_view_details_and_map_shell(): void
@@ -37,6 +46,26 @@ class DispatcherIncidentCoordinationTest extends TestCase
             ->assertOk()->assertSee('Incident Summary')->assertSee('Lahug')->assertSee('80')->assertSee('metres');
         $this->actingAs($dispatcher)->get(route('dispatcher.map'))
             ->assertOk()->assertSee('data-resqlink-map', false)->assertDontSee('data-marker-endpoint', false);
+    }
+
+    public function test_dispatcher_map_feed_returns_database_incidents_as_geojson(): void
+    {
+        $dispatcher = $this->userWithRole('dispatcher');
+        $this->seedReferenceData();
+        $incident = $this->createIncident([
+            'latitude' => 10.3157,
+            'longitude' => 123.8854,
+            'impact_radius' => 300,
+        ]);
+
+        $this->actingAs($dispatcher)->getJson(route('dispatcher.map.incidents'))
+            ->assertOk()
+            ->assertJsonPath('type', 'FeatureCollection')
+            ->assertJsonPath('features.0.geometry.coordinates.0', 123.8854)
+            ->assertJsonPath('features.0.geometry.coordinates.1', 10.3157)
+            ->assertJsonPath('features.0.properties.id', $incident->id)
+            ->assertJsonPath('features.0.properties.status', 'Reported')
+            ->assertJsonPath('features.0.properties.impact_radius', 300.0);
     }
 
     public function test_valid_status_update_records_dispatcher_history(): void
@@ -71,6 +100,7 @@ class DispatcherIncidentCoordinationTest extends TestCase
         $volunteer = $this->userWithRole('volunteer');
         $this->actingAs($volunteer)->get(route('dispatcher.dashboard'))->assertForbidden();
         $this->actingAs($volunteer)->get(route('dispatcher.map'))->assertForbidden();
+        $this->actingAs($volunteer)->getJson(route('dispatcher.map.incidents'))->assertForbidden();
         $this->actingAs($this->userWithRole('dispatcher'))->get(route('dispatcher.dashboard'))
             ->assertOk()->assertSee('Completed Incidents')->assertSee('1');
     }

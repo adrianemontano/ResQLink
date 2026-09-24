@@ -51,6 +51,7 @@ Route::middleware(['auth', 'role:dispatcher'])
         Route::get('/incidents/{incident}', [DispatcherIncidentController::class, 'show'])->name('incidents.show');
         Route::patch('/incidents/{incident}/status', [DispatcherIncidentController::class, 'updateStatus'])->name('incidents.status');
         Route::get('/map', [DispatcherIncidentController::class, 'map'])->name('map');
+        Route::get('/map/incidents', [DispatcherIncidentController::class, 'mapIncidents'])->name('map.incidents');
     });
 
 Route::middleware(['auth', 'role:volunteer'])

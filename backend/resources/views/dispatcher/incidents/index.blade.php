@@ -26,7 +26,19 @@
             </select>
         </label>
         <label>Barangay
-            <input type="search" name="barangay" value="{{ request('barangay') }}" placeholder="Search barangay">
+            <input
+                type="search"
+                name="barangay"
+                value="{{ request('barangay') }}"
+                placeholder="Search or select barangay"
+                list="dispatcher-barangay-options"
+                autocomplete="off"
+            >
+            <datalist id="dispatcher-barangay-options">
+                @foreach ($barangays as $barangay)
+                    <option value="{{ $barangay }}"></option>
+                @endforeach
+            </datalist>
         </label>
         <button type="submit">Filter</button>
         <a href="{{ route('dispatcher.incidents.index') }}">Clear</a>

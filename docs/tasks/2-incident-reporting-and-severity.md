@@ -21,8 +21,8 @@ and submit incident reports. These are development credentials only.
 ## Local map requirement
 
 Incident location selection and visualization must be designed for a local,
-offline-capable map. Use Leaflet with locally stored JavaScript, CSS, and map
-tile/data assets. Do not use OpenStreetMap or any other remote tile URL, CDN,
+offline-capable map. Use MapLibre with locally stored JavaScript, CSS, and map
+tile/data assets. Do not use any remote tile URL, CDN,
 geocoding service, or external map API. The incident record must still store
 latitude, longitude, and impact radius when the application has no internet
 connection.
@@ -57,7 +57,7 @@ panel. Do not add the prototype's mobile view to this plan.
 - GPS location capture.
 - Preliminary Incident Severity Assessment.
 - Incident data storage and validation.
-- Laravel business logic, REST API, MySQL, and Leaflet-compatible map data.
+- Laravel business logic, REST API, MySQL, and GeoJSON/MapLibre-compatible map data.
 
 ## Scope
 

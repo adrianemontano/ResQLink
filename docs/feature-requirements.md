@@ -89,7 +89,7 @@ requirements, module boundaries, and workflow models are documented.
   and deployment diagrams for the approved scope.
 - `DESIGN-003` Design relationships among users, roles, volunteers, incidents,
   incident history, and generated reports.
-- `DESIGN-004` Design Leaflet marker and adjustable impact-radius behavior.
+- `DESIGN-004` Design MapLibre marker and adjustable impact-radius behavior.
 - `DESIGN-005` Define API request and response contracts between Flutter and
   Laravel, including validation errors and submission confirmation.
 - `DESIGN-006` Map names to `naming-conventions.md`: Laravel resources use
@@ -105,7 +105,7 @@ architecture, and API contracts.
 
 - `SETUP-001` Configure the Laravel application and PHP 8.x environment.
 - `SETUP-002` Configure MySQL and database connection settings.
-- `SETUP-003` Configure Blade, Bootstrap 5, Leaflet.js, and Vite assets for the
+- `SETUP-003` Configure Blade, Bootstrap 5, MapLibre GL, and Vite assets for the
   web dashboard.
 - `SETUP-004` Create the Flutter application and HTTP/HTTPS API configuration.
 - `SETUP-005` Configure Git branches, GitHub collaboration, and documentation
@@ -168,7 +168,7 @@ REST API operations, and report generation are functional.
 - `WEB-DISPATCHER-003` Show incident details including category, volunteer,
   date/time, affected persons, location, barangay, landmark, radius, notes,
   severity, and status.
-- `WEB-DISPATCHER-004` Display active and historical incidents on a Leaflet map
+- `WEB-DISPATCHER-004` Display active and historical incidents on a MapLibre map
   with markers and impact-radius visualization.
 - `WEB-DISPATCHER-005` Allow authorized dispatchers to move an incident through
   Reported, Received, Dispatched, and Completed, with visible history.
@@ -193,7 +193,7 @@ tasks through role-protected, responsive dashboard pages.
 - `MOBILE-001` Allow an authenticated volunteer to log in and log out.
 - `MOBILE-002` Provide a validated incident form for category, barangay,
   nearest landmark, estimated affected persons, and optional notes.
-- `MOBILE-003` Allow the volunteer to select a location on a Leaflet-backed map,
+- `MOBILE-003` Allow the volunteer to select a location on a MapLibre-backed map,
   capture coordinates, and adjust the impact radius.
 - `MOBILE-004` Submit the incident report to the Laravel API over HTTP/HTTPS.
 - `MOBILE-005` Show clear loading, validation-error, failure, and successful
@@ -212,7 +212,7 @@ web dashboards into one working prototype.
 - `INTEGRATION-001` Verify volunteer login, report submission, persistence, and
   confirmation end to end.
 - `INTEGRATION-002` Verify submitted incidents appear in the dispatcher queue,
-  detail view, and Leaflet map.
+  detail view, and MapLibre map.
 - `INTEGRATION-003` Verify severity is calculated and used for queue ordering.
 - `INTEGRATION-004` Verify dispatcher status changes update the incident and
   append incident history.
@@ -280,7 +280,7 @@ panel evaluation.
 - `CROSS-002` Use Blade and Bootstrap 5 for dispatcher and admin web interfaces.
 - `CROSS-003` Use Flutter for the volunteer mobile application.
 - `CROSS-004` Use MySQL for centralized relational data storage.
-- `CROSS-005` Use Leaflet.js for map display, markers, coordinates, and impact
+- `CROSS-005` Use MapLibre GL for map display, markers, coordinates, and impact
   radius visualization.
 - `CROSS-006` Use Git and GitHub for version control, review, collaboration, and
   documentation history.
