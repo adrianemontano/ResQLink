@@ -11,13 +11,13 @@ class DashboardController extends Controller
     public function __invoke(): View
     {
         return view('dispatcher.dashboard', [
-            'activeIncidents' => Incident::query()->withReferenceLabels()->whereIn('incident_statuses.name', ['Reported', 'Received', 'Dispatched'])->count(),
-            'completedIncidents' => Incident::query()->withReferenceLabels()->where('incident_statuses.name', 'Completed')->count(),
-            'incidents' => Incident::query()->withReferenceLabels()
+            'activeIncidents' => Incident::query()->whereIn('status', ['Reported', 'Received', 'Dispatched'])->count(),
+            'completedIncidents' => Incident::query()->where('status', 'Completed')->count(),
+            'incidents' => Incident::query()
                 ->with('reporter')
-                ->whereIn('incident_statuses.name', ['Reported', 'Received', 'Dispatched'])
-                ->orderByRaw("FIELD(severity_levels.name, 'Critical', 'High', 'Moderate', 'Low')")
-                ->orderByRaw("FIELD(incident_statuses.name, 'Reported', 'Received', 'Dispatched')")
+                ->whereIn('status', ['Reported', 'Received', 'Dispatched'])
+                ->orderByRaw("CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END")
+                ->orderByRaw("CASE status WHEN 'Reported' THEN 1 WHEN 'Received' THEN 2 WHEN 'Dispatched' THEN 3 ELSE 4 END")
                 ->orderByDesc('reported_at')
                 ->limit(10)
                 ->get(),

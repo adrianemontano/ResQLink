@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('volunteer_documents', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('volunteer_profile_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('volunteer_profile_id')->constrained('volunteer_profiles')->cascadeOnDelete();
             $table->string('document_type');
             $table->string('file_path');
             $table->string('original_filename')->nullable();

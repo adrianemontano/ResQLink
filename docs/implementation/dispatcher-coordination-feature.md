@@ -24,21 +24,22 @@ The compatibility migration
 `severity_id`.
 
 ## Map source
-
-The map uses Leaflet bundled locally through Vite and local GeoJSON assets under
-`public/maps/`. The original `resqlink-map.geojson` contains an approximate
-service-area boundary, major-road lines, and landmark points. Additional local
-assets are prepared at `cebu-city-barangays.geojson`,
+ 
+The map uses Leaflet bundled locally through Vite and local GeoJSON datasets in
+`public/maps/`: `cebu-city-barangays.geojson` (80 Cebu City barangay administrative
+boundaries with hover highlighting, name and code tooltips/popups, search indexing,
+and spatial point-in-polygon lookup), `incidents.geojson`, `hazards.geojson`, and
+`boundaries.geojson`, with `resqlink-map.geojson` retained for local roads and
+landmarks. Additional local reference assets are prepared at
 `cebu-city-osm-roads.geojson`, `cebu-city-osm-landmarks.geojson`, and
-`cebu-city-osm-emergency-facilities.geojson`; these additional layers are not
-yet integrated into the map JavaScript. Markers use stored latitude and
-longitude values, and each incident's stored impact radius is rendered as a
-local circle. Marker selection opens the dispatcher incident detail page. The
-coordinate-grid fallback remains available when local GeoJSON data is missing.
+`cebu-city-osm-emergency-facilities.geojson`.
 
-The current JavaScript still uses remote CARTO tiles and Nominatim search, so
-the map is not fully offline despite the local GeoJSON assets. No paid map API
-or Google Maps layer is enabled.
+No remote tile URLs, paid map APIs, API keys, geocoding services, or external
+map APIs are required. Incidents render as stable markers with custom popup
+cards; hazards render as orange markers; barangay boundaries and dashed routes
+use feature-level styling. Markers use stored latitude and longitude values,
+and each incident's stored impact radius is rendered as a local circle. The
+coordinate-grid fallback remains available when local GeoJSON data is missing.
 
 ## Phase 2 interface consistency
 
@@ -54,6 +55,29 @@ dispatcher to verify the protected routes and status workflow. For a direct
 SQLite import of the two demo incidents, run the statements in
 `backend/database/sample-data/incidents.sql` after migrations and reference
 data seeding. The Laravel `SampleIncidentSeeder` remains the recommended
-cross-database option. It checks the columns available in the existing
-`incidents` table before inserting, so it remains safe for databases created
-from earlier compatible schemas.
+cross-database option.
+
+Automated coverage is provided in
+`tests/Feature/DispatcherIncidentCoordinationTest.php` and covers queue
+filtering, details, map rendering, valid and invalid status transitions,
+history persistence, completed visibility, and authorization. The focused
+suite passes with 5 tests and 24 assertions; the full suite passes with 19
+tests and 69 assertions.
+
+## Recommended next enhancements
+
+Manual browser acceptance was completed on 2026-09-09. The verified flow
+included Dispatcher login, dashboard counters and queue, category filtering,
+Clear, incident details, a Reported-to-Received status update with history,
+local map layers, custom popup close behavior, and map status filters.
+
+Recommended next enhancements:
+
+1. Add dispatcher assignment and presence indicators so the response owner is
+	visible separately from the dispatcher who changed status.
+2. Add polling or event-based refresh for active incidents when live
+	integration is approved.
+3. Add conflict handling for concurrent status updates.
+4. Add admin archive/report integration so archived records have an explicit
+	lifecycle state instead of relying only on Completed.
+5. Add audit logging for failed authorization and invalid transition attempts.
