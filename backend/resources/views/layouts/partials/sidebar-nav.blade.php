@@ -47,5 +47,20 @@
                 <span class="sidebar-label">Map View</span>
             </a>
         </div>
+    @elseif (auth()->user()->hasRole('volunteer'))
+        <div class="sidebar-section">
+            <div class="sidebar-section-label sidebar-label">Main</div>
+            <a class="sidebar-item {{ request()->routeIs('volunteer.dashboard') ? 'active' : '' }}" href="{{ route('volunteer.dashboard') }}">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span class="sidebar-label">Dashboard</span>
+            </a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label sidebar-label">Incidents</div>
+            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.*') ? 'active' : '' }}" href="{{ route('volunteer.incidents.create') }}">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                <span class="sidebar-label">Submit Incident</span>
+            </a>
+        </div>
     @endif
 </nav>

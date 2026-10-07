@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="sidebar-logo-sub sidebar-label">
-                    {{ auth()->user()->hasRole('admin') ? 'Admin Control Panel' : 'Dispatch Control Center' }}
+                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @else Volunteer Incident Reporting @endif
                 </div>
             </div>
 

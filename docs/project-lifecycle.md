@@ -146,7 +146,7 @@ Prepare the development environment.
 * Configure MySQL
 * Create Flutter project
 * Install Bootstrap
-* Install Leaflet
+* Install MapLibre GL
 * Configure development environments
 
 ## Deliverables

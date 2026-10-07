@@ -1,0 +1,8 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[123.893,10.333]},"properties":{"id":"INC-001","status":"Reported","reporter":"Sample Reporter","category":"Flood","membersInside":12}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[123.8912,10.3168]},"properties":{"id":"INC-002","status":"Dispatched","reporter":"Elena Ramos","category":"Fire / Rescue","membersInside":2}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[123.902,10.327]},"properties":{"id":"INC-003","status":"Received","reporter":"Marco Dela Cruz","category":"Medical Emergency","membersInside":6}}
+  ]
+}

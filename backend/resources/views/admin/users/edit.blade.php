@@ -48,5 +48,29 @@
                 </div>
             </form>
         </section>
+
+        @if ($managedUser->hasRole('volunteer') && $managedUser->volunteerProfile)
+            <section class="card">
+                <h2>Volunteer Documents</h2>
+                @forelse ($managedUser->volunteerProfile->documents as $document)
+                    <p>{{ ucwords(str_replace('_', ' ', $document->document_type)) }} — {{ $document->review_status }}</p>
+                @empty <p>No documents uploaded.</p> @endforelse
+                <p>Verification: {{ $managedUser->volunteerProfile->verification_status }}</p>
+                <form method="POST" action="{{ route('admin.users.verification', $managedUser) }}">
+                    @csrf @method('PATCH')
+                    <button type="submit">{{ $managedUser->volunteerProfile->verification_status === 'verified' ? 'Mark Pending' : 'Verify Volunteer' }}</button>
+                </form>
+                <form method="POST" action="{{ route('admin.users.documents.store', $managedUser) }}" enctype="multipart/form-data">
+                    @csrf
+                    <select name="document_type" required>
+                        <option value="endorsement_letter">Endorsement Letter</option>
+                        <option value="barangay_clearance">Barangay Clearance</option>
+                        <option value="certificate_of_residency">Certificate of Residency</option>
+                    </select>
+                    <input type="file" name="document" accept=".pdf,.jpg,.jpeg,.png" required>
+                    <button type="submit">Upload Document</button>
+                </form>
+            </section>
+        @endif
     </div>
 @endsection

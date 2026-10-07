@@ -1,0 +1,8 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[123.887,10.322]},"properties":{"kind":"hazard","name":"Flood-prone crossing"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[123.899,10.337]},"properties":{"kind":"hazard","name":"Landslide risk zone"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[123.907,10.304]},"properties":{"kind":"hazard","name":"High-water area"}}
+  ]
+}

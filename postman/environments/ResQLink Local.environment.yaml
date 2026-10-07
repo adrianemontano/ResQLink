@@ -1,0 +1,4 @@
+name: ResQLink Local
+values:
+  - key: base_url
+    value: ''

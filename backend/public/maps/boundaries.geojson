@@ -1,0 +1,8 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[123.87,10.285],[123.91,10.285],[123.91,10.345],[123.87,10.345],[123.87,10.285]]]},"properties":{"boundaryName":"Cebu City service area","color":"#7C3AED"}},
+    {"type":"Feature","geometry":{"type":"LineString","coordinates":[[123.875,10.302],[123.885,10.312],[123.898,10.325],[123.908,10.341]]},"properties":{"boundaryName":"Response zone divider","color":"#2563EB","dashed":true}},
+    {"type":"Feature","geometry":{"type":"LineString","coordinates":[[123.875,10.338],[123.89,10.326],[123.905,10.31]]},"properties":{"boundaryName":"Operations route","color":"#F97316","dashed":true}}
+  ]
+}

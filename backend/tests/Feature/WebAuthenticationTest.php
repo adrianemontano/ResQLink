@@ -52,18 +52,18 @@ class WebAuthenticationTest extends TestCase
         $this->assertAuthenticatedAs($dispatcher);
     }
 
-    public function test_volunteer_cannot_log_in_through_web(): void
+    public function test_verified_volunteer_can_log_in_through_web(): void
     {
         $volunteer = $this->createUser('volunteer', ['password' => 'Volunteer@12345']);
+        $volunteer->volunteerProfile()->create(['verification_status' => 'verified']);
 
-        $response = $this->from('/login')->post('/login', [
+        $response = $this->post('/login', [
             'login' => $volunteer->username,
             'password' => 'Volunteer@12345',
         ]);
 
-        $response->assertRedirect('/login');
-        $response->assertSessionHasErrors('login');
-        $this->assertGuest();
+        $response->assertRedirect(route('volunteer.dashboard'));
+        $this->assertAuthenticatedAs($volunteer);
     }
 
     public function test_dispatcher_cannot_access_admin_dashboard(): void
