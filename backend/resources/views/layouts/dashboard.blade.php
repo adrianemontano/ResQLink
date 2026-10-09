@@ -46,6 +46,10 @@
                 <div class="alert success">{{ session('status') }}</div>
             @endif
 
+            @if ($errors->has('account'))
+                <div class="alert error">{{ $errors->first('account') }}</div>
+            @endif
+
             @yield('content')
         </main>
     </div>

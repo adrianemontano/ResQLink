@@ -17,7 +17,7 @@
                     <th>Username</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th>Status</th>
+                    <th>Account</th>
                     <th>Actions</th>
                 </tr>
             </thead>

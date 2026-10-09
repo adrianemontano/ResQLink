@@ -331,9 +331,16 @@ tbody tr:hover {
     color: var(--red-dark);
 }
 
-.badge.status-pending {
+.badge.status-pending,
+.badge.status-rejected {
     background: var(--red-light);
     color: var(--red-dark);
+}
+
+.badge.status-approved,
+.badge.status-verified {
+    background: var(--green-light);
+    color: #166534;
 }
 
 .badge.status-reported {
