@@ -1,7 +1,5 @@
 # Note from Jassy — Remaining Test Failures for Tasks 2 and 3
 
-Hello Angela and Adriane,
-
 Task 1 (login, roles, user management, and volunteer documents) is now complete. All
 Task 1 tests are passing, and the work has been pushed to the `jassy` branch.
 
@@ -61,8 +59,6 @@ Then run the tests with:
 ```bash
 DB_CONNECTION=mysql DB_DATABASE=resqlink_test php artisan test
 ```
-
-If you have any questions or need clarification, please let me know. Thank you.
 
 — Jassy
 
