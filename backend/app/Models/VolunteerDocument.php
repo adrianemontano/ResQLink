@@ -33,7 +33,7 @@ class VolunteerDocument extends Model
 
     public function volunteerProfile(): BelongsTo
     {
-        return $this->belongsTo(VolunteerProfile::class);
+        return $this->belongsTo(VolunteerProfile::class, 'volunteer_profile_id', 'user_id');
     }
 
     public function reviewer(): BelongsTo

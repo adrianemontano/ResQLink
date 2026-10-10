@@ -57,7 +57,52 @@ only served through the admin download route. Metadata saved: `file_path`,
 and on `POST /api/incidents`.
 
 ### Verification status
-Code was reviewed and automated tests were written in
-`backend/tests/Feature/AdminUserAccessTest.php`. **The tests have not been run yet**
-(PHP is not installed on the author's machine). Do not mark TASK1 complete until
-`php artisan test` passes.
+Task 1 was verified against `backend/tests/Feature/AdminUserAccessTest.php`. All
+**7** admin user-access tests pass (38 assertions). Three blocking defects were
+found and fixed during verification:
+
+1. **`RoleSeeder` failed on every run.** The `roles` table has a NOT NULL, unique
+   `slug` column, but `Role::$fillable` omitted `slug`, so the seeder value was
+   discarded and the insert failed — which broke every test that seeds roles.
+   Fix: added `slug` to `Role` `#[Fillable]`.
+2. **Volunteer document relationships were broken.** Because
+   `volunteer_profiles` uses `user_id` as its primary key, Laravel mis-inferred
+   the `VolunteerDocument` foreign key as `volunteer_profile_user_id`. Fix:
+   `VolunteerProfile::documents()` and `VolunteerDocument::volunteerProfile()`
+   now explicitly bind `volunteer_profile_id` ↔ `user_id`.
+3. **A flaky test from random factory data.** `UserFactory` used
+   `fake()->userName()`, which can produce dots (e.g. `hegmann.valentin`). The
+   app's `alpha_dash` username rule rejects dots, so
+   `test_changing_role_creates_and_removes_volunteer_profile` failed whenever the
+   generated username contained a dot. Fix: `UserFactory` now sanitizes the
+   generated username to the `alpha_dash` character set and guarantees
+   uniqueness.
+
+#### Test-environment note
+`phpunit.xml` runs tests on SQLite `:memory:`. The author's machine has only the
+`pdo_mysql` driver (no `pdo_sqlite`, and the on-disk `pdo_sqlite.so` targets the
+PHP 8.3 API and is incompatible with PHP 8.4), so every feature test errored with
+`could not find driver (Connection: sqlite...)`. To verify without installing a
+system extension, the suite was run against an isolated throwaway MySQL database:
+
+```bash
+mysql -e "CREATE DATABASE IF NOT EXISTS resqlink_test ..."
+DB_CONNECTION=mysql DB_DATABASE=resqlink_test php artisan test
+```
+
+All 7 Task 1 tests pass this way. **TASK1 code and tests are verified complete.**
+The 5 remaining full-suite failures are outside Task 1 (Tasks 2/3) and stem from a
+stale Vite build manifest missing the `dispatcher-map.js` and `volunteer-report`
+entrypoints (fixed by `npm run build`), plus Task 3 dispatcher data assertions.
+
+After rebuilding the frontend assets, `test_verified_volunteer_can_log_in_through_web`
+also failed because the test created a volunteer profile without the required
+`barangay` column. This was a test-data bug (the controller and seeder always supply
+`barangay` in production); the test now provides `barangay`. With that fix, all
+Task 1 authentication and user-access tests pass (14/14 across
+`AdminUserAccessTest` and `WebAuthenticationTest`).
+
+The remaining full-suite failures belong to other tasks and are outside Task 1 scope:
+`DispatcherIncidentCoordinationTest` barangay-filter and `impact_radius` `300` vs
+`300.0` assertions (Task 3, Angela) and `VolunteerIncidentSubmissionTest` incident
+reference display (Task 2, Adriane).

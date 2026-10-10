@@ -28,6 +28,6 @@ class VolunteerProfile extends Model
 
     public function documents(): HasMany
     {
-        return $this->hasMany(VolunteerDocument::class);
+        return $this->hasMany(VolunteerDocument::class, 'volunteer_profile_id', 'user_id');
     }
 }

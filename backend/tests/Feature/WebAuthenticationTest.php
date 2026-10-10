@@ -55,7 +55,7 @@ class WebAuthenticationTest extends TestCase
     public function test_verified_volunteer_can_log_in_through_web(): void
     {
         $volunteer = $this->createUser('volunteer', ['password' => 'Volunteer@12345']);
-        $volunteer->volunteerProfile()->create(['verification_status' => 'verified']);
+        $volunteer->volunteerProfile()->create(['barangay' => 'Lahug', 'verification_status' => 'verified']);
 
         $response = $this->post('/login', [
             'login' => $volunteer->username,
