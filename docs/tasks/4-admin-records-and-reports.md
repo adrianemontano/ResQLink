@@ -111,12 +111,19 @@ This document belongs to **Task 4 — Admin Incident Records and Reports**.
 
 ## Implementation note — TASK4
 
-Admin records now support persisted search, category/status filters, pagination,
-read-only detail/history access, and completed historical records. Reports
-support daily, weekly, and monthly date scopes with category, barangay, status,
-and date-frequency aggregations. Empty periods return zero totals and an
-explicit empty state. Coverage is defined in
+Admin records support persisted search across the submitted landmark field,
+category/status filters, pagination, and read-only detail/history access.
+Archived and historical records are reached through a read-only
+`all` / `active` / `archived` scope on the records page, where the terminal
+`Completed` status marks archived records; no incident data is changed and no
+migration is required. Reports support daily, weekly, and monthly date scopes
+with category, barangay, status, and date-frequency aggregations, plus status
+and frequency summary cards. Empty periods return zero totals and an explicit
+empty state. Coverage is defined in
 backend/tests/Feature/AdminRecordsAndReportsTest.php.
+
+Routes, report definitions, field meanings, and dependencies are documented in
+docs/implementation/admin-records-and-reports-feature.md.
 
 ## Frontend/backend split
 

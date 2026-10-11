@@ -1,11 +1,20 @@
 @extends('layouts.dashboard', ['title' => 'Reports | ResQLink'])
 
 @php
+    use App\Models\Incident;
+
     $categoryPalette = ['var(--blue)', 'var(--red)', 'var(--navy)', 'var(--amber)', 'var(--green)'];
     $statusColors = [
-        'pending' => 'var(--red)',
-        'received' => 'var(--amber)',
-        'dispatched' => 'var(--green)',
+        'Reported' => 'var(--red)',
+        'Received' => 'var(--amber)',
+        'Dispatched' => 'var(--green)',
+        Incident::STATUS_COMPLETED => 'var(--navy)',
+    ];
+    $statusLabels = [
+        'Reported' => 'Active — Reported',
+        'Received' => 'Active — Received',
+        'Dispatched' => 'Active — Dispatched',
+        Incident::STATUS_COMPLETED => 'Archived — Completed',
     ];
 @endphp
 
@@ -29,6 +38,17 @@
             <div class="report-stat-val">{{ $totalIncidents }}</div>
             <div class="report-stat-label">Total Incidents</div>
         </div>
+        @foreach ($statusLabels as $status => $label)
+            @php $statusTotal = $byStatus->firstWhere('status', $status)?->total ?? 0; @endphp
+            <div class="report-stat">
+                <div class="report-stat-val" style="color: {{ $statusColors[$status] }};">{{ $statusTotal }}</div>
+                <div class="report-stat-label">{{ $label }}</div>
+            </div>
+        @endforeach
+        <div class="report-stat">
+            <div class="report-stat-val">{{ $byFrequency->count() }}</div>
+            <div class="report-stat-label">Days With Incidents</div>
+        </div>
     </div>
 
     <div class="chart-card">
@@ -51,7 +71,7 @@
         @forelse ($byStatus as $row)
             @php $percent = $totalIncidents > 0 ? round($row->total / $totalIncidents * 100) : 0; @endphp
             <div class="bar-row">
-                <div class="bar-label">{{ ucfirst($row->status) }}</div>
+                <div class="bar-label">{{ $statusLabels[$row->status] ?? $row->status }}</div>
                 <div class="bar-track">
                     <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $statusColors[$row->status] ?? 'var(--navy)' }};">{{ $row->total }}</div>
                 </div>

@@ -19,6 +19,12 @@ class Incident extends Model
 {
     use HasFactory;
 
+    /** Canonical workflow status written when a volunteer submits a report. */
+    public const STATUS_REPORTED = 'Reported';
+
+    /** Terminal workflow status treated as an archived/closed record. */
+    public const STATUS_COMPLETED = 'Completed';
+
     /**
      * Add stable display labels from the normalized reference tables.
      *

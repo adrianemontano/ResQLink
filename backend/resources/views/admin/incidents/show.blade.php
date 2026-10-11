@@ -1,8 +1,17 @@
 @extends('layouts.dashboard', ['title' => 'Incident Record | ResQLink'])
 
+@php
+    use App\Models\Incident;
+@endphp
+
 @section('content')
     <div class="header-row"><div><h1>Incident INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</h1><p>Read-only administrative incident record.</p></div><a class="button secondary" href="{{ route('admin.incidents.index') }}">Back</a></div>
     <section class="card">
+        <p><strong>Record state:</strong>
+            <span class="badge status-{{ strtolower($incident->status) }}">
+                {{ $incident->status === Incident::STATUS_COMPLETED ? 'Archived / Historical' : 'Active' }}
+            </span>
+        </p>
         <p><strong>Reporter:</strong> {{ $incident->reporter?->name ?? '—' }}</p>
         <p><strong>Category:</strong> {{ $incident->category ?? '—' }}</p>
         <p><strong>Barangay:</strong> {{ $incident->barangay ?? '—' }}</p>
