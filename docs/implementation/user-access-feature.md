@@ -45,11 +45,10 @@ explicitly bind `volunteer_profile_id` ↔ `user_id`.
 
 Required types (`VolunteerDocument::TYPES`): `endorsement_letter`,
 `barangay_clearance`, `certificate_of_residency`. Files are stored on the private
-`local` disk (`storage/app/private/volunteer-documents`, constant
-`VolunteerDocument::DISK`) and are only served through the admin download route;
-they are never exposed on the public disk. Metadata saved: `file_path`,
-`original_filename`, server-detected `mime_type`, `review_status` (`pending`,
-`approved`, `rejected`), `reviewed_by`, and `reviewed_at`.
+default disk under `volunteer-documents`; they are not exposed on the public
+disk. The current upload action saves `file_path`, `original_filename`, and
+server-detected `mime_type`. The model also represents review status, reviewer,
+and review time, but review and protected download actions remain to be added.
 
 ## Routes and permissions
 
@@ -70,8 +69,6 @@ its `authorize()` method.
 | `admin.users.activation` | `PATCH /admin/users/{user}/activation` | Toggle active/inactive |
 | `admin.users.verification` | `PATCH /admin/users/{user}/verification` | Verify or revert a volunteer |
 | `admin.users.documents.store` | `POST /admin/users/{user}/documents` | Upload a volunteer document |
-| `admin.users.documents.show` | `GET /admin/users/{user}/documents/{document}` | Download a document (404 if it belongs to another volunteer) |
-| `admin.users.documents.review` | `PATCH /admin/users/{user}/documents/{document}/review` | Mark `approved` or `rejected` |
 
 Admin user and document routes sit in the `auth` + `role:admin` group. Volunteer
 routes sit in the `auth` + `role:volunteer` group.
@@ -85,9 +82,9 @@ routes sit in the `auth` + `role:volunteer` group.
 - **Document:** `document_type` must be one of the three types and unique per
   volunteer (field error on `document_type`); `document` must be a PDF/JPG/PNG up
   to 5 MB (field error on `document`).
-- **Review:** `review_status` must be `approved` or `rejected`.
-- **Self-protection:** an admin cannot deactivate their own account or remove
-  their own admin role.
+- **Review:** Approve/reject request validation is not yet implemented.
+- **Self-protection:** Self-deactivation and self-role-change protection must be
+  confirmed against the approved account-management rules.
 
 ## Authorization and inactive/unverified volunteers
 
@@ -115,9 +112,9 @@ models, requests, and queries.
   middleware alias in `bootstrap/app.php`.
 - `TASK1-004` (role authorization, reject inactive volunteers):
   `EnsureUserHasRole` and `StoreIncidentRequest::authorize()`.
-- `TASK1-005` (volunteer document persistence and review):
-  `VolunteerDocument` model, `volunteer_documents` migration, and
-  `Admin\VolunteerDocumentController` with its requests.
+- `TASK1-005` (volunteer document persistence): `VolunteerDocument` model,
+  migration, and `Admin\UserController::uploadDocument`. Protected download and
+  individual document review remain outstanding.
 - `TASK1-006` (active/inactive availability): `users.is_active`, the toggle
   action, and the `Active`/`Inactive` display in the users table.
 - `TASK1-007` (validation and safe errors): the admin form requests return
@@ -125,9 +122,9 @@ models, requests, and queries.
 
 ## Verification status
 
-Automated coverage lives in `backend/tests/Feature/AdminUserAccessTest.php` and
-`backend/tests/Feature/WebAuthenticationTest.php`; all 14 tests pass. See
-`docs/tasks-2/jassy/task1-remaining-user-access.md` for the verification notes and
-the test-environment command, and
-`docs/tasks-2/task1-handoff-remaining-failures.md` for failures owned by other
-tasks.
+Current core coverage lives in
+`backend/tests/Feature/WebAuthenticationTest.php`. It covers authentication,
+basic role authorization, Admin creation of a Dispatcher, and inactive
+Dispatcher login. Admin user search, protected document retrieval, document
+review, and their focused tests remain outstanding. See
+`docs/tasks-2/jassy/task1-remaining-user-access.md` for the current gap list.

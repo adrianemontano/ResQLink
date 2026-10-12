@@ -33,7 +33,7 @@ it away from volunteer removes the volunteer profile.
 
 This task must not introduce a dependency on internet-hosted map tiles or map
 assets. If shared layouts load map resources, they must use the project's local
-Leaflet assets and local configuration only. The system must remain usable when
+bundled MapLibre assets and local configuration only. The system must remain usable when
 the development environment has no internet connection.
 
 ## Required pages and visibility
