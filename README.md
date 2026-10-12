@@ -48,7 +48,7 @@ Not currently installed:
 * Spatie Laravel Permission
 * Pest
 * Bootstrap package
-* Leaflet package
+* Leaflet package (the current maps use MapLibre instead)
 * Flutter/mobile application code
 
 ## Prerequisites
@@ -430,7 +430,10 @@ Current development order:
 2. Web application for administrators and dispatchers
 3. Mobile application for volunteers
 
-The volunteer mobile application depends on backend APIs that have not been implemented yet. Keep web authentication and administrator-managed account creation separate from future mobile authentication.
+The repository has an authenticated incident-submission API, but it does not yet
+provide mobile-token authentication or the complete API surface needed by a
+Flutter client. Keep session-based web authentication separate from future
+mobile authentication.
 
 Recommended contributor workflow:
 
@@ -454,8 +457,8 @@ Recommended contributor workflow:
 * Verified volunteer web access and incident submission
 * Role middleware for protected routes
 * Default administrator seeder
-* Admin dashboard placeholder metrics
-* Dispatcher dashboard placeholder metrics
+* Admin dashboard metrics backed by current user and incident records
+* Dispatcher dashboard metrics and active-incident queue backed by current incident records
 * Admin-managed dispatcher and volunteer account creation
 * Admin-managed account editing
 * Admin-managed password reset
@@ -466,7 +469,7 @@ Recommended contributor workflow:
 * Dispatcher incident queue with severity ordering and filters
 * Dispatcher incident details and status workflow: Reported, Received, Dispatched, Completed
 * Incident history with dispatcher and timestamp tracking
-* Local Leaflet map with incident markers and impact-radius circles
+* Local MapLibre maps with incident markers and impact-radius circles
 * Admin incident records with search, filters, pagination, and historical access
 * Daily, weekly, and monthly incident reports with category, barangay, status, and frequency summaries
 * PHPUnit feature-test coverage for authentication and admin records/reports
@@ -478,6 +481,9 @@ Recommended contributor workflow:
 * Mobile/API authentication for Flutter clients
 * Flutter-to-Laravel integration
 * Notification system
+* Admin user-list search
+* Complete volunteer-document review and protected file-download workflow
+* Additional negative-path and map-fallback automated coverage
 * Full system integration verification
 * Formal test reports and user acceptance testing
 * Complete technical/user documentation and final diagrams
