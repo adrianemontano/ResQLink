@@ -2,7 +2,8 @@
 
 **Assigned owner:** Angela  
 **Task:** Task 3 — Dispatcher Incident Coordination  
-**Status:** Dataset prepared; application integration is pending
+**Status:** Integrated into the volunteer and dispatcher web maps; browser and
+fallback verification remains
 
 ## Development test accounts
 
@@ -98,8 +99,7 @@ without comparing the names and codes against an official PSA PSGC reference.
 
 ## Intended project usage
 
-The file is a static public map asset and can later be loaded by the Leaflet map
-from:
+The file is a static public map asset loaded by the MapLibre web maps from:
 
 ```text
 /maps/cebu-city-barangays.geojson
@@ -110,15 +110,16 @@ It should be used as a local GeoJSON overlay for:
 - Showing Cebu City barangay boundaries.
 - Displaying barangay names on hover or selection.
 - Supporting offline map location selection.
-- Supporting future point-in-polygon barangay identification.
+- Supporting point-in-polygon barangay identification in volunteer reporting.
 - Providing context for incident latitude and longitude values.
 
 Incident markers and impact-radius circles should remain separate from this
 dataset and continue to use the incident values stored in the ResQLink database.
 The barangay polygons should not be treated as incident records.
 
-No route, controller, Blade view, JavaScript, or configuration integration has
-been added as part of this data-preparation change.
+The shared local-map module loads this dataset. The volunteer map uses it for
+search, selection, hover feedback, and point-in-polygon lookup. The dispatcher
+map uses it for boundary display and click/hover inspection.
 
 ## Attribution and licensing
 
@@ -157,6 +158,6 @@ Cebu City barangay boundaries.
 The corresponding public paths are `/maps/cebu-city-osm-roads.geojson`,
 `/maps/cebu-city-osm-landmarks.geojson`, and
 `/maps/cebu-city-osm-emergency-facilities.geojson`. These are prepared reference
-layers only and are not yet loaded by the application. Emergency-facility
+layers and are loaded by the volunteer and dispatcher map modules. Emergency-facility
 coverage depends on OpenStreetMap mapping and must be reviewed before being
 treated as authoritative. OpenStreetMap attribution and ODbL obligations apply.
