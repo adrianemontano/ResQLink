@@ -34,10 +34,10 @@ than silently requiring internet access.
 
 ## Required pages and visibility
 
-Mobile screens are excluded from this four-task plan. The desktop prototype does
-not show a volunteer web submission page, so this task should deliver the
-server-side incident submission capability and define the page contract for a
-future approved client without implementing Flutter screens.
+Mobile screens are excluded from this four-task plan. The current Laravel web
+application includes a volunteer incident-submission page backed by the same
+validation and submission service as the API. Flutter screens remain outside
+the current repository.
 
 | Page or UI location | Required content |
 | --- | --- |
@@ -97,7 +97,7 @@ web workflow to submit incident data.
 
 Depends on Task 1 for authenticated volunteer identity and roles. Coordinate
 incident fields and severity thresholds with the database and dispatcher task
-owners. Do not implement dispatcher queue screens or mobile screens here.
+owners. Dispatcher queue screens and mobile screens remain outside TASK2.
 
 ## Acceptance criteria
 
