@@ -2,7 +2,7 @@
 
 .brand-header {
     align-items: center;
-    background: var(--navy);
+    background: var(--rosewood);
     display: flex;
     gap: 10px;
     height: 56px;
@@ -11,7 +11,7 @@
 
 .brand-mark {
     align-items: center;
-    background: var(--red);
+    background: var(--philippine-orange);
     border-radius: 7px;
     display: flex;
     flex-shrink: 0;
@@ -21,7 +21,7 @@
 }
 
 .brand-mark svg {
-    fill: #ffffff;
+    fill: var(--rosewood);
     height: 16px;
     width: 16px;
 }
@@ -34,17 +34,17 @@
 }
 
 .brand-name span {
-    color: var(--red);
+    color: var(--philippine-orange);
 }
 
 .dashboard-shell {
-    background: #F0F2F5;
+    background: var(--surface-alt);
     display: flex;
     min-height: 100vh;
 }
 
 .sidebar {
-    background: var(--navy);
+    background: var(--rosewood);
     border-top-right-radius: var(--radius-xl);
     border-bottom-right-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
@@ -102,7 +102,7 @@
 
 .sidebar-logo-mark {
     align-items: center;
-    background: var(--red);
+    background: var(--philippine-orange);
     border-radius: 7px;
     display: flex;
     flex-shrink: 0;
@@ -112,7 +112,7 @@
 }
 
 .sidebar-logo-mark svg {
-    fill: #ffffff;
+    fill: var(--rosewood);
     height: 15px;
     width: 15px;
 }
@@ -200,13 +200,13 @@
 }
 
 .sidebar-item:hover {
-    background: rgba(255, 255, 255, .08);
+    background: var(--sangria);
     color: #ffffff;
 }
 
 .sidebar-item.active {
-    background: rgba(255, 255, 255, .12);
-    border-left-color: var(--red);
+    background: var(--sangria);
+    border-left-color: var(--philippine-orange);
     color: #ffffff;
 }
 
@@ -304,7 +304,7 @@
 .form-grid input,
 .form-grid select,
 .form-grid textarea {
-    border: 1px solid #D5DCE5;
+    border: 1px solid var(--control-border);
     border-radius: var(--radius-sm);
     font: inherit;
     padding: 10px 12px;
@@ -321,7 +321,7 @@
 }
 
 .form-section-title {
-    border-bottom: 1px solid #E4E8EE;
+    border-bottom: 1px solid var(--border);
     color: var(--navy);
     font-size: 14px;
     font-weight: 700;
@@ -355,4 +355,14 @@
     .full-width {
         grid-column: auto;
     }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+    .sidebar { width: 76px; }
+    .sidebar .sidebar-label { display: none; }
+    .sidebar-item { justify-content: center; padding-inline: 0; }
+    .sidebar-item svg { height: 20px; width: 20px; }
+    .sidebar-section-label { font-size: 0; padding-inline: 8px; }
+    .sidebar-section-label::first-letter { font-size: 10px; }
+    .sidebar-footer { padding: 14px 10px; }
 }
