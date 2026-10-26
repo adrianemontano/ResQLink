@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <form class="card" method="GET">
+    <form class="card record-filter-row" method="GET">
         <input name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Search ID, reporter, category, barangay, landmark">
         <select name="category"><option value="">All categories</option>@foreach ($categories as $category)<option value="{{ $category }}" @selected(($filters['category'] ?? '') === $category)>{{ $category }}</option>@endforeach</select>
         <select name="status"><option value="">All statuses</option>@foreach ($statuses as $status)<option value="{{ $status }}" @selected(($filters['status'] ?? '') === $status)>{{ ucfirst($status) }}</option>@endforeach</select>
@@ -63,7 +63,7 @@
                         <td>
                             <span class="badge status-{{ strtolower($incident->status) }}">{{ ucfirst($incident->status) }}</span>
                         </td>
-                        <td>{{ $incident->severity ?? '—' }}</td>
+                        <td><span class="badge severity-{{ strtolower($incident->severity ?? 'unrated') }}">{{ $incident->severity ?? '—' }}</span></td>
                         <td><a href="{{ route('admin.incidents.show', $incident) }}">View</a></td>
                     </tr>
                 @empty
