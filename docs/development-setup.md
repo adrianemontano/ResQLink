@@ -126,9 +126,16 @@ Verify the services:
 - Volunteer incident map: `http://127.0.0.1:8000/volunteer/incidents/create`
 - Dispatcher incident map: `http://127.0.0.1:8000/dispatcher/map`
 
-Both maps expect the preview style at
-`http://localhost:8080/styles/basic-preview/style.json`. Override it with
-`LOCAL_MAP_STYLE_URL` in `.env` only when using another server or style.
+Both maps use the shared TileServer Positron style at
+`http://localhost:8080/styles/positron/style.json`. Set the following value in
+each developer's `backend/.env`:
+
+```env
+LOCAL_MAP_STYLE_URL=http://localhost:8080/styles/positron/style.json
+```
+
+After changing `.env`, refresh the app. If Laravel has cached configuration,
+clear it from the `backend/` directory with `php artisan config:clear`.
 
 ## Development accounts
 
