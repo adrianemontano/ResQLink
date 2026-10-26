@@ -3,12 +3,12 @@
 @php
     use App\Models\Incident;
 
-    $categoryPalette = ['var(--blue)', 'var(--red)', 'var(--navy)', 'var(--amber)', 'var(--green)'];
+    $categoryPalette = ['var(--rosewood)', 'var(--sangria)', 'var(--maximum-red)', 'var(--tangelo)', 'var(--philippine-orange)'];
     $statusColors = [
-        'Reported' => 'var(--red)',
-        'Received' => 'var(--amber)',
-        'Dispatched' => 'var(--green)',
-        Incident::STATUS_COMPLETED => 'var(--navy)',
+        'Reported' => 'var(--maximum-red)',
+        'Received' => 'var(--tangelo)',
+        'Dispatched' => 'var(--philippine-orange)',
+        Incident::STATUS_COMPLETED => 'var(--success)',
     ];
     $statusLabels = [
         'Reported' => 'Active — Reported',
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <form class="card" method="GET">
+    <form class="card report-filter-row" method="GET">
         <select name="period"><option value="daily" @selected($period === 'daily')>Daily</option><option value="weekly" @selected($period === 'weekly')>Weekly</option><option value="monthly" @selected($period === 'monthly')>Monthly</option></select>
         <input type="date" name="date" value="{{ $date }}">
         <button type="submit">Generate Report</button>
@@ -41,7 +41,7 @@
         @foreach ($statusLabels as $status => $label)
             @php $statusTotal = $byStatus->firstWhere('status', $status)?->total ?? 0; @endphp
             <div class="report-stat">
-                <div class="report-stat-val" style="color: {{ $statusColors[$status] }};">{{ $statusTotal }}</div>
+                <div class="report-stat-val">{{ $statusTotal }}</div>
                 <div class="report-stat-label">{{ $label }}</div>
             </div>
         @endforeach
@@ -58,7 +58,8 @@
             <div class="bar-row">
                 <div class="bar-label">{{ $row->category }}</div>
                 <div class="bar-track">
-                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};">{{ $row->total }}</div>
+                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};"></div>
+                    <strong class="bar-value">{{ $row->total }}</strong>
                 </div>
             </div>
         @empty
@@ -73,7 +74,8 @@
             <div class="bar-row">
                 <div class="bar-label">{{ $statusLabels[$row->status] ?? $row->status }}</div>
                 <div class="bar-track">
-                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $statusColors[$row->status] ?? 'var(--navy)' }};">{{ $row->total }}</div>
+                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $statusColors[$row->status] ?? 'var(--rosewood)' }};"></div>
+                    <strong class="bar-value">{{ $row->total }}</strong>
                 </div>
             </div>
         @empty
