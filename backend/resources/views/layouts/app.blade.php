@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}">
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}">
+    <script src="{{ asset('js/responsive-tables.js') }}" defer></script>
 </head>
 <body>
     @yield('body')
