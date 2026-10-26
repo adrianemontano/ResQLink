@@ -18,7 +18,7 @@
         <p><strong>Landmark:</strong> {{ $incident->landmark ?? $incident->nearest_landmark ?? '—' }}</p>
         <p><strong>Affected persons:</strong> {{ $incident->persons_count ?? $incident->affected_population ?? 0 }}</p>
         <p><strong>Location:</strong> {{ $incident->latitude ?? '—' }}, {{ $incident->longitude ?? '—' }}; radius {{ $incident->impact_radius ?? '—' }}</p>
-        <p><strong>Severity:</strong> {{ $incident->severity ?? '—' }} | <strong>Status:</strong> {{ ucfirst($incident->status ?? '—') }}</p>
+        <p><strong>Severity:</strong> <span class="badge severity-{{ strtolower($incident->severity ?? 'unrated') }}">{{ $incident->severity ?? '—' }}</span> | <strong>Status:</strong> <span class="badge status-{{ strtolower($incident->status ?? 'unknown') }}">{{ ucfirst($incident->status ?? '—') }}</span></p>
         <p><strong>Reported:</strong> {{ ($incident->reported_at ?? $incident->created_at)?->format('M d, Y H:i') }}</p>
         <p><strong>Notes:</strong> {{ $incident->notes ?? '—' }}</p>
     </section>
