@@ -21,7 +21,7 @@
                 <dt>Nearest landmark</dt><dd>{{ $incident->nearest_landmark ?? $incident->landmark ?? 'Not provided' }}</dd>
                 <dt>Impact radius</dt><dd>{{ $incident->impact_radius ? $incident->impact_radius.' metres' : 'Not provided' }}</dd>
                 <dt>Coordinates</dt><dd>{{ $incident->latitude }}, {{ $incident->longitude }}</dd>
-                <dt>Preliminary severity</dt><dd>{{ $incident->severity ?? 'Unrated' }}</dd>
+                <dt>Preliminary severity</dt><dd><span class="badge severity-{{ strtolower($incident->severity ?? 'unrated') }}">{{ $incident->severity ?? 'Unrated' }}</span></dd>
                 <dt>Notes</dt><dd>{{ $incident->notes ?? 'No notes provided.' }}</dd>
             </dl>
             @if ($incident->latitude !== null && $incident->longitude !== null)
@@ -56,7 +56,7 @@
             <thead><tr><th>Status</th><th>Dispatcher</th><th>Changed</th><th>Notes</th></tr></thead>
             <tbody>
                 @forelse ($incident->history as $entry)
-                    <tr><td>{{ $entry->status?->name ?? 'Unknown' }}</td><td>{{ $entry->dispatcher?->name ?? 'Unknown' }}</td><td>{{ $entry->changed_at->format('M j, Y g:i A') }}</td><td>{{ $entry->notes ?? '—' }}</td></tr>
+                    <tr><td><span class="badge status-{{ strtolower($entry->status?->name ?? 'unknown') }}">{{ $entry->status?->name ?? 'Unknown' }}</span></td><td>{{ $entry->dispatcher?->name ?? 'Unknown' }}</td><td>{{ $entry->changed_at->format('M j, Y g:i A') }}</td><td>{{ $entry->notes ?? '—' }}</td></tr>
                 @empty
                     <tr><td colspan="4">No status changes recorded yet.</td></tr>
                 @endforelse
