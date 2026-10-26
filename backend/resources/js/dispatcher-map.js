@@ -4,7 +4,7 @@ import {
 } from './map/local-map';
 
 const STATUS_COLORS = {
-    Reported: '#dc2626', Received: '#d97706', Dispatched: '#16a34a', Completed: '#64748b',
+    Reported: '#D92200', Received: '#F37100', Dispatched: '#16A34A', Completed: '#64748B',
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -38,23 +38,23 @@ async function initializeMap(wrapper) {
 
 function addReferenceLayers(map, datasets) {
     addGeoJsonLayer(map, 'dispatcher-roads', datasets.roads, 'line', {
-        'line-color': '#64748b', 'line-opacity': 0.55, 'line-width': 1.2,
+        'line-color': '#A89588', 'line-opacity': 0.55, 'line-width': 1.2,
     });
     addGeoJsonLayer(map, 'dispatcher-barangay-fill', datasets.barangays, 'fill', {
-        'fill-color': '#2563eb',
+        'fill-color': '#F3500A',
         'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.12, 0],
     }, true);
     addGeoJsonLayer(map, 'dispatcher-barangay-outline', datasets.barangays, 'line', {
-        'line-color': '#1d4ed8',
+        'line-color': '#920004',
         'line-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.25],
         'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2.5, 1],
     }, true);
     addGeoJsonLayer(map, 'dispatcher-landmarks', datasets.landmarks, 'circle', {
-        'circle-radius': 3, 'circle-color': '#f59e0b', 'circle-opacity': 0.65,
-        'circle-stroke-color': '#64748b', 'circle-stroke-width': 1,
+        'circle-radius': 3, 'circle-color': '#F6C453', 'circle-opacity': 0.88,
+        'circle-stroke-color': '#765000', 'circle-stroke-width': 0.9,
     });
     addGeoJsonLayer(map, 'dispatcher-facilities', datasets.facilities, 'circle', {
-        'circle-radius': 7, 'circle-color': '#2563eb', 'circle-opacity': 0.78,
+        'circle-radius': 8, 'circle-color': '#2563EB', 'circle-opacity': 0.96,
         'circle-stroke-color': '#fff', 'circle-stroke-width': 2,
     });
     bindBarangayHover(map);
@@ -126,7 +126,7 @@ function addIncidentLayers(map, incidents) {
         id: 'dispatcher-incidents', source: 'dispatcher-incidents', type: 'circle',
         paint: {
             'circle-radius': 9, 'circle-color': statusColorExpression(),
-            'circle-stroke-color': '#fff', 'circle-stroke-width': 3,
+            'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2.5,
         },
     });
 }
@@ -137,7 +137,7 @@ function statusColorExpression() {
         'Received', STATUS_COLORS.Received,
         'Dispatched', STATUS_COLORS.Dispatched,
         'Completed', STATUS_COLORS.Completed,
-        '#2563eb'];
+        '#5A0006'];
 }
 
 function bindIncidentPopups(map) {
@@ -167,10 +167,22 @@ function bindStatusFilters(map, wrapper) {
     wrapper.querySelectorAll('[data-map-filter]').forEach((button) => {
         button.addEventListener('click', () => {
             const status = button.dataset.mapFilter;
-            wrapper.querySelectorAll('[data-map-filter]').forEach((item) => item.classList.toggle('active', item === button));
+            wrapper.querySelectorAll('[data-map-filter]').forEach((item) => {
+                const isActive = item === button;
+                item.classList.toggle('active', isActive);
+                item.setAttribute('aria-pressed', String(isActive));
+            });
             const filter = status === 'all' ? null : ['==', ['get', 'status'], status];
-            map.setFilter('dispatcher-incidents', filter);
-            map.setFilter('dispatcher-impact-radii', filter);
+            ['dispatcher-incidents', 'dispatcher-impact-radii'].forEach((layer) => {
+                if (map.getLayer(layer)) map.setFilter(layer, filter);
+            });
+            if (map.getLayer('dispatcher-facilities')) {
+                map.setLayoutProperty(
+                    'dispatcher-facilities',
+                    'visibility',
+                    status === 'all' ? 'visible' : 'none',
+                );
+            }
         });
     });
 }
