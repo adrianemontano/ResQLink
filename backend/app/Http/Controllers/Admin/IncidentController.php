@@ -19,28 +19,26 @@ class IncidentController extends Controller
 
     public function index(Request $request): View
     {
-        $request->validate([
-            'search' => ['nullable', 'string', 'max:255'],
-            'category' => ['nullable', 'string', 'max:100'],
-            'status' => ['nullable', 'string', 'max:50'],
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'category' => ['nullable', 'string', 'max:50'],
+            'status' => ['nullable', 'string', 'max:30'],
             'scope' => ['nullable', 'in:all,active,archived'],
         ]);
 
-        $scope = in_array($request->query('scope'), self::RECORD_SCOPES, true)
-            ? $request->query('scope')
+        $scope = in_array($filters['scope'] ?? null, self::RECORD_SCOPES, true)
+            ? $filters['scope']
             : 'all';
 
-        $query = AdminIncidentRecordQuery::apply(
-            Incident::query(),
-            $request->only(['search', 'category', 'status']),
-            $scope,
-        )->latest('reported_at');
+        $query = AdminIncidentRecordQuery::apply(Incident::query(), $filters, $scope)
+            ->orderByDesc('reported_at')
+            ->orderByDesc('id');
 
         return view('admin.incidents.index', [
             'incidents' => $query->paginate(15)->withQueryString(),
             'categories' => Incident::query()->whereNotNull('category')->distinct()->orderBy('category')->pluck('category'),
             'statuses' => Incident::query()->whereNotNull('status')->distinct()->orderBy('status')->pluck('status'),
-            'filters' => [...$request->only(['search', 'category', 'status']), 'scope' => $scope],
+            'filters' => [...$filters, 'scope' => $scope],
             'recordCounts' => AdminIncidentRecordQuery::countsByScope(),
         ]);
     }
@@ -48,7 +46,12 @@ class IncidentController extends Controller
     public function show(Incident $incident): View
     {
         return view('admin.incidents.show', [
-            'incident' => $incident->load(['reporter', 'history.dispatcher', 'history.status']),
+            'incident' => $incident->load([
+                'reporter',
+                'volunteer',
+                'history.dispatcher',
+                'history.status',
+            ]),
         ]);
     }
 }

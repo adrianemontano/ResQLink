@@ -7,12 +7,15 @@
 Task 4 provides the admin-only incident-record workspace and periodic reports
 built entirely from persisted MySQL data. User and volunteer-document
 management belongs to Task 1; dispatcher queue and status controls belong to
-Task 3. Admin records are read-only and never change incident data.
+Task 3. Admin records are read-only and never change incident data. This
+feature does not add an archive table or change incident submission,
+dispatcher status transitions, or shared incident fields.
 
-## Routes
+## Routes and permissions
 
 All routes sit behind the `admin.` route group, which applies the `auth` and
-`role:admin` middleware. Non-admin users receive `403`.
+`role:admin` middleware. Dispatchers, volunteers, inactive accounts, and
+unauthenticated users cannot access these pages; non-admin users receive `403`.
 
 | Route name | Method and URI | Purpose |
 | --- | --- | --- |
@@ -22,17 +25,29 @@ All routes sit behind the `admin.` route group, which applies the `auth` and
 
 ## Incident records
 
-`GET /admin/incidents` renders a paginated table (15 records per page) with
-persisted filters carried through pagination links via `withQueryString()`.
+`GET /admin/incidents` renders a paginated table (15 records per page, ordered
+by report time then ID) with filters carried through pagination links via
+`withQueryString()`.
 
 Accepted query parameters:
 
 | Parameter | Required | Behavior |
 | --- | --- | --- |
-| `search` | No | Matches incident ID, category, barangay, `landmark`, `nearest_landmark`, or the reporting volunteer's name |
+| `search` | No | See search fields below |
 | `category` | No | Exact category match |
 | `status` | No | Exact workflow status match |
 | `scope` | No | `all` (default), `active`, or `archived` |
+| `page` | No | Pagination page |
+
+Search matches:
+
+- the incident ID, as a plain number or in the displayed `INC-####` form;
+- the reporter or volunteer name, first/last name, email, or username (every
+  word of a multi-word search must match);
+- category, barangay, `landmark`, `nearest_landmark`, notes, status, and
+  preliminary severity;
+- affected persons, coordinates, and impact radius as text;
+- the reported date (`reported_at`, falling back to `created_at`).
 
 Search, filtering, and scoping are centralised in
 `app/Queries/AdminIncidentRecordQuery.php` so the controller, tests, and any
@@ -59,11 +74,12 @@ same values instead of repeating status strings.
 
 ### Detail view
 
-`GET /admin/incidents/{incident}` shows the reporter, category, barangay,
-landmark (preferring `nearest_landmark`), affected persons (preferring
-`affected_population`), coordinates and impact radius, severity, status,
-reported time, notes, a read-only record-state badge, and the ordered status
-history with the dispatcher and timestamp for each change.
+`GET /admin/incidents/{incident}` shows a read-only record-state badge, the
+reporter (falling back to the `volunteer` relationship when `reported_by` is
+absent), category, barangay, landmark, affected persons, coordinates, impact
+radius, severity, status, reported time with timezone, notes, and the status
+history with the dispatcher and timestamp for each change. Missing history
+displays an explicit empty state.
 
 Affected persons and landmark read `affected_population`/`nearest_landmark`
 first and fall back to the legacy `persons_count`/`landmark` columns, matching
@@ -71,21 +87,24 @@ the dispatcher views so both workspaces display identical values.
 
 ## Reports
 
-`GET /admin/reports` accepts an optional `period` of `daily`, `weekly`, or
-`monthly` and an optional `date` in `Y-m-d` format. Invalid values are
-rejected by validation. When omitted, the period defaults to `daily` and the
-date defaults to today.
+`GET /admin/reports` accepts `period=daily|weekly|monthly` and an optional
+`date=YYYY-MM-DD`. Invalid values are rejected by validation. The date selects
+the day, the week containing that date, or the month containing that date; it
+defaults to today in `config('app.timezone')`.
 
-The selected period resolves to inclusive `reported_at` boundaries:
+Report data is built by `app/Services/AdminIncidentReportService.php`. Windows
+use the configured application timezone (currently `UTC`) and include their
+start but exclude their end:
 
-| Period | Range |
+| Period | Window |
 | --- | --- |
-| `daily` | Start of day to end of day |
-| `weekly` | Start of week to end of week |
-| `monthly` | Start of month to end of month |
+| `daily` | Midnight to the next midnight |
+| `weekly` | Monday midnight to the following Monday midnight |
+| `monthly` | First day of the month to the first day of the next month |
 
-All aggregation runs against persisted incident data scoped to that range, so
-report results respect the selected reporting period (`TASK4-009`).
+The page displays the timezone and window boundaries. Queries use
+`reported_at`, falling back to `created_at` for legacy incidents where
+`reported_at` is null, so results respect the selected period (`TASK4-009`).
 
 ### Reported statistics
 
@@ -93,26 +112,31 @@ report results respect the selected reporting period (`TASK4-009`).
 - **Status summary cards** — one card per workflow status, labelled
   `Active — Reported`, `Active — Received`, `Active — Dispatched`, and
   `Archived — Completed`.
-- **Frequency statistic** — the number of distinct days containing incidents.
+- **Days with incidents** — the number of dates in the window with at least
+  one incident.
 - **Distribution by category** — grouped counts with proportional bars.
 - **Distribution by barangay** — grouped counts.
 - **Distribution by status** — grouped counts with proportional bars.
-- **Frequency by date** — grouped counts per day.
+- **Frequency by date** — one row per date in the window, including dates with
+  zero incidents.
 
-Each status owns a fixed palette colour that matches the shared `.badge`
-status colours in `public/css/resqlink-theme.css`, so report bars and record
-badges read consistently.
+Blank category, barangay, or status values are grouped as `Unknown`. Each
+status owns a fixed palette colour that matches the shared `.badge` status
+colours in `public/css/resqlink-theme.css`, so report bars and record badges
+read consistently.
 
 ### Empty periods
 
-A period with no incidents shows a total of `0`, zeroed status cards, and the
-explicit empty state "No incident data in this period." rather than misleading
-totals.
+A period with no incidents shows a total of `0`, zeroed status cards, zero
+frequency for each date, and the explicit empty state "No incident data in
+this period. All totals are zero." rather than misleading totals.
 
 ## Automated coverage
 
-`backend/tests/Feature/AdminRecordsAndReportsTest.php` covers search across the
-submitted landmark field, category and status filtering, the archived and
-active record scopes, the scope switcher, read-only detail with status history
-and no dispatcher controls, daily period scoping, empty periods, report
-summary cards, and admin-only authorization.
+`backend/tests/Feature/AdminRecordsAndReportsTest.php` covers search across
+incident fields and reporter identity, the nearest-landmark field, category
+and status filtering, pagination with preserved filters, the archived and
+active record scopes and their counts, read-only detail with status history
+and no dispatcher controls, daily/weekly/monthly window boundaries, the
+`created_at` fallback, report summary cards, empty periods, and denial of
+every record and report route to dispatchers and volunteers.

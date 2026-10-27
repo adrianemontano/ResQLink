@@ -20,6 +20,18 @@ class AdminIncidentRecordQuery
         'barangay',
         'landmark',
         'nearest_landmark',
+        'notes',
+        'status',
+        'severity',
+    ];
+
+    /** Numeric incident fields matched as text (e.g. "42", "10.3157"). */
+    private const NUMERIC_COLUMNS = [
+        'affected_population',
+        'persons_count',
+        'latitude',
+        'longitude',
+        'impact_radius',
     ];
 
     /**
@@ -49,7 +61,7 @@ class AdminIncidentRecordQuery
         $search = trim((string) ($filters['search'] ?? ''));
 
         return $query
-            ->with('reporter')
+            ->with(['reporter', 'volunteer'])
             ->when($search !== '', fn (Builder $query) => static::applySearch($query, $search))
             ->when(
                 filled($filters['category'] ?? null),
@@ -62,23 +74,65 @@ class AdminIncidentRecordQuery
     }
 
     /**
-     * Match the search term against the incident ID, searchable columns, and
-     * the reporting volunteer's name.
+     * Match the search term against the incident ID (plain or INC-####),
+     * text and numeric columns, the report time, and the reporter's identity.
      *
      * @param  Builder<Incident>  $query
      */
     private static function applySearch(Builder $query, string $search): void
     {
-        $query->where(function (Builder $query) use ($search): void {
-            foreach (static::SEARCHABLE_COLUMNS as $column) {
-                $query->orWhere($column, 'like', "%{$search}%");
+        $identifier = static::incidentIdentifier($search);
+        $pattern = "%{$search}%";
+        $terms = preg_split('/\s+/', $search, -1, PREG_SPLIT_NO_EMPTY) ?: [$search];
+
+        $query->where(function (Builder $query) use ($identifier, $pattern, $terms): void {
+            if ($identifier !== null) {
+                $query->whereKey($identifier);
             }
 
-            $query->orWhere('id', $search)->orWhereHas(
-                'reporter',
-                fn (Builder $reporter) => $reporter->where('name', 'like', "%{$search}%"),
+            foreach (static::SEARCHABLE_COLUMNS as $column) {
+                $query->orWhere($column, 'like', $pattern);
+            }
+
+            foreach (static::NUMERIC_COLUMNS as $column) {
+                $query->orWhereRaw("CAST({$column} AS CHAR) LIKE ?", [$pattern]);
+            }
+
+            $query->orWhereRaw(
+                'CAST(COALESCE(incidents.reported_at, incidents.created_at) AS CHAR) LIKE ?',
+                [$pattern],
             );
+
+            foreach (['reporter', 'volunteer'] as $relationship) {
+                $query->orWhereHas($relationship, fn (Builder $reporter) => static::matchReporter($reporter, $terms));
+            }
         });
+    }
+
+    /**
+     * Require every search term to match one of the reporter's identity fields.
+     *
+     * @param  array<int, string>  $terms
+     */
+    private static function matchReporter(Builder $reporter, array $terms): void
+    {
+        foreach ($terms as $term) {
+            $reporter->where(function (Builder $fields) use ($term): void {
+                foreach (['name', 'first_name', 'last_name', 'email', 'username'] as $column) {
+                    $fields->orWhere($column, 'like', "%{$term}%");
+                }
+            });
+        }
+    }
+
+    /** Resolve "42" or "INC-0042" to an incident ID. */
+    private static function incidentIdentifier(string $search): ?int
+    {
+        if (ctype_digit($search)) {
+            return (int) $search;
+        }
+
+        return preg_match('/^INC-(\d+)$/i', $search, $matches) === 1 ? (int) $matches[1] : null;
     }
 
     /**
