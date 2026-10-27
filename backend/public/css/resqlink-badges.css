@@ -1,0 +1,95 @@
+/* ResQLink badges: account, document, workflow status (outlined), and severity (filled). */
+
+.badge {
+    background: var(--gray-100);
+    border: 1px solid transparent;
+    color: var(--rosewood);
+    border-radius: 9999px;
+    display: inline-block;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    padding: var(--space-1) var(--space-3);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge.active {
+    background: var(--green-light);
+    color: #345333;
+}
+
+.badge.inactive {
+    background: var(--red-light);
+    color: var(--red-dark);
+}
+
+.badge.status-pending,
+.badge.status-rejected {
+    background: var(--red-light);
+    color: var(--red-dark);
+}
+
+.badge.status-approved,
+.badge.status-verified {
+    background: var(--green-light);
+    color: #345333;
+}
+
+/* Status: white outlined pills in the shared status colours. */
+.badge.status-reported,
+.badge.status-received,
+.badge.status-dispatched,
+.badge.status-completed {
+    background: #ffffff;
+    border-color: currentColor;
+}
+
+.badge.status-reported { color: var(--status-reported); }
+.badge.status-received { color: var(--status-received); }
+.badge.status-dispatched { color: var(--status-dispatched); }
+.badge.status-completed { color: var(--status-completed); }
+
+.badge.status-reported::before { content: "● "; }
+.badge.status-received::before { content: "■ "; }
+.badge.status-dispatched::before { content: "◆ "; }
+.badge.status-completed::before { content: "✓ "; }
+
+/* Severity: filled badges that escalate in weight; Critical is the strongest. */
+.badge.severity-low {
+    background: #ffffff;
+    border-color: var(--severity-low);
+    color: var(--severity-low);
+}
+
+.badge.severity-low::before { content: "○ "; }
+
+.badge.severity-moderate {
+    background: var(--severity-moderate-bg);
+    color: var(--severity-moderate-text);
+}
+
+.badge.severity-moderate::before { content: "■ "; }
+
+.badge.severity-high {
+    background: var(--severity-high);
+    color: #ffffff;
+}
+
+.badge.severity-high::before { content: "! "; }
+
+.badge.severity-critical {
+    background: var(--severity-critical);
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px var(--severity-critical);
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.badge.severity-critical::before { content: "◆ "; }
+
+.badge.severity-unrated {
+    background: #ffffff;
+    border-color: var(--gray-300);
+    color: var(--gray-700);
+}
+

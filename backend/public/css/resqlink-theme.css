@@ -1,50 +1,7 @@
-/* ResQLink shared design tokens + base elements (buttons, forms, badges, tables, cards). */
+/* ResQLink base elements (typography, layout helpers, buttons, forms, alerts, tables).
+ * Tokens live in resqlink-tokens.css; badges in resqlink-badges.css. */
 
 :root {
-    color-scheme: light;
-    --rosewood: #5A0006;
-    --sangria: #920004;
-    --maximum-red: #D92200;
-    --tangelo: #F3500A;
-    --philippine-orange: #F37100;
-    --surface: #FFFFFF;
-    --surface-alt: #FBF3EA;
-    --border: #E8DCD0;
-    --control-border: #8A766A;
-    --text-primary: var(--rosewood);
-    --text-muted: #6B5B55;
-    --primary: var(--philippine-orange);
-    --danger: var(--maximum-red);
-    --success: #476B45;
-    --focus: var(--tangelo);
-    --red: var(--maximum-red);
-    --red-dark: var(--sangria);
-    --red-light: #FCE8E3;
-    --blue: var(--tangelo);
-    --blue-dark: var(--rosewood);
-    --blue-light: #FCE8E3;
-    --navy: var(--rosewood);
-    --navy-light: var(--sangria);
-    --green: var(--success);
-    --green-light: #EAF1E7;
-    --amber: var(--philippine-orange);
-    --amber-light: #FFF0DF;
-    --gray-50: #FBF7F2;
-    --gray-100: #F5EDE5;
-    --gray-200: var(--border);
-    --gray-300: #D9C9BC;
-    --gray-400: #A89588;
-    --gray-500: var(--text-muted);
-    --gray-700: #493832;
-    --gray-800: #35221F;
-    --gray-900: var(--rosewood);
-    --radius-sm: 9px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 22px;
-    --shadow-sm: 0 2px 8px rgba(90, 0, 6, .07);
-    --shadow-md: 0 8px 22px rgba(90, 0, 6, .10);
-    --shadow-lg: 0 16px 38px rgba(90, 0, 6, .14);
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: var(--surface-alt);
     color: var(--text-primary);
@@ -82,13 +39,13 @@ h1 {
 }
 
 h2 {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
 }
 
 p {
     color: var(--gray-500);
-    margin: .35rem 0 0;
+    margin: var(--space-1) 0 0;
 }
 
 .main {
@@ -115,30 +72,32 @@ p {
 
 .panel {
     width: min(420px, 100%);
-    padding: 2rem;
+    padding: var(--space-6);
+}
+
+.panel .alert {
+    margin: var(--space-4) 0 0;
 }
 
 .header-row {
     align-items: center;
     display: flex;
-    gap: 1rem;
+    gap: var(--space-4);
     justify-content: space-between;
-    margin-bottom: 1.5rem;
+}
+
+.card > .header-row {
+    margin-bottom: var(--space-4);
 }
 
 .grid {
     display: grid;
-    gap: 1rem;
+    gap: var(--space-4);
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .card {
-    padding: 22px;
-}
-
-.grid + .card,
-.card + .card {
-    margin-top: 18px;
+    padding: var(--space-5);
 }
 
 .stat-red,
@@ -158,7 +117,7 @@ p {
     font-size: 34px;
     font-weight: 800;
     line-height: 1.1;
-    margin-top: .5rem;
+    margin-top: var(--space-2);
 }
 
 .stat-red .metric { color: var(--red); }
@@ -171,7 +130,7 @@ label {
     font-size: .85rem;
     font-weight: 700;
     color: var(--gray-700);
-    margin-bottom: .4rem;
+    margin-bottom: var(--space-2);
 }
 
 input,
@@ -209,14 +168,14 @@ input[type="checkbox"] {
 }
 
 .field {
-    margin-top: 1rem;
+    margin-top: var(--space-4);
 }
 
 .inline-field {
     align-items: center;
     display: flex;
-    gap: .5rem;
-    margin-top: 1rem;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
 }
 
 .inline-field label {
@@ -226,32 +185,27 @@ input[type="checkbox"] {
 .button,
 button {
     align-items: center;
-    background: var(--philippine-orange);
-    border: 1px solid var(--philippine-orange);
+    background: var(--primary);
+    border: 1px solid var(--primary);
     border-radius: var(--radius-sm);
-    color: var(--rosewood);
+    color: #ffffff;
     cursor: pointer;
     display: inline-flex;
     font-weight: 700;
-    font-size: .85rem;
-    gap: .4rem;
+    font-size: .875rem;
+    gap: var(--space-2);
     justify-content: center;
     min-height: 44px;
-    padding: .6rem .95rem;
-    transition: background .15s;
+    padding: var(--space-2) var(--space-4);
+    transition: background .15s, border-color .15s;
 }
 
 .button:hover,
-button:hover {
-    background: var(--sangria);
-    border-color: var(--sangria);
-    color: #ffffff;
-}
-
+button:hover,
 .button:active,
 button:active {
-    background: var(--sangria);
-    border-color: var(--sangria);
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
     color: #ffffff;
 }
 
@@ -266,7 +220,7 @@ button:disabled,
 .button.secondary,
 button.secondary {
     background: #ffffff;
-    color: var(--gray-700);
+    color: var(--rosewood);
     border-color: var(--control-border);
 }
 
@@ -274,6 +228,7 @@ button.secondary {
 button.secondary:hover {
     background: var(--gray-100);
     border-color: var(--sangria);
+    color: var(--rosewood);
 }
 
 .button.danger,
@@ -292,33 +247,38 @@ button.danger:hover {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: .65rem;
-    margin-top: 1.25rem;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+}
+
+.actions.inline {
+    gap: var(--space-2);
+    margin-top: 0;
 }
 
 .alert {
+    border: 1px solid transparent;
     border-radius: var(--radius-md);
-    margin-bottom: 1rem;
-    padding: .85rem 1rem;
+    padding: var(--space-3) var(--space-4);
     font-size: .9rem;
 }
 
 .alert.error {
     background: var(--red-light);
-    border: 1px solid #FCA5A5;
-    color: var(--red-dark);
+    border-color: var(--maximum-red);
+    color: var(--sangria);
 }
 
 .alert.success {
     background: var(--green-light);
-    border: 1px solid #86EFAC;
-    color: #15803D;
+    border-color: var(--success);
+    color: #345333;
 }
 
 .error-text {
-    color: var(--red-dark);
+    color: var(--maximum-red);
     font-size: .8rem;
-    margin-top: .35rem;
+    margin-top: var(--space-1);
 }
 
 table {
@@ -329,16 +289,16 @@ table {
 th,
 td {
     border-bottom: 1px solid var(--gray-200);
-    padding: .85rem 1rem;
+    padding: var(--space-3) var(--space-4);
     text-align: left;
     vertical-align: middle;
-    font-size: .85rem;
+    font-size: .875rem;
 }
 
 th {
     background: var(--rosewood);
     color: #ffffff;
-    font-size: .7rem;
+    font-size: .75rem;
     font-weight: 700;
     letter-spacing: .04em;
     text-transform: uppercase;
@@ -348,108 +308,9 @@ tbody tr:hover {
     background: #FFF8F0;
 }
 
-.badge {
-    background: var(--gray-100);
-    border: 1px solid transparent;
-    color: var(--rosewood);
-    border-radius: 9999px;
-    display: inline-block;
-    font-size: .7rem;
-    font-weight: 700;
-    letter-spacing: .03em;
-    padding: .3rem .65rem;
-    text-transform: uppercase;
-}
-
-.badge.active {
-    background: var(--green-light);
-    color: #345333;
-}
-
-.badge.inactive {
-    background: var(--red-light);
-    color: var(--red-dark);
-}
-
-.badge.status-pending,
-.badge.status-rejected {
-    background: var(--red-light);
-    color: var(--red-dark);
-}
-
-.badge.status-approved,
-.badge.status-verified {
-    background: var(--green-light);
-    color: #345333;
-}
-
-.badge.status-reported {
-    background: #ffffff;
-    border-color: var(--maximum-red);
-    color: var(--sangria);
-}
-
-.badge.status-received {
-    background: #ffffff;
-    border-color: var(--sangria);
-    color: var(--rosewood);
-}
-
-.badge.status-dispatched {
-    background: #ffffff;
-    border-color: #16A34A;
-    color: #345333;
-}
-
-.badge.status-completed {
-    background: #ffffff;
-    border-color: #64748B;
-    color: #475569;
-}
-
-.badge.status-reported::before { content: "● "; }
-.badge.status-received::before { content: "■ "; }
-.badge.status-dispatched::before { content: "◆ "; }
-.badge.status-completed::before { content: "✓ "; }
-
-.badge.severity-low {
-    background: #ffffff;
-    border-color: var(--sangria);
-}
-
-.badge.severity-low::before { content: "○ "; }
-
-.badge.severity-moderate {
-    background: var(--amber-light);
-    color: var(--rosewood);
-}
-
-.badge.severity-moderate::before { content: "■ "; }
-
-.badge.severity-high {
-    background: var(--maximum-red);
-    color: #ffffff;
-}
-
-.badge.severity-high::before { content: "! "; }
-
-.badge.severity-critical {
-    background: var(--rosewood);
-    color: #ffffff;
-    font-weight: 800;
-}
-
-.badge.severity-critical::before { content: "◆ "; }
-
-.badge.severity-unrated {
-    background: #ffffff;
-    border-color: var(--gray-300);
-    color: var(--gray-700);
-}
-
 .split {
     display: grid;
-    gap: 1rem;
+    gap: var(--space-4);
     grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
 }
 

@@ -1,0 +1,86 @@
+/* ResQLink design tokens: palette, status/severity/chart colours, spacing, radii, shadows.
+ * Loaded first; every other stylesheet and dispatcher-map.js reads these values. */
+
+:root {
+    color-scheme: light;
+    --rosewood: #5A0006;
+    --sangria: #920004;
+    --maximum-red: #D92200;
+    --tangelo: #F3500A;
+    --philippine-orange: #F37100;
+    --surface: #FFFFFF;
+    --surface-alt: #FBF3EA;
+    --border: #E8DCD0;
+    --control-border: #8A766A;
+    --text-primary: var(--rosewood);
+    --text-muted: #6B5B55;
+    --text-on-dark: #F4E6E2;
+    --text-on-dark-muted: #D7BFC0;
+    --text-on-dark-subtle: #B8999B;
+    --primary: var(--sangria);
+    --primary-hover: var(--rosewood);
+    --accent: var(--tangelo);
+    --accent-light: #FFF0DF;
+    --danger: var(--maximum-red);
+    --success: #476B45;
+    --focus: var(--tangelo);
+
+    /* Incident workflow status: outlined pills, map markers, legends, charts. */
+    --status-reported: #C81E1E;
+    --status-received: #B45309;
+    --status-dispatched: #0F766E;
+    --status-completed: #4B5563;
+    --status-all: #2563EB;
+
+    /* Preliminary severity: filled badges, escalating from neutral to red. */
+    --severity-low: #4B5563;
+    --severity-moderate-bg: #FDE7B0;
+    --severity-moderate-text: #7A4A00;
+    --severity-high: #C2410C;
+    --severity-critical: #B91C1C;
+
+    /* Categorical chart series; distinct hues so adjacent bars stay apart. */
+    --chart-1: #0F766E;
+    --chart-2: #B45309;
+    --chart-3: #4338CA;
+    --chart-4: #BE123C;
+    --chart-5: #4B5563;
+
+    /* 4px-based spacing scale used for gaps, padding, and page rhythm. */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+
+    /* Legacy aliases kept so older views keep resolving to the palette. */
+    --red: var(--maximum-red);
+    --red-dark: var(--sangria);
+    --red-light: #FCE8E3;
+    --blue: var(--tangelo);
+    --blue-dark: var(--rosewood);
+    --blue-light: var(--accent-light);
+    --navy: var(--rosewood);
+    --navy-light: var(--sangria);
+    --green: var(--success);
+    --green-light: #EAF1E7;
+    --amber: var(--philippine-orange);
+    --amber-light: #FFF0DF;
+    --gray-50: #FBF7F2;
+    --gray-100: #F5EDE5;
+    --gray-200: var(--border);
+    --gray-300: #D9C9BC;
+    --gray-400: #A89588;
+    --gray-500: var(--text-muted);
+    --gray-700: #493832;
+    --gray-800: #35221F;
+    --gray-900: var(--rosewood);
+    --radius-sm: 9px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --shadow-sm: 0 2px 8px rgba(90, 0, 6, .07);
+    --shadow-md: 0 8px 22px rgba(90, 0, 6, .10);
+    --shadow-lg: 0 16px 38px rgba(90, 0, 6, .14);
+}
