@@ -34,7 +34,7 @@
                             </span>
                         </td>
                         <td>
-                            <div class="actions" style="margin-top: 0;">
+                            <div class="actions inline">
                                 <a class="button secondary" href="{{ route('admin.users.edit', $managedUser) }}">Edit</a>
                                 <form method="POST" action="{{ route('admin.users.activation', $managedUser) }}">
                                     @csrf
@@ -54,7 +54,7 @@
             </tbody>
         </table>
 
-        <div style="margin-top: 1rem;">
+        <div class="records-pagination">
             {{ $users->links() }}
         </div>
     </section>

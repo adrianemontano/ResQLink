@@ -14,11 +14,11 @@
             <p>Administrator and dispatcher access only.</p>
 
             @if (session('status'))
-                <div class="alert success" style="margin-top: 1rem;">{{ session('status') }}</div>
+                <div class="alert success">{{ session('status') }}</div>
             @endif
 
             @if ($errors->any())
-                <div class="alert error" style="margin-top: 1rem;">
+                <div class="alert error">
                     {{ $errors->first() }}
                 </div>
             @endif

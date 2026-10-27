@@ -32,7 +32,7 @@
                         @endif
                     </td>
                     <td>
-                        <div class="actions" style="margin-top: 0;">
+                        <div class="actions inline">
                             <a class="button secondary" href="{{ route('admin.users.documents.show', [$managedUser, $document]) }}">Download</a>
                             @foreach (['approved' => 'Approve', 'rejected' => 'Reject'] as $reviewStatus => $reviewLabel)
                                 <form method="POST" action="{{ route('admin.users.documents.review', [$managedUser, $document]) }}">

@@ -3,9 +3,20 @@ import {
     loadGeoJson, loadLocalMapDatasets, maplibregl, radiusPolygon,
 } from './map/local-map';
 
+// Marker colours come from the shared --status-* CSS tokens so the map,
+// badges, legends, and charts always agree; fallbacks match those tokens.
 const STATUS_COLORS = {
-    Reported: '#D92200', Received: '#F37100', Dispatched: '#16A34A', Completed: '#64748B',
+    Reported: cssToken('--status-reported', '#C81E1E'),
+    Received: cssToken('--status-received', '#B45309'),
+    Dispatched: cssToken('--status-dispatched', '#0F766E'),
+    Completed: cssToken('--status-completed', '#4B5563'),
 };
+
+function cssToken(name, fallback) {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+    return value || fallback;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-resqlink-map]').forEach(initializeMap);
@@ -50,11 +61,11 @@ function addReferenceLayers(map, datasets) {
         'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2.5, 1],
     }, true);
     addGeoJsonLayer(map, 'dispatcher-landmarks', datasets.landmarks, 'circle', {
-        'circle-radius': 3, 'circle-color': '#F6C453', 'circle-opacity': 0.88,
+        'circle-radius': 2.5, 'circle-color': '#F6C453', 'circle-opacity': 0.88,
         'circle-stroke-color': '#765000', 'circle-stroke-width': 0.9,
     });
     addGeoJsonLayer(map, 'dispatcher-facilities', datasets.facilities, 'circle', {
-        'circle-radius': 8, 'circle-color': '#2563EB', 'circle-opacity': 0.96,
+        'circle-radius': 6, 'circle-color': '#2563EB', 'circle-opacity': 0.96,
         'circle-stroke-color': '#fff', 'circle-stroke-width': 2,
     });
     bindBarangayHover(map);
