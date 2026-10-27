@@ -115,7 +115,12 @@ Admin records now support persisted search, category/status filters, pagination,
 read-only detail/history access, and completed historical records. Reports
 support daily, weekly, and monthly date scopes with category, barangay, status,
 and date-frequency aggregations. Empty periods return zero totals and an
-explicit empty state. Coverage is defined in
+explicit empty state. Date windows use the configured application timezone,
+start-inclusive/end-exclusive boundaries, Monday-based weeks, and `created_at`
+as the fallback for legacy incidents without `reported_at`. Routes, permissions,
+search fields, and report definitions are documented in
+[the TASK4 implementation note](../implementation/admin-records-and-reports-feature.md).
+Coverage is defined in
 backend/tests/Feature/AdminRecordsAndReportsTest.php.
 
 ## Frontend/backend split
