@@ -3,12 +3,12 @@
 @php
     use App\Models\Incident;
 
-    $categoryPalette = ['var(--rosewood)', 'var(--sangria)', 'var(--maximum-red)', 'var(--tangelo)', 'var(--philippine-orange)'];
+    $categoryPalette = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
     $statusColors = [
-        'Reported' => 'var(--maximum-red)',
-        'Received' => 'var(--tangelo)',
-        'Dispatched' => 'var(--philippine-orange)',
-        Incident::STATUS_COMPLETED => 'var(--success)',
+        'Reported' => 'var(--status-reported)',
+        'Received' => 'var(--status-received)',
+        'Dispatched' => 'var(--status-dispatched)',
+        Incident::STATUS_COMPLETED => 'var(--status-completed)',
     ];
     $statusLabels = [
         'Reported' => 'Active — Reported',

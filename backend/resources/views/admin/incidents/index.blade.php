@@ -56,7 +56,7 @@
             @endforeach
         </nav>
 
-        <p>
+        <p class="record-summary">
             Showing {{ $incidents->firstItem() ?? 0 }}–{{ $incidents->lastItem() ?? 0 }}
             of {{ $incidents->total() }} incidents
         </p>
@@ -103,7 +103,7 @@
             </tbody>
         </table>
 
-        <nav aria-label="Incident records pages" style="margin-top: 1rem;">
+        <nav class="records-pagination" aria-label="Incident records pages">
             {{ $incidents->links() }}
         </nav>
     </section>
