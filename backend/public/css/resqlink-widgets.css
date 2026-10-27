@@ -144,7 +144,7 @@
 
 .filter-row button,
 .filter-row a {
-    min-height: 42px;
+    height: var(--control-height);
     white-space: nowrap;
 }
 
@@ -265,28 +265,32 @@
 .report-stat-grid {
     display: grid;
     gap: var(--space-4);
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
+/* Same anatomy as dashboard stat cards: label above, figure below. */
 .report-stat {
     background: #ffffff;
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-lg);
-    padding: var(--space-5) var(--space-4);
-    text-align: center;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
 }
 
 .report-stat-val {
-    color: var(--tangelo);
-    font-size: 30px;
-    font-weight: 800;
+    color: var(--rosewood);
+    font-size: 26px;
+    font-weight: 700;
     line-height: 1.1;
 }
 
 .report-stat-label {
-    color: var(--gray-500);
-    font-size: 12px;
-    margin-top: var(--space-2);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .chart-card {
@@ -303,8 +307,14 @@
 }
 
 .chart-card > p {
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-700);
     margin: 0;
-    padding: var(--space-1) 0;
+    padding: var(--space-2) 0;
+}
+
+.chart-card > p:last-child {
+    border-bottom: 0;
 }
 
 .bar-row {
@@ -330,7 +340,7 @@
     background: var(--gray-100);
     border-radius: 4px;
     flex: 1;
-    height: 24px;
+    height: 20px;
     overflow: hidden;
 }
 

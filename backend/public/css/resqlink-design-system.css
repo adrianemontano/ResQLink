@@ -46,32 +46,16 @@ button {
     box-shadow: var(--shadow-sm);
 }
 
-/* Stat cards share one accent so numbers, not colours, carry the meaning. */
-.grid .card,
-.report-stat {
-    border-top: 3px solid var(--tangelo);
-}
-
-.stat-red .metric,
-.stat-amber .metric,
-.stat-green .metric,
-.stat-blue .metric {
-    color: var(--tangelo);
-}
-
-.stat-red,
-.stat-amber,
-.stat-green,
-.stat-blue {
-    border-top-color: var(--tangelo);
-}
-
+/* Stat cards: quiet muted label, dark figure; numbers carry the meaning. */
 .grid .card > h2 {
     color: var(--text-muted);
     font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .02em;
+    font-weight: 600;
     margin: 0;
+}
+
+.grid .card {
+    padding: var(--space-4) var(--space-5);
 }
 
 /* Tables inside cards: rounded header, zebra rows, warm hover. */
@@ -169,7 +153,7 @@ textarea[aria-invalid="true"]:focus,
 .bar-value {
     color: var(--rosewood);
     font-size: 12px;
-    line-height: 24px;
+    line-height: 20px;
     position: absolute;
     right: var(--space-2);
     top: 0;
@@ -212,6 +196,67 @@ textarea[aria-invalid="true"]:focus,
     box-shadow: var(--shadow-sm);
 }
 
+/* The map card's own header provides the inset; the map runs edge to edge. */
+.card.volunteer-map-card {
+    padding: 0;
+}
+
+.volunteer-map-head {
+    padding: var(--space-4) var(--space-5);
+}
+
+/* Form rhythm: a form that opens a card starts flush with the card padding,
+ * labels that wrap their control keep an 8px gap, and stacked fields 16px. */
+.card > form:first-child > .field:first-of-type {
+    margin-top: 0;
+}
+
+label > input:not([type="checkbox"]):not([type="radio"]),
+label > select,
+label > textarea {
+    margin-top: var(--space-2);
+}
+
+.form-grid label > input,
+.form-grid label > select,
+.form-grid label > textarea {
+    margin-top: 0;
+}
+
+/* Filter bars align on the control bottom edge, so labels carry no margin. */
+.filter-row label,
+.record-filter-row label,
+.report-filter-row label,
+.filter-row > button,
+.filter-row > .button {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+form > label + label,
+form > label + button,
+form > label + .button {
+    margin-top: var(--space-4);
+}
+
+/* Card sub-sections (e.g. volunteer documents on Edit User). */
+.card > p + table,
+.card > h2 + table {
+    margin-top: var(--space-3);
+}
+
+.card > table + form,
+.card > table + .actions {
+    margin-top: var(--space-4);
+}
+
+.card > h3 {
+    border-top: 1px solid var(--border);
+    color: var(--rosewood);
+    margin: var(--space-5) 0 0;
+    padding-top: var(--space-5);
+}
+
 .volunteer-section-head,
 .volunteer-field label,
 .volunteer-map-head h2 {
@@ -228,7 +273,8 @@ textarea[aria-invalid="true"]:focus,
 }
 
 .volunteer-map-search input {
-    min-height: 48px;
+    background: #ffffff;
+    height: var(--control-height);
 }
 
 .incident-pagination a,
@@ -241,9 +287,10 @@ textarea[aria-invalid="true"]:focus,
 }
 
 @media (max-width: 760px) {
+    /* Larger touch targets on phones, still one shared height. */
+    :root { --control-height: 44px; }
     body { font-size: var(--text-md); }
-    input, select, textarea { font-size: 16px; min-height: 48px; }
-    button, .button { min-height: 48px; }
+    input, select, textarea { font-size: 16px; }
 
     .record-filter-row,
     .report-filter-row { grid-template-columns: 1fr; }
@@ -290,7 +337,9 @@ textarea[aria-invalid="true"]:focus,
         display: grid;
         font-size: 16px;
         gap: var(--space-3);
+        align-items: center;
         grid-template-columns: minmax(110px, .7fr) minmax(0, 1.3fr);
+        justify-items: start;
         overflow-wrap: anywhere;
         padding: var(--space-2) 0;
     }
@@ -312,7 +361,7 @@ textarea[aria-invalid="true"]:focus,
 
     .volunteer-field input,
     .volunteer-field select,
-    .volunteer-field textarea { font-size: 16px; min-height: 48px; }
+    .volunteer-field textarea { font-size: 16px; }
 
     .volunteer-section-head span,
     .volunteer-map-head span { font-size: 14px; }
