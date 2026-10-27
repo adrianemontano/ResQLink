@@ -33,19 +33,39 @@ h1, h2 {
 }
 
 h1 {
-    font-size: 24px;
-    font-weight: 800;
     color: var(--rosewood);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    line-height: 1.25;
 }
 
 h2 {
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+h3 {
+    font-size: 15px;
+    font-weight: 600;
 }
 
 p {
     color: var(--gray-500);
     margin: var(--space-1) 0 0;
+}
+
+.sr-only {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
 }
 
 .main {
@@ -100,36 +120,20 @@ p {
     padding: var(--space-5);
 }
 
-.stat-red,
-.stat-amber,
-.stat-green,
-.stat-blue {
-    border-top: 3px solid var(--navy);
-}
-
-.stat-red { border-top-color: var(--red); }
-.stat-amber { border-top-color: var(--amber); }
-.stat-green { border-top-color: var(--green); }
-.stat-blue { border-top-color: var(--blue); }
-
+/* Stat cards: quiet label above a strong figure; no coloured strips. */
 .metric {
-    color: var(--tangelo);
-    font-size: 34px;
-    font-weight: 800;
+    color: var(--rosewood);
+    font-size: 30px;
+    font-weight: 700;
     line-height: 1.1;
     margin-top: var(--space-2);
 }
 
-.stat-red .metric { color: var(--red); }
-.stat-amber .metric { color: var(--amber); }
-.stat-green .metric { color: var(--green); }
-.stat-blue .metric { color: var(--blue); }
-
 label {
-    display: block;
-    font-size: .85rem;
-    font-weight: 700;
     color: var(--gray-700);
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
     margin-bottom: var(--space-2);
 }
 
@@ -137,16 +141,32 @@ input,
 select,
 textarea {
     background: #ffffff;
-    border: 1.5px solid var(--control-border);
+    border: var(--control-border-width) solid var(--control-border);
     border-radius: var(--radius-sm);
     color: var(--gray-900);
     display: block;
-    min-height: 42px;
-    padding: .65rem .75rem;
-    width: 100%;
+    font-size: 14px;
+    height: var(--control-height);
     outline: none;
-    font-size: .95rem;
-    transition: border-color .15s;
+    padding: 0 var(--space-3);
+    transition: border-color .15s, box-shadow .15s;
+    width: 100%;
+}
+
+textarea {
+    height: auto;
+    min-height: 96px;
+    padding: var(--space-2) var(--space-3);
+    resize: vertical;
+}
+
+input[type="file"] {
+    padding: 5px var(--space-2);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--gray-400);
 }
 
 input:focus,
@@ -161,10 +181,19 @@ textarea:focus {
     outline-offset: 2px;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"],
+input[type="radio"] {
     display: inline-block;
+    height: 16px;
     min-height: auto;
-    width: auto;
+    padding: 0;
+    width: 16px;
+}
+
+input[type="range"] {
+    border: 0;
+    height: auto;
+    padding: 0;
 }
 
 .field {
@@ -191,13 +220,25 @@ button {
     color: #ffffff;
     cursor: pointer;
     display: inline-flex;
-    font-weight: 700;
-    font-size: .875rem;
+    font-size: 14px;
+    font-weight: 600;
     gap: var(--space-2);
+    height: var(--control-height);
     justify-content: center;
-    min-height: 44px;
-    padding: var(--space-2) var(--space-4);
-    transition: background .15s, border-color .15s;
+    line-height: 1;
+    padding: 0 var(--space-4);
+    transition: background .15s, border-color .15s, color .15s;
+    white-space: nowrap;
+}
+
+/* Compact size for buttons inside table rows and dense toolbars. */
+.button.sm,
+button.sm,
+td .button,
+td button {
+    font-size: 13px;
+    height: var(--control-height-sm);
+    padding: 0 var(--space-3);
 }
 
 .button:hover,
@@ -231,24 +272,32 @@ button.secondary:hover {
     color: var(--rosewood);
 }
 
+/* Danger is outlined by default so destructive actions stay calm in lists;
+ * the colour, not a heavy fill, signals the risk. */
 .button.danger,
 button.danger {
-    background: var(--maximum-red);
+    background: #ffffff;
     border-color: var(--maximum-red);
-    color: #ffffff;
+    color: var(--maximum-red);
 }
 
 .button.danger:hover,
 button.danger:hover {
-    background: var(--red-dark);
+    background: var(--maximum-red);
+    border-color: var(--maximum-red);
+    color: #ffffff;
 }
 
 .actions {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: var(--space-2);
     margin-top: var(--space-5);
+}
+
+.actions form {
+    margin: 0;
 }
 
 .actions.inline {
@@ -258,9 +307,10 @@ button.danger:hover {
 
 .alert {
     border: 1px solid transparent;
-    border-radius: var(--radius-md);
+    border-left-width: 4px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
     padding: var(--space-3) var(--space-4);
-    font-size: .9rem;
 }
 
 .alert.error {
@@ -289,19 +339,22 @@ table {
 th,
 td {
     border-bottom: 1px solid var(--gray-200);
+    font-size: 14px;
     padding: var(--space-3) var(--space-4);
     text-align: left;
     vertical-align: middle;
-    font-size: .875rem;
 }
 
+/* Light header row: readable and formal without a heavy dark bar. */
 th {
-    background: var(--rosewood);
-    color: #ffffff;
-    font-size: .75rem;
-    font-weight: 700;
+    background: var(--gray-50);
+    border-bottom-color: var(--gray-300);
+    color: var(--gray-700);
+    font-size: 12px;
+    font-weight: 600;
     letter-spacing: .04em;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 tbody tr:hover {
