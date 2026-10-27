@@ -120,10 +120,10 @@ The page displays the timezone and window boundaries. Queries use
 - **Frequency by date** — one row per date in the window, including dates with
   zero incidents.
 
-Blank category, barangay, or status values are grouped as `Unknown`. Each
-status owns a fixed palette colour that matches the shared `.badge` status
-colours in `public/css/resqlink-theme.css`, so report bars and record badges
-read consistently.
+Blank category, barangay, or status values are grouped as `Unknown`. Status
+bars use the shared `--status-*` tokens and category bars use the `--chart-1`
+to `--chart-5` series from `public/css/resqlink-tokens.css`, so report bars,
+record badges, and dispatcher map markers read consistently.
 
 ### Empty periods
 
