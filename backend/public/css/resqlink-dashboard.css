@@ -154,26 +154,26 @@
 }
 
 .sidebar-logo-sub {
-    color: rgba(255, 255, 255, .5);
+    color: var(--text-on-dark-muted);
     font-size: 11px;
-    margin-top: 6px;
+    margin-top: var(--space-2);
 }
 
 .sidebar-nav {
     flex: 1;
-    padding: 8px 0;
+    padding: var(--space-2) 0;
 }
 
 .sidebar-section + .sidebar-section {
-    margin-top: 6px;
+    margin-top: var(--space-2);
 }
 
 .sidebar-section-label {
-    color: rgba(255, 255, 255, .4);
+    color: var(--text-on-dark-subtle);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .08em;
-    padding: 12px 18px 6px;
+    padding: var(--space-3) var(--space-4) var(--space-2);
     text-transform: uppercase;
 }
 
@@ -182,13 +182,13 @@
     background: transparent;
     border: none;
     border-left: 3px solid transparent;
-    color: rgba(255, 255, 255, .65);
+    color: var(--text-on-dark-muted);
     cursor: pointer;
     display: flex;
     font-size: 13px;
     font-weight: 500;
-    gap: 12px;
-    padding: 11px 18px;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
     transition: background .15s, color .15s;
     width: 100%;
 }
@@ -208,6 +208,7 @@
     background: var(--sangria);
     border-left-color: var(--philippine-orange);
     color: #ffffff;
+    font-weight: 700;
 }
 
 .sidebar-item svg {
@@ -223,13 +224,13 @@
 
 .sidebar-footer {
     border-top: 1px solid rgba(255, 255, 255, .1);
-    padding: 16px 20px;
+    padding: var(--space-4);
 }
 
 .sidebar-user {
-    color: rgba(255, 255, 255, .7);
+    color: var(--text-on-dark-muted);
     font-size: 12px;
-    margin-bottom: 10px;
+    margin-bottom: var(--space-3);
 }
 
 .sidebar-user strong {
@@ -242,7 +243,7 @@
 .sidebar-footer form .button {
     background: rgba(255, 255, 255, .1);
     border: none;
-    color: rgba(255, 255, 255, .7);
+    color: var(--text-on-dark);
     font-size: 12px;
     width: 100%;
 }
@@ -267,7 +268,21 @@
 .dashboard-main {
     flex: 1;
     min-width: 0;
-    padding: 28px;
+    padding: var(--space-6);
+}
+
+/* Page rhythm: one consistent gap between every top-level page section. */
+.dashboard-main > * {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.dashboard-main > * + * {
+    margin-top: var(--space-5);
+}
+
+.dashboard-main > .header-row + * {
+    margin-top: var(--space-6);
 }
 
 .incident-intro {
@@ -289,30 +304,30 @@
 
 .form-grid {
     display: grid;
-    gap: 18px;
+    gap: var(--space-5) var(--space-4);
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: 8px;
     max-width: 900px;
 }
 
 .form-grid label {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
+    margin-bottom: 0;
 }
 
 .form-grid input,
 .form-grid select,
 .form-grid textarea {
-    border: 1px solid var(--control-border);
+    border: 1.5px solid var(--control-border);
     border-radius: var(--radius-sm);
     font: inherit;
-    padding: 10px 12px;
+    padding: var(--space-2) var(--space-3);
     width: 100%;
 }
 
 .form-grid small {
-    color: var(--red);
+    color: var(--maximum-red);
 }
 
 .form-section-title,
@@ -322,10 +337,11 @@
 
 .form-section-title {
     border-bottom: 1px solid var(--border);
-    color: var(--navy);
+    color: var(--rosewood);
     font-size: 14px;
     font-weight: 700;
-    padding-bottom: 8px;
+    margin-top: var(--space-2);
+    padding-bottom: var(--space-2);
 }
 
 .form-actions {
@@ -344,7 +360,11 @@
     }
 
     .dashboard-main {
-        padding: 20px;
+        padding: var(--space-5) var(--space-4);
+    }
+
+    .dashboard-main > .header-row + * {
+        margin-top: var(--space-5);
     }
 
     .form-grid {

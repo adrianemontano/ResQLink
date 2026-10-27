@@ -1,4 +1,8 @@
-/* Final shared overrides for the ResQLink warm emergency-response design system. */
+/*
+ * Final shared overrides for the ResQLink warm emergency-response design system.
+ * Colour, status, severity, chart, and spacing tokens live in resqlink-theme.css;
+ * this file only holds cross-component refinements and the responsive layer.
+ */
 
 :root {
     --font-body: Inter, "Segoe UI", Arial, sans-serif;
@@ -7,10 +11,6 @@
     --text-md: 16px;
     --text-lg: 18px;
     --text-xl: 24px;
-    --space-1: 8px;
-    --space-2: 16px;
-    --space-3: 24px;
-    --space-4: 32px;
 }
 
 body,
@@ -24,7 +24,6 @@ button {
 .header-row h1,
 .volunteer-topbar h1,
 .card > h2,
-.detail-grid .card > h3,
 .form-section-title {
     color: var(--rosewood);
 }
@@ -47,97 +46,55 @@ button {
     box-shadow: var(--shadow-sm);
 }
 
+/* Stat cards share one accent so numbers, not colours, carry the meaning. */
 .grid .card,
 .report-stat {
     border-top: 3px solid var(--tangelo);
+}
+
+.stat-red .metric,
+.stat-amber .metric,
+.stat-green .metric,
+.stat-blue .metric {
+    color: var(--tangelo);
 }
 
 .stat-red,
 .stat-amber,
 .stat-green,
 .stat-blue {
-    border-top-color: var(--philippine-orange);
+    border-top-color: var(--tangelo);
 }
 
-.stat-red .metric,
-.stat-amber .metric,
-.stat-green .metric,
-.stat-blue .metric,
-.report-stat-val {
-    color: var(--tangelo);
+.grid .card > h2 {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    margin: 0;
 }
 
+/* Tables inside cards: rounded header, zebra rows, warm hover. */
 .card > table {
     border-collapse: separate;
     border-spacing: 0;
     overflow: hidden;
 }
 
-.card > table thead th:first-child { border-top-left-radius: 8px; }
-.card > table thead th:last-child { border-top-right-radius: 8px; }
-.card > table tbody tr:nth-child(even) { background: #FBF7F2; }
-.card > table tbody tr:hover { background: #FFF0DF; }
-
-.form-grid input,
-.form-grid select,
-.form-grid textarea {
-    border-color: var(--border);
-}
+.card > table thead th:first-child { border-top-left-radius: var(--radius-sm); }
+.card > table thead th:last-child { border-top-right-radius: var(--radius-sm); }
+.card > table tbody tr:nth-child(even) { background: var(--gray-50); }
+.card > table tbody tr:hover { background: var(--accent-light); }
 
 .card > table a,
 .header-row a:not(.button),
 .filter-row a,
 .record-scope-item {
-    color: var(--rosewood);
     text-decoration-color: var(--tangelo);
     text-underline-offset: 3px;
 }
 
-.card > table a:hover,
-.header-row a:not(.button):hover,
-.filter-row a:hover,
-.record-scope-item:hover {
-    color: var(--sangria);
-    text-decoration: underline;
-}
-
-.button,
-button,
-input,
-select,
-textarea {
-    border-radius: var(--radius-sm);
-}
-
-.button:not(.secondary):not(.danger),
-button:not(.secondary):not(.danger) {
-    background: var(--philippine-orange);
-    border-color: var(--rosewood);
-    color: var(--rosewood);
-    font-weight: 750;
-}
-
-.button:not(.secondary):not(.danger):hover,
-button:not(.secondary):not(.danger):hover {
-    background: var(--sangria);
-    border-color: var(--sangria);
-    color: #ffffff;
-}
-
-.button.secondary,
-button.secondary {
-    background: #ffffff;
-    border-color: var(--control-border);
-    color: var(--rosewood);
-}
-
-.button.danger,
-button.danger {
-    background: var(--maximum-red);
-    border-color: var(--maximum-red);
-    color: #ffffff;
-}
-
+/* Form states. */
 input:hover:not(:focus),
 select:hover:not(:focus),
 textarea:hover:not(:focus) {
@@ -153,8 +110,9 @@ textarea:disabled {
 }
 
 input[type="checkbox"],
-input[type="radio"] {
-    accent-color: var(--philippine-orange);
+input[type="radio"],
+input[type="range"] {
+    accent-color: var(--sangria);
 }
 
 input[aria-invalid="true"],
@@ -171,29 +129,30 @@ textarea[aria-invalid="true"]:focus,
     box-shadow: 0 0 0 3px rgba(217, 34, 0, .18);
 }
 
-.sidebar-footer form button:not(.secondary):not(.danger) {
-    background: rgba(255, 255, 255, .1);
-    border-color: transparent;
-    color: #ffffff;
-}
-
-.sidebar-footer form button:not(.secondary):not(.danger):hover {
-    background: var(--sangria);
-}
-
+/* Filter bars for records and reports. */
 .record-filter-row {
     align-items: end;
     display: grid;
-    gap: 12px;
+    gap: var(--space-3);
     grid-template-columns: minmax(220px, 2fr) minmax(150px, 1fr) minmax(150px, 1fr) auto auto;
-    margin-bottom: 18px;
 }
 
 .report-filter-row {
     align-items: end;
     display: grid;
-    gap: 12px;
+    gap: var(--space-2) var(--space-3);
     grid-template-columns: minmax(150px, .7fr) minmax(200px, 1fr) auto;
+}
+
+.report-filter-row label {
+    grid-row: 1;
+    margin: 0;
+}
+
+.report-filter-row select,
+.report-filter-row input,
+.report-filter-row button {
+    grid-row: 2;
 }
 
 .report-filter-row p {
@@ -202,102 +161,25 @@ textarea[aria-invalid="true"]:focus,
     margin: 0;
 }
 
-.record-scope-item.active {
-    border-bottom-color: var(--tangelo);
+/* Report bars: value label sits on the track, never on the coloured fill. */
+.bar-track {
+    position: relative;
+}
+
+.bar-value {
     color: var(--rosewood);
+    font-size: 12px;
+    line-height: 24px;
+    position: absolute;
+    right: var(--space-2);
+    top: 0;
 }
 
-.map-status-legend button.map-status-pill,
-.map-status-legend button.map-status-pill:not(.secondary):not(.danger) {
-    background: #FBF7F2;
-    border: 1px solid var(--border);
-    box-shadow: none;
-    color: var(--rosewood);
-    min-height: 44px;
+.bar-fill {
+    color: transparent;
 }
 
-.map-status-legend button.map-status-pill:hover {
-    background: #ffffff;
-    border-color: var(--control-border);
-    color: var(--rosewood);
-}
-
-.map-status-legend button.map-status-pill.active {
-    background: #FFF0DF;
-    border-color: var(--tangelo);
-    box-shadow: inset 0 0 0 1px rgba(243, 80, 10, .14);
-    color: var(--rosewood);
-}
-
-.map-status-legend button.map-status-pill:focus-visible {
-    outline: 3px solid var(--tangelo);
-    outline-offset: 2px;
-}
-
-.status-dot.all { background: #2563EB; }
-.status-dot.reported { background: var(--maximum-red); }
-.status-dot.received { background: var(--philippine-orange); }
-.status-dot.dispatched { background: #16A34A; }
-.status-dot.completed { background: #64748B; }
-.status-dot {
-    border-radius: 50%;
-    flex: 0 0 12px;
-    height: 12px;
-    transform: none;
-}
-
-.map-message {
-    background: #ffffff;
-    border-color: var(--border);
-    color: var(--rosewood);
-}
-
-.map-message.error,
-.alert.error {
-    background: #FCE8E3;
-    border-color: var(--maximum-red);
-    color: var(--sangria);
-}
-
-.alert.success {
-    background: var(--green-light);
-    border-color: var(--success);
-    color: #345333;
-}
-
-.map-search-box,
-.resqlink-map .maplibregl-popup-content {
-    border-color: var(--border);
-    color: var(--rosewood);
-}
-
-.map-search-box svg { stroke: var(--text-muted); }
-.map-search-box {
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: #ffffff;
-    transition: border-color .15s ease, box-shadow .15s ease;
-}
-
-.map-search-box:focus-within {
-    border-color: var(--tangelo);
-    box-shadow: 0 0 0 3px rgba(243, 80, 10, .16);
-}
-
-.map-search-box input,
-.map-search-box input:focus,
-.map-search-box input:focus-visible {
-    appearance: none;
-    border: 0 !important;
-    border-radius: 999px;
-    background: transparent;
-    box-shadow: none !important;
-    outline: none !important;
-    color: var(--rosewood);
-}
-
-.map-search-box input:focus { border: 0 !important; }
-
+/* MapLibre's default close button needs !important to drop browser button styles. */
 .resqlink-map .maplibregl-popup .maplibregl-popup-content > .maplibregl-popup-close-button,
 .resqlink-map .maplibregl-popup .maplibregl-popup-content > button.maplibregl-popup-close-button {
     align-items: center !important;
@@ -321,69 +203,7 @@ textarea[aria-invalid="true"]:focus,
     color: var(--rosewood) !important;
 }
 
-.map-search-box input::placeholder { color: var(--text-muted); }
-.resqlink-map-wrap { background: var(--surface-alt); border-color: var(--border); }
-.resqlink-map { background: #F5EDE5; }
-.map-controls { background: #ffffff; border-color: var(--border); }
-
-.resqlink-map .maplibregl-popup-content strong,
-.resqlink-popup-title,
-.resqlink-popup-card,
-.resqlink-popup-reporter,
-.resqlink-popup-close {
-    color: var(--rosewood);
-}
-
-.resqlink-map .maplibregl-popup-content a {
-    color: var(--rosewood);
-    text-decoration: underline;
-    text-decoration-color: var(--tangelo);
-    text-underline-offset: 3px;
-}
-
-.resqlink-map .maplibregl-popup-close-button {
-    color: var(--rosewood);
-}
-
-.resqlink-map .maplibregl-popup-close-button:hover {
-    background: var(--surface-alt);
-}
-
-.resqlink-barangay-tooltip {
-    background: var(--rosewood);
-    color: #ffffff;
-}
-
-.resqlink-barangay-tooltip::before {
-    border-top-color: var(--rosewood) !important;
-}
-
-.legend-dot.dot-pending { background: var(--maximum-red); }
-.legend-dot.dot-received { background: var(--tangelo); }
-.legend-dot.dot-dispatched { background: var(--philippine-orange); }
-.legend-dot.dot-completed { background: var(--success); }
-
-.map-search-box input:focus-visible,
-.volunteer-field input:focus-visible,
-.volunteer-field select:focus-visible,
-.volunteer-field textarea:focus-visible {
-    outline: 3px solid var(--tangelo);
-    outline-offset: 2px;
-}
-
-.bar-track { position: relative; }
-
-.bar-value {
-    color: var(--rosewood);
-    font-size: 12px;
-    line-height: 24px;
-    position: absolute;
-    right: 8px;
-    top: 0;
-}
-
-.bar-fill { color: transparent; }
-
+/* Volunteer incident form cards. */
 .volunteer-form-card,
 .volunteer-map-card {
     background: var(--surface);
@@ -392,45 +212,18 @@ textarea[aria-invalid="true"]:focus,
     box-shadow: var(--shadow-sm);
 }
 
-.volunteer-section-head {
-    border-color: var(--border);
-    color: var(--rosewood);
-}
-
+.volunteer-section-head,
 .volunteer-field label,
 .volunteer-map-head h2 {
     color: var(--rosewood);
 }
 
-.volunteer-field input,
-.volunteer-field select,
-.volunteer-field textarea {
-    border-color: var(--control-border);
-    color: var(--rosewood);
-    min-height: 44px;
-}
-
-.volunteer-field small,
-.error-text {
-    color: var(--maximum-red);
+.volunteer-section-head-spaced {
+    margin-top: var(--space-5);
 }
 
 .volunteer-field input[readonly] {
     background: var(--surface-alt);
-    color: var(--text-muted);
-}
-
-.volunteer-map-head,
-.volunteer-map-controls {
-    border-color: var(--border);
-}
-
-.volunteer-map-controls input[type="range"] {
-    accent-color: var(--philippine-orange);
-}
-
-.volunteer-map-controls,
-.volunteer-synced-note {
     color: var(--text-muted);
 }
 
@@ -440,68 +233,90 @@ textarea[aria-invalid="true"]:focus,
 
 .incident-pagination a,
 .incident-pagination span {
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
 }
 
 @media (min-width: 761px) and (max-width: 1024px) {
-    .dashboard-main { padding: 24px; }
+    .dashboard-main { padding: var(--space-5); }
 }
 
 @media (max-width: 760px) {
     body { font-size: var(--text-md); }
     input, select, textarea { font-size: 16px; min-height: 48px; }
     button, .button { min-height: 48px; }
+
     .record-filter-row,
     .report-filter-row { grid-template-columns: 1fr; }
-    .report-filter-row p { grid-column: auto; }
+
+    .report-filter-row label,
+    .report-filter-row select,
+    .report-filter-row input,
+    .report-filter-row button,
+    .report-filter-row p { grid-column: auto; grid-row: auto; }
+
+    /* Tables reflow into labelled cards on small screens. */
     .card { overflow: visible; }
+
     .card > table {
         display: block;
         min-width: 0;
         overflow: visible;
     }
+
     .card > table thead {
-        position: absolute;
-        width: 1px;
+        clip: rect(0, 0, 0, 0);
+        clip-path: inset(50%);
         height: 1px;
         overflow: hidden;
-        clip: rect(0, 0, 0, 0);
+        position: absolute;
         white-space: nowrap;
-        clip-path: inset(50%);
+        width: 1px;
     }
-    .card > table tbody { display: grid; gap: 12px; }
+
+    .card > table tbody { display: grid; gap: var(--space-3); }
+
     .card > table tbody tr {
-        display: grid;
-        padding: 8px 12px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
         background: #ffffff;
-    }
-    .card > table tbody td {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
         display: grid;
-        grid-template-columns: minmax(110px, .7fr) minmax(0, 1.3fr);
-        gap: 12px;
-        padding: 8px 0;
-        border-bottom: 1px solid var(--border);
-        overflow-wrap: anywhere;
-        font-size: 16px;
+        padding: var(--space-2) var(--space-3);
     }
+
+    .card > table tbody tr:nth-child(even) { background: #ffffff; }
+
+    .card > table tbody td {
+        border-bottom: 1px solid var(--border);
+        display: grid;
+        font-size: 16px;
+        gap: var(--space-3);
+        grid-template-columns: minmax(110px, .7fr) minmax(0, 1.3fr);
+        overflow-wrap: anywhere;
+        padding: var(--space-2) 0;
+    }
+
     .card > table tbody td:last-child { border-bottom: 0; }
+
     .card > table tbody td::before {
-        content: attr(data-label);
         color: var(--text-muted);
+        content: attr(data-label);
         font-size: 12px;
         font-weight: 750;
     }
+
     .card > table tbody td[colspan] { display: block; }
     .card > table tbody td[colspan]::before { content: none; }
+
     .volunteer-report-grid { grid-template-columns: minmax(0, 1fr); }
     .volunteer-field label { font-size: 14px; }
+
     .volunteer-field input,
     .volunteer-field select,
     .volunteer-field textarea { font-size: 16px; min-height: 48px; }
+
     .volunteer-section-head span,
     .volunteer-map-head span { font-size: 14px; }
+
     .volunteer-map-card { height: auto; max-height: none; position: static; }
     .volunteer-map-wrap { height: 58vh; min-height: 380px; }
     .volunteer-map { min-height: 380px; }
