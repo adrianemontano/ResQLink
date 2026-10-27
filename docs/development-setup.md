@@ -134,6 +134,16 @@ each developer's `backend/.env`:
 LOCAL_MAP_STYLE_URL=http://localhost:8080/styles/positron/style.json
 ```
 
+A default `tileserver-gl-light` install only serves the `basic-preview` style;
+`http://localhost:8080/styles/positron/style.json` returns 404 unless Positron
+has been added to the local TileServer. If the map background is blank, check
+`http://localhost:8080` for the available styles and, until Positron is
+provided, use:
+
+```env
+LOCAL_MAP_STYLE_URL=http://localhost:8080/styles/basic-preview/style.json
+```
+
 After changing `.env`, refresh the app. If Laravel has cached configuration,
 clear it from the `backend/` directory with `php artisan config:clear`.
 
