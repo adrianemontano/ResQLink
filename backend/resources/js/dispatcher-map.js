@@ -61,11 +61,11 @@ function addReferenceLayers(map, datasets) {
         'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2.5, 1],
     }, true);
     addGeoJsonLayer(map, 'dispatcher-landmarks', datasets.landmarks, 'circle', {
-        'circle-radius': 3, 'circle-color': '#F6C453', 'circle-opacity': 0.88,
+        'circle-radius': 2.5, 'circle-color': '#F6C453', 'circle-opacity': 0.88,
         'circle-stroke-color': '#765000', 'circle-stroke-width': 0.9,
     });
     addGeoJsonLayer(map, 'dispatcher-facilities', datasets.facilities, 'circle', {
-        'circle-radius': 8, 'circle-color': '#2563EB', 'circle-opacity': 0.96,
+        'circle-radius': 6, 'circle-color': '#2563EB', 'circle-opacity': 0.96,
         'circle-stroke-color': '#fff', 'circle-stroke-width': 2,
     });
     bindBarangayHover(map);
