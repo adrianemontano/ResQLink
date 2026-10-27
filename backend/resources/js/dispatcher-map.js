@@ -3,9 +3,20 @@ import {
     loadGeoJson, loadLocalMapDatasets, maplibregl, radiusPolygon,
 } from './map/local-map';
 
+// Marker colours come from the shared --status-* CSS tokens so the map,
+// badges, legends, and charts always agree; fallbacks match those tokens.
 const STATUS_COLORS = {
-    Reported: '#D92200', Received: '#F37100', Dispatched: '#16A34A', Completed: '#64748B',
+    Reported: cssToken('--status-reported', '#C81E1E'),
+    Received: cssToken('--status-received', '#B45309'),
+    Dispatched: cssToken('--status-dispatched', '#0F766E'),
+    Completed: cssToken('--status-completed', '#4B5563'),
 };
+
+function cssToken(name, fallback) {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+    return value || fallback;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-resqlink-map]').forEach(initializeMap);
