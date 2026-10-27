@@ -23,7 +23,7 @@
     --accent-light: #FFF0DF;
     --danger: var(--maximum-red);
     --success: #476B45;
-    --focus: var(--tangelo);
+    --focus: #5A4A45;
 
     /* Incident workflow status: outlined pills, map markers, legends, charts. */
     --status-reported: #C81E1E;
@@ -32,12 +32,12 @@
     --status-completed: #4B5563;
     --status-all: #2563EB;
 
-    /* Preliminary severity: filled badges, escalating from neutral to red. */
-    --severity-low: #4B5563;
-    --severity-moderate-bg: #FDE7B0;
-    --severity-moderate-text: #7A4A00;
-    --severity-high: #C2410C;
-    --severity-critical: #B91C1C;
+    /* Preliminary severity: filled badges, escalating from low to critical. */
+    --severity-low: #FDC500;
+    --severity-moderate-bg: #FD8C00;
+    --severity-moderate-text: #FFFFFF;
+    --severity-high: #DC0000;
+    --severity-critical: #780000;
 
     /* Categorical chart series; distinct hues so adjacent bars stay apart. */
     --chart-1: #0F766E;

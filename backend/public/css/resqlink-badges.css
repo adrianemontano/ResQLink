@@ -55,19 +55,18 @@
 .badge.status-dispatched { color: var(--status-dispatched); }
 .badge.status-completed { color: var(--status-completed); }
 
-.badge.status-reported::before { content: "● "; }
+.badge.status-reported::before { content: "■ "; }
 .badge.status-received::before { content: "■ "; }
-.badge.status-dispatched::before { content: "◆ "; }
-.badge.status-completed::before { content: "✓ "; }
+.badge.status-dispatched::before { content: "■ "; }
+.badge.status-completed::before { content: "■ "; }
 
 /* Severity: filled badges that escalate in weight; Critical is the strongest. */
 .badge.severity-low {
-    background: #ffffff;
-    border-color: var(--severity-low);
-    color: var(--severity-low);
+    background: var(--severity-low);
+    color: #3a2e00;
 }
 
-.badge.severity-low::before { content: "○ "; }
+.badge.severity-low::before { content: "■ "; }
 
 .badge.severity-moderate {
     background: var(--severity-moderate-bg);
@@ -81,7 +80,7 @@
     color: #ffffff;
 }
 
-.badge.severity-high::before { content: "! "; }
+.badge.severity-high::before { content: "■ "; }
 
 .badge.severity-critical {
     background: var(--severity-critical);
@@ -89,11 +88,24 @@
     font-weight: 700;
 }
 
-.badge.severity-critical::before { content: "◆ "; }
+.badge.severity-critical::before { content: "■ "; }
 
 .badge.severity-unrated {
     background: #ffffff;
     border-color: var(--gray-300);
     color: var(--gray-700);
+}
+
+.badge.status-reported,
+.badge.status-received,
+.badge.status-dispatched,
+.badge.status-completed,
+.badge.severity-low,
+.badge.severity-moderate,
+.badge.severity-high,
+.badge.severity-critical,
+.badge.severity-unrated {
+    min-width: 108px;
+    justify-content: center;
 }
 

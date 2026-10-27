@@ -172,13 +172,13 @@ textarea::placeholder {
 input:focus,
 select:focus,
 textarea:focus {
-    border-color: var(--focus);
-    box-shadow: 0 0 0 3px rgba(243, 80, 10, .18);
+    border-color: var(--focus) !important;
+    border-width: 2px !important;
+    box-shadow: none !important;
 }
 
 :focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 2px;
+    outline: none;
 }
 
 input[type="checkbox"],
