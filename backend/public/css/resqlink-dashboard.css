@@ -45,17 +45,15 @@
 
 .sidebar {
     background: var(--rosewood);
-    border-top-right-radius: var(--radius-xl);
-    border-bottom-right-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    margin-right: 16px;
-    min-height: 100vh;
+    height: 100vh;
     overflow: hidden;
+    position: sticky;
+    top: 0;
     transition: width .2s ease;
-    width: 216px;
+    width: 232px;
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar {
@@ -181,34 +179,46 @@
     align-items: center;
     background: transparent;
     border: none;
-    border-left: 3px solid transparent;
+    border-radius: var(--radius-sm);
     color: var(--text-on-dark-muted);
     cursor: pointer;
     display: flex;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
+    height: 40px;
+    margin: 2px var(--space-3);
+    padding: 0 var(--space-3);
+    position: relative;
     transition: background .15s, color .15s;
-    width: 100%;
+    width: calc(100% - 2 * var(--space-3));
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar-item {
     justify-content: center;
-    padding: 12px 0;
-    pointer-events: none;
+    padding: 0;
 }
 
 .sidebar-item:hover {
-    background: var(--sangria);
+    background: rgba(255, 255, 255, .08);
     color: #ffffff;
 }
 
 .sidebar-item.active {
-    background: var(--sangria);
-    border-left-color: var(--philippine-orange);
+    background: rgba(255, 255, 255, .14);
     color: #ffffff;
-    font-weight: 700;
+    font-weight: 600;
+}
+
+.sidebar-item.active::before {
+    background: var(--philippine-orange);
+    border-radius: 2px;
+    bottom: 10px;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: 10px;
+    width: 3px;
 }
 
 .sidebar-item svg {
@@ -241,10 +251,12 @@
 
 .sidebar-footer form button,
 .sidebar-footer form .button {
-    background: rgba(255, 255, 255, .1);
-    border: none;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, .22);
     color: var(--text-on-dark);
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    height: 36px;
     width: 100%;
 }
 
@@ -355,7 +367,8 @@
     }
 
     .sidebar {
-        min-height: auto;
+        height: auto;
+        position: static;
         width: 100%;
     }
 
