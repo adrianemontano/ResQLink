@@ -157,7 +157,32 @@ button:active:not(:disabled) {
     transform: translateY(1px);
 }
 
-/* Inputs: softer radius and a sunken disabled surface. */
+/* Inputs: on focus the outline darkens to the warm neutral --focus brown with a
+ * soft halo, so focus never looks like an error (red stays for invalid fields).
+ * !important beats the base rule in theme.css; the map search keeps its own style. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+select:focus,
+textarea:focus {
+    background: #ffffff;
+    border-color: var(--focus) !important;
+    box-shadow: 0 0 0 4px rgba(90, 74, 69, .12) !important;
+}
+
+input[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus,
+.is-invalid:focus {
+    border-color: var(--maximum-red) !important;
+    box-shadow: 0 0 0 4px rgba(217, 34, 0, .16) !important;
+}
+
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+/* Sunken disabled surface. */
 input:disabled,
 select:disabled,
 textarea:disabled {

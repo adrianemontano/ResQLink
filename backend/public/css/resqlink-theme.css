@@ -173,7 +173,7 @@ input:focus,
 select:focus,
 textarea:focus {
     border-color: var(--focus) !important;
-    border-width: 2px !important;
+    border-width: 1.5px !important;
     box-shadow: none !important;
 }
 
