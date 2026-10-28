@@ -11,6 +11,7 @@ problems remain easy to isolate.
 
 Read these supporting documents first:
 
+- [Android Studio setup and mobile implementation guide](android-studio-setup-and-implementation-guide.md)
 - [Mobile application scope](mobile-application-scope.md)
 - [Mobile technology stack](mobile-technology-stack.md)
 - [Mobile application architecture](mobile-application-architecture.md)
@@ -496,4 +497,3 @@ Continue with the detailed
 [Mobile verification and handoff guide](mobile-verification-and-handoff-guide.md).
 It covers reliability, security, automated and manual checks, documentation,
 commit sequencing, and the recommended first-session stopping point.
-
