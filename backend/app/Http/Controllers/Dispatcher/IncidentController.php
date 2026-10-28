@@ -12,6 +12,13 @@ use Illuminate\View\View;
 
 class IncidentController extends Controller
 {
+    private const ALLOWED_TRANSITIONS = [
+        'Reported' => ['Reported', 'Received'],
+        'Received' => ['Received', 'Dispatched'],
+        'Dispatched' => ['Dispatched', 'Completed'],
+        'Completed' => ['Completed'],
+    ];
+
     public function index(): View
     {
         $baseQuery = Incident::query()
@@ -55,7 +62,11 @@ class IncidentController extends Controller
         $data = $request->validated();
         $status = $data['status'];
 
-        abort_unless($this->isValidTransition($incident->status, $status), 422, 'Invalid incident status transition.');
+        if (! $this->isValidTransition($incident->status, $status)) {
+            return redirect()->route('dispatcher.incidents.show', $incident)
+                ->withErrors(['status' => $this->invalidTransitionMessage($incident->status)])
+                ->withInput();
+        }
 
         DB::transaction(function () use ($incident, $data, $request, $status): void {
             $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
@@ -135,14 +146,17 @@ class IncidentController extends Controller
 
     private function isValidTransition(?string $currentStatus, string $nextStatus): bool
     {
-        $allowed = [
-            'Reported' => ['Reported', 'Received'],
-            'Received' => ['Received', 'Dispatched'],
-            'Dispatched' => ['Dispatched', 'Completed'],
-            'Completed' => ['Completed'],
-        ];
+        return in_array($nextStatus, self::ALLOWED_TRANSITIONS[$currentStatus] ?? [], true);
+    }
 
-        return in_array($nextStatus, $allowed[$currentStatus] ?? [], true);
+    private function invalidTransitionMessage(?string $currentStatus): string
+    {
+        $label = $currentStatus ?? 'This';
+        $next = array_values(array_diff(self::ALLOWED_TRANSITIONS[$currentStatus] ?? [], [$currentStatus]));
+
+        return $next === []
+            ? "{$label} incidents can no longer change status."
+            : "{$label} incidents can only move to {$next[0]} next.";
     }
 
 }

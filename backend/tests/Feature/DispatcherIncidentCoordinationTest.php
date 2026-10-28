@@ -90,7 +90,10 @@ class DispatcherIncidentCoordinationTest extends TestCase
         $incident = $this->createIncident(['status' => 'Reported']);
 
         $this->actingAs($dispatcher)->patch(route('dispatcher.incidents.status', $incident), ['status' => 'Completed'])
-            ->assertStatus(422);
+            ->assertRedirect(route('dispatcher.incidents.show', $incident))
+            ->assertSessionHasErrors(['status' => 'Reported incidents can only move to Received next.']);
+
+        $this->assertSame('Reported', $incident->fresh()->status);
     }
 
     public function test_non_dispatchers_are_denied_and_completed_incidents_remain_visible(): void
