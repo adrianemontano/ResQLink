@@ -10,7 +10,15 @@ and reported time, with category, status, and a searchable barangay selector.
 The selector uses the barangay names from the local Cebu City map dataset, so
 the incident list can be filtered by an existing mapped barangay. Dispatchers
 can open a full incident summary and update status only through `Reported`,
-`Received`, `Dispatched`, and `Completed`.
+`Received`, `Dispatched`, and `Completed`, one step forward at a time.
+
+If a dispatcher picks a status that skips a step (for example `Reported` to
+`Completed`), the incident is not changed and the TASK3 Update Status form
+reloads with an inline message naming the allowed next status, such as
+"Reported incidents can only move to Received next." Completed incidents show
+"Completed incidents can no longer change status." The typed history note is
+kept. The dropdown still lists all four statuses; limiting it to allowed
+transitions is pending PM approval.
 
 Each accepted status change stores the acting dispatcher, timestamp, status
 reference, and optional note in `incident_histories`. Completed incidents remain
