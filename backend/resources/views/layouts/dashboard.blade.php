@@ -27,9 +27,12 @@
             @include('layouts.partials.sidebar-nav')
 
             <div class="sidebar-footer">
-                <div class="sidebar-user sidebar-label">
-                    Logged in as
-                    <strong>{{ auth()->user()->name }}</strong>
+                <div class="sidebar-user">
+                    <span class="sidebar-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                    <span class="sidebar-label">
+                        Logged in as
+                        <strong>{{ auth()->user()->name }}</strong>
+                    </span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

@@ -42,8 +42,11 @@
                         @endforeach
                     </select>
                 </label>
+                @error('status')
+                    <div class="error-text">{{ $message }}</div>
+                @enderror
                 <label>History note
-                    <textarea name="notes" rows="4" maxlength="5000" placeholder="Optional dispatch note"></textarea>
+                    <textarea name="notes" rows="4" maxlength="5000" placeholder="Optional dispatch note">{{ old('notes') }}</textarea>
                 </label>
                 <button type="submit">Save status</button>
             </form>

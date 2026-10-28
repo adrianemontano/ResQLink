@@ -1,11 +1,10 @@
 /*
  * Final shared overrides for the ResQLink warm emergency-response design system.
- * Colour, status, severity, chart, and spacing tokens live in resqlink-theme.css;
+ * Colour, status, severity, chart, spacing, and font tokens live in resqlink-tokens.css;
  * this file only holds cross-component refinements and the responsive layer.
  */
 
 :root {
-    --font-body: Inter, "Segoe UI", Arial, sans-serif;
     --text-xs: 12px;
     --text-sm: 14px;
     --text-md: 16px;
@@ -350,7 +349,7 @@ form > label + .button {
         color: var(--text-muted);
         content: attr(data-label);
         font-size: 12px;
-        font-weight: 750;
+        font-weight: 600;
     }
 
     .card > table tbody td[colspan] { display: block; }

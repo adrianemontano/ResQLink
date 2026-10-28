@@ -134,7 +134,7 @@
 .detail-list dt {
     color: var(--gray-500);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .detail-list dd {
@@ -162,7 +162,7 @@
     color: var(--rosewood);
     display: inline-flex;
     font-size: .875rem;
-    font-weight: 700;
+    font-weight: 600;
     padding: var(--space-2);
 }
 
@@ -188,7 +188,7 @@
 .card > table a,
 .header-row a:not(.button) {
     color: var(--rosewood);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .card > table a:hover,
@@ -283,7 +283,7 @@
 .report-stat-val {
     color: var(--rosewood);
     font-size: 26px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.1;
 }
 
@@ -302,7 +302,7 @@
 
 .chart-title {
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
     margin: 0 0 var(--space-4);
 }
 
@@ -350,7 +350,7 @@
     color: #ffffff;
     display: flex;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     height: 100%;
     padding-left: var(--space-3);
 }
@@ -381,7 +381,7 @@
 .record-scope-item.active {
     border-bottom-color: var(--tangelo);
     color: var(--rosewood);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .record-scope-count {
