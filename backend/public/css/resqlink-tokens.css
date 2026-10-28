@@ -35,8 +35,9 @@
 
     /* Preliminary severity: filled badges, escalating from low to critical. */
     --severity-low: #FDC500;
+    --severity-low-text: #3A2E00;
     --severity-moderate-bg: #FD8C00;
-    --severity-moderate-text: #FFFFFF;
+    --severity-moderate-text: #3A1F00;
     --severity-high: #DC0000;
     --severity-critical: #780000;
 

@@ -349,7 +349,7 @@ form > label + .button {
         color: var(--text-muted);
         content: attr(data-label);
         font-size: 12px;
-        font-weight: 750;
+        font-weight: 600;
     }
 
     .card > table tbody td[colspan] { display: block; }

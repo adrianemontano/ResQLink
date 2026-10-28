@@ -58,7 +58,7 @@
     color: var(--rosewood);
     display: block;
     font-size: 17px;
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.2;
     margin-bottom: 4px;
 }
@@ -67,7 +67,7 @@
     color: var(--rosewood);
     display: inline-block;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     margin-top: var(--space-3);
     text-decoration: underline;
     text-decoration-color: var(--tangelo);
@@ -184,7 +184,7 @@
     border-color: var(--tangelo);
     box-shadow: inset 0 0 0 1px rgba(243, 80, 10, .14);
     color: var(--rosewood);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .status-dot {
@@ -249,7 +249,7 @@
 .resqlink-popup-title {
     color: var(--rosewood);
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.3;
     padding-right: 24px;
 }
@@ -265,7 +265,7 @@
 .resqlink-popup-reporter { color: var(--text-muted); }
 
 .resqlink-popup-category {
-    font-weight: 700;
+    font-weight: 600;
     overflow-wrap: anywhere;
 }
 

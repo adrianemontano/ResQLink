@@ -13,7 +13,7 @@ body {
 }
 
 h1 {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 600;
     letter-spacing: -.02em;
 }
@@ -21,7 +21,7 @@ h1 {
 h2,
 h3,
 .chart-title {
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: -.01em;
 }
 
@@ -79,13 +79,13 @@ label {
 
 .grid .card::before {
     background: var(--stat-accent, var(--tangelo));
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 3px 3px 0;
     content: "";
-    height: 32px;
+    height: 24px;
     left: 0;
     position: absolute;
     top: var(--space-5);
-    width: 4px;
+    width: 3px;
 }
 
 .grid .card.stat-red { --stat-accent: var(--maximum-red); }
@@ -101,8 +101,8 @@ label {
 
 .metric,
 .report-stat-val {
-    font-size: 34px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 500;
     letter-spacing: -.02em;
 }
 
@@ -170,7 +170,7 @@ th {
     border-bottom-color: var(--border);
     color: var(--text-muted);
     font-size: 11.5px;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: .06em;
 }
 
@@ -202,7 +202,7 @@ td {
 }
 
 .record-scope-item.active {
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .bar-track,
@@ -212,7 +212,7 @@ td {
 
 .eyebrow {
     color: var(--tangelo);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .incident-intro .button {
@@ -235,5 +235,5 @@ td {
 
 @media (max-width: 760px) {
     h1 { font-size: 22px; }
-    .metric, .report-stat-val { font-size: 28px; }
+    .metric, .report-stat-val { font-size: 24px; }
 }
