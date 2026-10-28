@@ -25,6 +25,11 @@ The compatibility migration
 `incidents.severity` value used for queue ordering is present alongside
 `severity_id`.
 
+The dispatcher dashboard resolves workflow labels through the normalized
+`incident_statuses` table and `incidents.status_id`; it does not require the
+legacy `incidents.status` column. This keeps dashboard counters and queue
+queries compatible with the current incident schema.
+
 ## Map source
  
 The dispatcher and volunteer maps share MapLibre, the configured local
