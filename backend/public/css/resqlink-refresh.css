@@ -1,0 +1,239 @@
+/*
+ * ResQLink visual refresh: Poppins typography, layered surfaces, stat-card accents,
+ * buttons, and tables. Shell and sign-in live in resqlink-refresh-shell.css. Uses only
+ * tokens from resqlink-tokens.css. Presentation only, no behaviour changes.
+ */
+
+/* Typography: Poppins runs wider than Inter, so sizes stay compact and
+ * hierarchy comes from weight (400 body, 500 controls, 600 headings). */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -.005em;
+}
+
+h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+}
+
+h2,
+h3,
+.chart-title {
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+label {
+    font-weight: 500;
+}
+
+.header-row > div > p {
+    font-size: 14px;
+    margin-top: var(--space-1);
+}
+
+/* Cards: soft layered elevation on a lighter canvas. */
+.card,
+.panel,
+.report-stat,
+.chart-card,
+.map-legend {
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.card > .header-row h2 {
+    font-size: 17px;
+}
+
+/* Stat cards: accent glyph on the left edge and a soft tinted corner glow;
+ * the figure stays Rosewood so colour never carries the number's meaning. */
+.grid .card,
+.report-stat {
+    overflow: hidden;
+    padding: var(--space-5);
+    position: relative;
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.grid .card:hover,
+.report-stat:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.grid .card::after,
+.report-stat::after {
+    background: radial-gradient(circle, var(--stat-accent, var(--tangelo)) 0%, transparent 70%);
+    content: "";
+    height: 140px;
+    opacity: .12;
+    pointer-events: none;
+    position: absolute;
+    right: -48px;
+    top: -48px;
+    width: 140px;
+}
+
+.grid .card::before {
+    background: var(--stat-accent, var(--tangelo));
+    border-radius: 0 4px 4px 0;
+    content: "";
+    height: 32px;
+    left: 0;
+    position: absolute;
+    top: var(--space-5);
+    width: 4px;
+}
+
+.grid .card.stat-red { --stat-accent: var(--maximum-red); }
+.grid .card.stat-amber { --stat-accent: var(--philippine-orange); }
+.grid .card.stat-blue { --stat-accent: var(--tangelo); }
+.grid .card.stat-green { --stat-accent: var(--success); }
+
+.grid .card > h2,
+.report-stat-label {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.metric,
+.report-stat-val {
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+}
+
+/* Buttons: gradient primary with a soft lift; Tangelo keyboard focus ring. */
+.button,
+button {
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: background .15s, border-color .15s, color .15s, box-shadow .15s, transform .15s;
+}
+
+/* Kept at base specificity so secondary, danger, hover, and component buttons
+ * (sidebar toggle, map pills) still win with their own `background` rules. */
+.button,
+button {
+    background-image: var(--gradient-primary);
+    box-shadow: 0 1px 2px rgba(90, 0, 6, .12), inset 0 1px 0 rgba(255, 255, 255, .12);
+}
+
+.button:hover,
+button:hover {
+    box-shadow: 0 4px 12px rgba(146, 0, 4, .25);
+}
+
+.button.secondary,
+button.secondary,
+.button.danger,
+button.danger,
+.button.secondary:hover,
+button.secondary:hover,
+.button.danger:hover,
+button.danger:hover,
+.sidebar-footer form button,
+.sidebar-footer form button:hover,
+.sidebar-toggle,
+.sidebar-toggle:hover,
+.maplibregl-ctrl button,
+.maplibregl-ctrl button:hover {
+    background-image: none;
+    box-shadow: none;
+}
+
+.button:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.button:active:not(:disabled),
+button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+/* Inputs: softer radius and a sunken disabled surface. */
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background: var(--surface-sunken);
+}
+
+/* Tables: airy rows, quiet header, warm hover. */
+th {
+    background: var(--surface-alt);
+    border-bottom-color: var(--border);
+    color: var(--text-muted);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .06em;
+}
+
+th,
+td {
+    padding: 14px var(--space-4);
+}
+
+.card > table tbody tr:nth-child(even) { background: #FDFAF7; }
+.card > table tbody tr { transition: background .12s; }
+
+.badge {
+    font-weight: 500;
+    letter-spacing: .05em;
+}
+
+.badge.severity-critical {
+    font-weight: 600;
+}
+
+/* Alerts, tabs, charts. */
+.alert {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.record-scope-item {
+    font-weight: 500;
+}
+
+.record-scope-item.active {
+    font-weight: 600;
+}
+
+.bar-track,
+.bar-fill {
+    border-radius: 9999px;
+}
+
+.eyebrow {
+    color: var(--tangelo);
+    font-weight: 600;
+}
+
+.incident-intro .button {
+    margin-top: var(--space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .grid .card,
+    .report-stat,
+    .button,
+    button {
+        transition: none;
+    }
+
+    .grid .card:hover,
+    .report-stat:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 760px) {
+    h1 { font-size: 22px; }
+    .metric, .report-stat-val { font-size: 28px; }
+}

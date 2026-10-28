@@ -10,6 +10,8 @@ A shared warm, high-contrast visual language for ResQLink incident reporting and
   3. `resqlink-badges.css` — account, document, status, and severity badges.
   4. `resqlink-dashboard.css`, `resqlink-widgets.css`, `resqlink-map.css` — shell, data widgets, and map UI.
   5. `resqlink-design-system.css` — cross-component refinements and the responsive layer.
+  6. `resqlink-refresh.css` — visual refresh layer: Poppins typography, stat-card accents, buttons, tables.
+  7. `resqlink-refresh-shell.css` — visual refresh for the gradient sidebar, avatar chip, page padding, and sign-in screen.
 - `resources/js/dispatcher-map.js` reads the `--status-*` tokens at runtime, so map markers always match badges and legends.
 - The Flutter volunteer app is planned, not present in this repository. The mobile frames linked below are static design handoff mockups, not implemented or interactive app screens.
 - Dispatcher/Admin mockups illustrate the requested screen coverage. The live Blade pages remain authoritative for available data and actions.
@@ -23,9 +25,10 @@ A shared warm, high-contrast visual language for ResQLink incident reporting and
 | Maximum Red | `#D92200` | Error, destructive action, High severity, required indicator |
 | Tangelo | `#F3500A` | Focus ring, small interactive accents, charts, key metrics, marker accent |
 | Philippine Orange | `#F37100` | Primary CTA fill, selected controls, Moderate severity |
-| Cream | `#FBF3EA` | Warm page canvas |
+| Cream | `#FAF5F0` | Warm page canvas (lightened from `#FBF3EA` in the visual refresh) |
+| Sunken cream | `#F6EEE6` | Disabled inputs and recessed surfaces (`--surface-sunken`) |
 | White | `#FFFFFF` | Cards and input surfaces |
-| Warm border | `#E8DCD0` | Borders, separators |
+| Warm border | `#EDE2D8` | Borders, separators (softened from `#E8DCD0`) |
 | Warm control border | `#8A766A` | Input/control outlines; 4.30:1 against white |
 | Muted text | `#6B5B55` | Secondary copy |
 | Functional success | `#476B45` | Completed/success only; pair with a check and text |
@@ -88,18 +91,23 @@ Status uses white outline pills in the `--status-*` colours with written labels 
 
 ## Typography, spacing, and shape
 
-- Family: Inter with system sans-serif fallbacks. Keep emergency content compact and highly scannable.
-- Desktop scale: H1 24px/700; H2 16px/600; H3 15px/600; body and table text 14px; labels 13px/600; table headers and captions 12px. Avoid 800 weights: formality comes from consistent sizes, not heaviness.
+- Family: Poppins (400/500/600/700, loaded from Google Fonts in `layouts/app.blade.php`) through the `--font-body` token, with system sans-serif fallbacks if the font cannot load. Keep emergency content compact and highly scannable.
+- Desktop scale: H1 26px/600; H2 16–17px/600; H3 15px/600; body and table text 14px; labels 13px/500; table headers 11.5px/600 uppercase; stat figures 34px/600. Poppins runs wider than Inter, so hierarchy comes from weight (400 body, 500 controls, 600 headings) rather than larger sizes. Avoid 800 weights.
 - Mobile body: minimum 16px; labels/captions may be 14px. Inputs and buttons share `--control-height`, which rises from 40px to 44px on phones.
-- Use the spacing tokens above (4px base: 4, 8, 12, 16, 24, 32px). Cards use 12px radius (`--radius-lg`); fields and buttons 8px (`--radius-sm`); pills fully rounded. Borders are 1px everywhere. Shadows are soft Rosewood-tinted elevation, not decoration.
+- Use the spacing tokens above (4px base: 4, 8, 12, 16, 24, 32px). Cards use 16px radius (`--radius-lg`); fields and buttons 10px (`--radius-sm`); the sign-in panel 20px (`--radius-xl`); pills fully rounded. Borders are 1px everywhere. Shadows are soft, layered Rosewood-tinted elevation, not decoration.
+
+## Visual refresh layer
+
+`resqlink-refresh.css` and `resqlink-refresh-shell.css` load after `resqlink-design-system.css` and hold the redesign: Poppins typography, the gradient shell, accented stat cards, primary-button gradient, Tangelo keyboard focus ring (`--focus-ring`), and the branded sign-in screen. It reads only tokens (`--gradient-sidebar`, `--gradient-brand`, `--gradient-primary`, `--surface-sunken`, `--focus-ring`, plus the palette) and changes presentation only. Hover lifts and transitions are disabled under `prefers-reduced-motion`.
 
 ## Component guide
 
-- **Application shell:** full-height, square-edged Rosewood sidebar (232px, sticky); grouped uppercase section labels; 40px rounded nav rows with a translucent white active fill and a short Philippine Orange marker; outlined 36px Logout anchored at the bottom with “Logged in as”. Collapse sidebar labels on tablet; collapsed links stay clickable.
+- **Application shell:** full-height Rosewood sidebar with a subtle vertical gradient (`--gradient-sidebar`, 232px, sticky); orange-gradient logo mark; grouped uppercase section labels; 42px rounded nav rows. The active row uses a warm orange-to-transparent fill, an orange icon, and the short Philippine Orange marker. The footer shows an initial avatar (`.sidebar-avatar`) beside “Logged in as”, with an outlined 36px Logout anchored at the bottom. Collapse sidebar labels on tablet; the avatar stays visible when collapsed.
 - **Page title:** one H1 and muted explanatory subtitle; primary action aligned to the right on desktop and full-width below title on narrow screens.
-- **Buttons:** one height (`--control-height`, 40px) and 14px/600 text; buttons inside table rows use the compact 32px size (`.sm`, automatic in `td`). Primary Sangria with white text (9.44:1), hover/pressed Rosewood; secondary white with warm border and Rosewood text; danger is outlined Maximum Red that fills only on hover, so destructive row actions stay calm. Orange is not a button fill, so actions never look like Moderate/High severity. Provide hover, visible Tangelo focus, pressed, and disabled states.
+- **Buttons:** one height (`--control-height`, 40px) and 14px/500 text; buttons inside table rows use the compact 32px size (`.sm`, automatic in `td`). Primary Sangria with a subtle top-lit gradient (`--gradient-primary`) and white text (9.44:1); hover is flat Rosewood with a soft lift shadow, and pressed nudges down 1px; secondary white with warm border and Rosewood text; danger is outlined Maximum Red that fills only on hover, so destructive row actions stay calm. Orange is not a button fill, so actions never look like Moderate/High severity. Provide hover, visible Tangelo focus, pressed, and disabled states.
 - **Inputs:** white surface, 1px accessible warm-gray outline, explicit label 8px above, same height as buttons so filter bars align on one baseline (labels in filter bars carry no margin). Use `.sr-only` for labels that are visually implied. Focus ring Tangelo; errors Maximum Red with inline message and icon. Keep read-only map coordinates visibly read-only.
-- **Cards/stat cards:** white, warm border, 12px radius, subtle shadow. Stat cards (dashboard and reports) share one anatomy: muted 13px label on top, 26–30px Rosewood figure below, figures bottom-aligned across a row. No coloured top strips.
+- **Cards/stat cards:** white, warm border, 16px radius, subtle layered shadow. Stat cards (dashboard and reports) share one anatomy: muted 13px label on top, 34px Rosewood figure below, figures bottom-aligned across a row. Dashboard stat cards carry a short 4px left accent bar and a faint tinted corner glow from their `stat-*` class (`stat-red` Maximum Red, `stat-amber` Philippine Orange, `stat-blue` Tangelo, `stat-green` success). The figure stays Rosewood, so colour never carries the number's meaning. Cards lift 2px with a stronger shadow on hover. No full-width coloured top strips.
+- **Sign-in screen:** gradient brand bar (64px), warm radial-glow canvas, and an elevated 20px-radius panel with a thin orange-gradient top edge and a full-width Login button.
 - **Tables:** light warm header (12px uppercase, muted text, stronger bottom rule) instead of a dark bar, striped cream rows, hover tint, text labels for severity/status, clear Open/View action. On mobile, reflow as labelled cards; badges and buttons keep their natural width.
 - **Badges:** severity filled by scale; statuses outlined with glyphs. Account active/inactive uses text and distinct shape.
 - **Tabs and pagination:** Tangelo underline/outline for selection; keyboard-focusable with visible focus.
