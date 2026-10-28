@@ -47,13 +47,13 @@ Red and orange carry urgency, so they are reserved for severity, errors, and the
 | `--status-dispatched` | `#0F766E` | 5.47:1 | Dispatched (teal, separable from red for red–green colour blindness) |
 | `--status-completed` | `#4B5563` | 7.56:1 | Completed / archived |
 | `--status-all` | `#2563EB` | — | "All" map filter; matches emergency-facility points shown with All |
-| `--severity-low` | `#4B5563` | 7.56:1 | Low: outline and text |
-| `--severity-moderate-bg` / `-text` | `#FDE7B0` / `#7A4A00` | 6.14:1 | Moderate: pale amber fill |
-| `--severity-high` | `#C2410C` | 5.18:1 (white text) | High: burnt-orange fill |
-| `--severity-critical` | `#B91C1C` | 6.47:1 (white text) | Critical: red fill, bold label |
+| `--severity-low` / `-low-text` | `#FDC500` / `#3A2E00` | 8.3:1 | Low: yellow fill, dark text |
+| `--severity-moderate-bg` / `-text` | `#FD8C00` / `#3A1F00` | 6.4:1 | Moderate: orange fill, dark text (white on orange fails contrast) |
+| `--severity-high` | `#DC0000` | 5.2:1 (white text) | High: red fill |
+| `--severity-critical` | `#780000` | 11.7:1 (white text) | Critical: deep maroon fill, semibold label |
 | `--chart-1` … `--chart-5` | `#0F766E`, `#B45309`, `#4338CA`, `#BE123C`, `#4B5563` | ≥ 5.02:1 | Categorical chart series, in order |
 
-Critical deliberately does not reuse Rosewood: the structural colour of the sidebar and headers must never be the colour of the most urgent incidents.
+Severity follows the team palette yellow `#FDC500` → orange `#FD8C00` → red `#DC0000` → maroon `#780000`. Critical maroon sits close to Rosewood, so severity is always shown as a filled, labelled badge, never as plain coloured text or structure.
 
 ### Spacing tokens
 
@@ -85,14 +85,14 @@ Do not put white text on Tangelo or Philippine Orange. Use Rosewood text on Phil
 
 ## Severity and status
 
-Severity uses filled emphasis that escalates, plus a written label and shape: Low = white with gray outline and `○`; Moderate = pale amber fill and `■`; High = burnt-orange fill with white text and `!`; Critical = red fill, white bold text, and `◆`. Never convey severity by color alone.
+Severity uses filled emphasis that escalates, plus a written label and shape: Low = yellow fill with dark text; Moderate = orange fill with dark text; High = red fill with white text; Critical = maroon fill with white semibold text. Never convey severity by color alone.
 
 Status uses white outline pills in the `--status-*` colours with written labels and glyphs (`●` Reported, `■` Received, `◆` Dispatched, `✓` Completed), never the filled severity treatment. The map filter indicators, map markers, legend dots, and report status bars use the same tokens: All = blue, Reported = red, Received = amber, Dispatched = teal, Completed = gray. Keep severity and status in separate labeled table columns.
 
 ## Typography, spacing, and shape
 
 - Family: Poppins (400/500/600/700, loaded from Google Fonts in `layouts/app.blade.php`) through the `--font-body` token, with system sans-serif fallbacks if the font cannot load. Keep emergency content compact and highly scannable.
-- Desktop scale: H1 26px/600; H2 16–17px/600; H3 15px/600; body and table text 14px; labels 13px/500; table headers 11.5px/600 uppercase; stat figures 34px/600. Poppins runs wider than Inter, so hierarchy comes from weight (400 body, 500 controls, 600 headings) rather than larger sizes. Avoid 800 weights.
+- Desktop scale: H1 24px/600; H2 16–17px/500; H3 15px/500; body and table text 14px; labels 13px/500; table headers 11.5px/500 uppercase; stat figures 28px/500 (24px on phones); badges 20px tall. Nothing heavier than 600; input focus borders are 1.5px. Poppins runs wider than Inter, so hierarchy comes from weight (400 body, 500 controls and section headings, 600 page titles) rather than larger sizes. Avoid 800 weights.
 - Mobile body: minimum 16px; labels/captions may be 14px. Inputs and buttons share `--control-height`, which rises from 40px to 44px on phones.
 - Use the spacing tokens above (4px base: 4, 8, 12, 16, 24, 32px). Cards use 16px radius (`--radius-lg`); fields and buttons 10px (`--radius-sm`); the sign-in panel 20px (`--radius-xl`); pills fully rounded. Borders are 1px everywhere. Shadows are soft, layered Rosewood-tinted elevation, not decoration.
 
@@ -105,8 +105,8 @@ Status uses white outline pills in the `--status-*` colours with written labels 
 - **Application shell:** full-height Rosewood sidebar with a subtle vertical gradient (`--gradient-sidebar`, 232px, sticky); orange-gradient logo mark; grouped uppercase section labels; 42px rounded nav rows. The active row uses a warm orange-to-transparent fill, an orange icon, and the short Philippine Orange marker. The footer shows an initial avatar (`.sidebar-avatar`) beside “Logged in as”, with an outlined 36px Logout anchored at the bottom. Collapse sidebar labels on tablet; the avatar stays visible when collapsed.
 - **Page title:** one H1 and muted explanatory subtitle; primary action aligned to the right on desktop and full-width below title on narrow screens.
 - **Buttons:** one height (`--control-height`, 40px) and 14px/500 text; buttons inside table rows use the compact 32px size (`.sm`, automatic in `td`). Primary Sangria with a subtle top-lit gradient (`--gradient-primary`) and white text (9.44:1); hover is flat Rosewood with a soft lift shadow, and pressed nudges down 1px; secondary white with warm border and Rosewood text; danger is outlined Maximum Red that fills only on hover, so destructive row actions stay calm. Orange is not a button fill, so actions never look like Moderate/High severity. Provide hover, visible Tangelo focus, pressed, and disabled states.
-- **Inputs:** white surface, 1px accessible warm-gray outline, explicit label 8px above, same height as buttons so filter bars align on one baseline (labels in filter bars carry no margin). Use `.sr-only` for labels that are visually implied. Focus ring Tangelo; errors Maximum Red with inline message and icon. Keep read-only map coordinates visibly read-only.
-- **Cards/stat cards:** white, warm border, 16px radius, subtle layered shadow. Stat cards (dashboard and reports) share one anatomy: muted 13px label on top, 34px Rosewood figure below, figures bottom-aligned across a row. Dashboard stat cards carry a short 4px left accent bar and a faint tinted corner glow from their `stat-*` class (`stat-red` Maximum Red, `stat-amber` Philippine Orange, `stat-blue` Tangelo, `stat-green` success). The figure stays Rosewood, so colour never carries the number's meaning. Cards lift 2px with a stronger shadow on hover. No full-width coloured top strips.
+- **Inputs:** white surface, 1px accessible warm-gray outline, explicit label 8px above, same height as buttons so filter bars align on one baseline (labels in filter bars carry no margin). Use `.sr-only` for labels that are visually implied. On focus the 1.5px outline darkens to the warm neutral `--focus` brown (#5A4A45) with a soft 4px brown halo, so focus never reads as an error; only invalid fields use a Maximum Red outline and halo. Checkboxes and radios get a 2px `--focus` outline; errors Maximum Red with inline message and icon. Keep read-only map coordinates visibly read-only.
+- **Cards/stat cards:** white, warm border, 16px radius, subtle layered shadow. Stat cards (dashboard and reports) share one anatomy: muted 13px label on top, 28px Rosewood figure below, figures bottom-aligned across a row. Dashboard stat cards carry a short 3px left accent bar and a faint tinted corner glow from their `stat-*` class (`stat-red` Maximum Red, `stat-amber` Philippine Orange, `stat-blue` Tangelo, `stat-green` success). The figure stays Rosewood, so colour never carries the number's meaning. Cards lift 2px with a stronger shadow on hover. No full-width coloured top strips.
 - **Sign-in screen:** gradient brand bar (64px), warm radial-glow canvas, and an elevated 20px-radius panel with a thin orange-gradient top edge and a full-width Login button.
 - **Tables:** light warm header (12px uppercase, muted text, stronger bottom rule) instead of a dark bar, striped cream rows, hover tint, text labels for severity/status, clear Open/View action. On mobile, reflow as labelled cards; badges and buttons keep their natural width.
 - **Badges:** severity filled by scale; statuses outlined with glyphs. Account active/inactive uses text and distinct shape.
