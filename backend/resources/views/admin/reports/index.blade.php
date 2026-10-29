@@ -72,7 +72,7 @@
             <div class="bar-row">
                 <div class="bar-label">{{ $row->label }}</div>
                 <div class="bar-track">
-                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};"></div>
+                    <div class="bar-fill" style="width: {{ $percent }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};"></div>
                     <strong class="bar-value">{{ $row->total }} ({{ $percent }}%)</strong>
                 </div>
             </div>
@@ -88,7 +88,7 @@
             <div class="bar-row">
                 <div class="bar-label">{{ $statusLabels[$row->label] ?? $row->label }}</div>
                 <div class="bar-track">
-                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $statusColors[$row->label] ?? 'var(--rosewood)' }};"></div>
+                    <div class="bar-fill" style="width: {{ $percent }}%; background: {{ $statusColors[$row->label] ?? 'var(--rosewood)' }};"></div>
                     <strong class="bar-value">{{ $row->total }} ({{ $percent }}%)</strong>
                 </div>
             </div>
