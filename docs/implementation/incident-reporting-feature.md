@@ -89,3 +89,22 @@ The nearest-landmark field is also populated from the local landmark dataset.
 After pin placement, its searchable options are limited to landmarks contained
 by the selected barangay polygon, with the closest available landmark selected.
 The selected landmark is emphasized on the map with a red highlight.
+
+## TASK2-009 volunteer dashboard analytics
+
+The volunteer dashboard summarizes only incidents linked to the authenticated
+volunteer through `volunteer_id` or `reported_by`. It displays total, open, and
+completed report counts, a six-month trend, category distribution, and the five
+most recent reports. Records without `reported_at` use their creation timestamp
+for the trend and recent-report date. The dashboard uses the existing local
+ResQLink palette and responsive layout; it does not add schema or API changes.
+
+## TASK2-010 — Map-independent volunteer submission
+
+**Assigned owner:** Adriane
+
+The volunteer incident form remains submittable when the map or its JavaScript
+is unavailable. Volunteers can enter latitude, longitude, and impact radius
+manually; placing a map pin and moving the radius slider continue to fill those
+fields automatically. The server validates the same required location fields
+for either entry method.
