@@ -1,99 +1,37 @@
-# TASK1-TASK2 Mobile Foundation Implementation
+# TASK1-TASK2 Mobile Foundation Migration Status
 
-**Status:** Initial Flutter foundation implemented; Laravel authentication pending  
-**Branch:** `volunteer-mobile-app`  
-**Owners:** Jassy (`TASK1` authentication) and Adriane (`TASK2` incident reporting)
+**Status:** Flutter foundation removed; Expo foundation not yet implemented
+**Decision date:** October 29, 2026
 
-## Implemented foundation
+## Current repository state
 
-The generated Flutter counter sample has been replaced with the initial
-ResQLink application foundation described in the mobile implementation plan.
-The current implementation includes:
+The previous Flutter/Dart application and its generated Android, build, IDE,
+test, and dependency files were intentionally removed. No source was migrated
+because the approved Expo application will start fresh. The repository-root
+`mobile/` path is reserved for the future Expo + React Native + TypeScript app.
 
-- A Material 3 ResQLink application theme.
-- A Provider-based startup and unauthenticated state gate.
-- A startup loading indicator.
-- A responsive volunteer login screen with local required-field validation.
-- Password show and hide behavior.
-- Compile-time `API_BASE_URL` and `MAP_STYLE_URL` configuration.
-- A development notice when `API_BASE_URL` is missing.
-- A focused JSON `ApiClient` with bearer-token support, timeouts, safe decoding,
-  and Laravel field-error parsing.
-- An `ApiException` model for network and server failures.
-- A `TokenStorage` wrapper around `flutter_secure_storage`.
+## Approved next milestone
 
-The login button intentionally does not send credentials yet. It displays a
-message explaining that the `TASK1` mobile authentication contract must be
-approved. This prevents temporary or fake authentication behavior from becoming
-part of the application.
+TASK1 (Jassy) and TASK2 (Adriane) should begin only after the MapLibre/Expo
+compatibility gate is recorded. Work follows this order:
 
-## Source locations
+1. Create the Expo TypeScript foundation and configure Expo Router.
+2. Prove MapLibre on a physical Android development build.
+3. Implement TASK1 Sanctum token endpoints and mobile authentication.
+4. Implement TASK2 incident reporting against the approved API contract.
+5. Verify Laravel authority over identity, severity, timestamps, and status.
 
-```text
-mobile/lib/
-|-- app/
-|   |-- app.dart
-|   `-- app_theme.dart
-|-- core/
-|   |-- config/environment.dart
-|   |-- errors/api_exception.dart
-|   |-- network/api_client.dart
-|   `-- storage/token_storage.dart
-|-- features/authentication/presentation/
-|   |-- auth_provider.dart
-|   `-- login_screen.dart
-`-- main.dart
-```
+## Known backend gap
 
-## Development launch
+`POST /api/incidents` exists, but the current repository does not yet implement
+the planned mobile token login, current-user, or logout endpoints. The incident
+route also requires alignment with Sanctum bearer-token middleware and a stable
+mobile JSON contract. Existing web sessions must remain unchanged.
 
-For the standard Android emulator, run from `mobile/`:
+## References
 
-```powershell
-flutter run -d emulator-5554 `
-  --dart-define=API_BASE_URL=http://10.0.2.2:8000 `
-  --dart-define=MAP_STYLE_URL=http://10.0.2.2:8080/styles/resqlink/style.json
-```
-
-The URLs are compile-time configuration, not secrets. Production services must
-use approved HTTPS endpoints. Do not place Laravel or database credentials in
-Flutter configuration.
-
-## Next milestone: TASK1 mobile authentication
-
-Before connecting the login button, Jassy and Adriane should approve the JSON
-contract for:
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `POST` | `/api/auth/login` | Validate a volunteer and issue a device token |
-| `GET` | `/api/auth/user` | Restore the authenticated volunteer session |
-| `POST` | `/api/auth/logout` | Revoke the current device token |
-
-Laravel must enforce valid credentials, an active account, the `volunteer`
-role, an existing volunteer profile, and `verified` status. Flutter must never
-decide those authorization rules.
-
-Once the contract is approved:
-
-1. Add Sanctum token support to Laravel under `TASK1` ownership.
-2. Add typed `AuthenticatedUser` and `AuthService` classes in Flutter.
-3. Extend `AuthProvider` with checking, submitting, authenticated, and failure
-   states.
-4. Connect login, saved-session restoration, and logout.
-5. Verify rejection of inactive, unverified, admin, and dispatcher accounts.
-6. Begin the `TASK2` incident form only after authentication passes its
-   checkpoint.
-
-Installing Sanctum may add a database migration. Under repository rules, an AI
-coding agent must receive explicit approval before running migrations, lint,
-tests, builds, or other verification commands.
-
-## Verification status
-
-The source and documentation have been reviewed for structure and file-size
-limits. Direct Dart analysis completed with no issues on October 28, 2026.
-`flutter test` was approved and attempted, but the Flutter CLI produced no
-output and timed out while stale Dart/Flutter processes from the previous
-development session were still present. The widget test and Android launch
-remain pending after that local tool lock is cleared.
+- [Mobile scope](mobile-application-scope.md)
+- [Mobile architecture](mobile-application-architecture.md)
+- [Mobile technology stack](mobile-technology-stack.md)
+- [Implementation guide](mobile-implementation-guide.md)
+- [Verification and handoff](mobile-verification-and-handoff-guide.md)
