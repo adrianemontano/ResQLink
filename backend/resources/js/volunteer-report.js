@@ -151,7 +151,6 @@ function bindFormControls(map, wrapper) {
     const slider = wrapper.querySelector('[data-radius-slider]');
     const radiusValue = wrapper.querySelector('[data-radius-value]');
     const noPin = wrapper.querySelector('[data-no-pin]');
-    const submit = document.querySelector('[data-submit-incident]');
     const barangayField = document.querySelector('[data-barangay-field]');
     const landmarkField = document.querySelector('[data-landmark-field]');
     let marker;
@@ -185,7 +184,6 @@ function bindFormControls(map, wrapper) {
         const barangay = findBarangayAtPosition(map, position);
         if (barangay && barangayField) barangayField.value = barangayName(barangay);
         updateLandmarkChoices(map, position, barangay, landmarkField);
-        submit.disabled = false;
     };
     map.on('click', placePin);
     slider.addEventListener('input', updateRadius);
