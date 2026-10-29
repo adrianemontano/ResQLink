@@ -12,6 +12,13 @@
 
 ## Platform
 
+The implemented system is Laravel, MySQL, Blade, and Bootstrap for the backend,
+dispatcher, admin, and current web workflows. The planned volunteer client is
+an Android-first Expo + React Native + TypeScript application using Axios,
+Sanctum tokens, SecureStore, Expo Location, and native MapLibre. It requires an
+Expo Development Build rather than Expo Go and retains the approved self-hosted
+TileServer GL Light architecture.
+
 - Mobile Application → For Barangay Volunteers
 - Web-Based Dashboard → For Dispatcher and Admin / Data Management Personnel
 
