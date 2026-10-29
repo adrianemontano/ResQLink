@@ -11,7 +11,7 @@ and screen mockups](design-system/resqlink-visual-system.md).
 Mobile development: [Android Studio first configuration and implementation
 guide](mobile/android-studio-setup-and-implementation-guide.md).
 
-Current mobile handoff: [Flutter foundation implementation and next
+Current mobile handoff: [Expo migration status and next
 steps](mobile/mobile-foundation-implementation.md).
 
 This directory serves as the **single source of truth** for the project's technical documentation, system requirements, architecture, development workflow, and technology stack. Team members should refer to these documents throughout the development lifecycle to ensure consistency and alignment.
@@ -95,7 +95,7 @@ Documents all technologies used throughout the project.
 
 **Mobile Application**
 
-* Flutter
+* Expo + React Native + TypeScript (planned Android-first mobile client)
 
 **Version Control & Collaboration**
 
