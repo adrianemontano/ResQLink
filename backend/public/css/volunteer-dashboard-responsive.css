@@ -1,0 +1,78 @@
+@media (max-width: 900px) {
+    .volunteer-analytics-grid {
+        grid-template-columns: minmax(0, 1.35fr) minmax(220px, 1fr);
+    }
+
+    .volunteer-hero-mark {
+        right: 40px;
+    }
+}
+
+@media (max-width: 700px) {
+    .volunteer-dashboard-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .volunteer-hero {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 24px;
+        padding: 24px;
+    }
+
+    .volunteer-hero-total {
+        border-left: 0;
+        border-top: 1px solid rgba(255, 255, 255, .26);
+        flex-basis: auto;
+        margin: 0;
+        padding: 14px 0 0;
+    }
+
+    .volunteer-hero-total strong {
+        font-size: 34px;
+    }
+
+    .volunteer-hero-mark {
+        font-size: 200px;
+        right: 8px;
+        top: 10px;
+    }
+
+    .volunteer-metrics {
+        gap: 10px;
+        grid-template-columns: 1fr;
+    }
+
+    .volunteer-metric-card {
+        padding: 14px 16px;
+    }
+
+    .volunteer-analytics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .volunteer-analytics-card {
+        padding: 17px;
+    }
+
+    .volunteer-card-heading {
+        align-items: flex-start;
+    }
+
+    .volunteer-recent-row {
+        gap: 8px;
+        grid-template-columns: 34px minmax(90px, 1fr) auto;
+    }
+
+    .volunteer-recent-row time {
+        grid-column: 2 / -1;
+    }
+
+    .volunteer-status-badge {
+        justify-self: end;
+    }
+}
