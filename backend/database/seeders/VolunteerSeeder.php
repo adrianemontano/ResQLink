@@ -23,7 +23,7 @@ class VolunteerSeeder extends Seeder
         ];
 
         if (Schema::hasColumn('users', 'name')) {
-            $attributes['name'] = env('DEFAULT_VOLUNTEER_NAME', 'Community Volunteer');
+            $attributes['name'] = env('DEFAULT_VOLUNTEER_NAME', 'Barangay Responder');
         } else {
             $attributes['first_name'] = env('DEFAULT_VOLUNTEER_FIRST_NAME', 'Community');
             $attributes['last_name'] = env('DEFAULT_VOLUNTEER_LAST_NAME', 'Volunteer');
