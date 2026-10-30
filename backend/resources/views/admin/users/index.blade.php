@@ -1,19 +1,6 @@
 @extends('layouts.dashboard', ['title' => 'Users | ResQLink'])
 
 @section('content')
-    @php
-        $filters = [
-            ['key' => 'all', 'label' => 'All'],
-            ['key' => 'admin', 'label' => 'Admin'],
-            ['key' => 'barangay-responder', 'label' => 'Barangay Responder'],
-            ['key' => 'dispatcher', 'label' => 'Dispatcher'],
-        ];
-        $statusFilters = [
-            ['key' => 'all', 'label' => 'All'],
-            ['key' => 'active', 'label' => 'Active'],
-            ['key' => 'inactive', 'label' => 'Inactive'],
-        ];
-    @endphp
 
     <div class="header-row">
         <div>
@@ -23,22 +10,27 @@
         <a class="button" href="{{ route('admin.users.create') }}">Create User</a>
     </div>
 
-    <section class="card">
-        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-bottom:1.5rem;">
-            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-right:0.25rem; color:var(--text-muted);">Role:</span>
-            <select name="role" id="roleFilter" onchange="applyFilter(this, 'role')" style="width:auto; padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
-                @foreach ($filters as $filter)
-                    <option value="{{ $filter['key'] }}" @selected($roleFilter === $filter['key'])>{{ $filter['label'] }}</option>
-                @endforeach
+    <form class="card filter-row" method="GET" action="{{ route('admin.users.index') }}">
+        <label>Role
+            <select name="role">
+                <option value="all" @selected($roleFilter === 'all')>All</option>
+                <option value="admin" @selected($roleFilter === 'admin')>Admin</option>
+                <option value="barangay-responder" @selected($roleFilter === 'barangay-responder')>Barangay Responder</option>
+                <option value="dispatcher" @selected($roleFilter === 'dispatcher')>Dispatcher</option>
             </select>
-            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-left:0.75rem; margin-right:0.25rem; color:var(--text-muted);">Status:</span>
-            <select name="status" id="statusFilter" onchange="applyFilter(this, 'status')" style="width:auto; padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
-                @foreach ($statusFilters as $filter)
-                    <option value="{{ $filter['key'] }}" @selected($statusFilter === $filter['key'])>{{ $filter['label'] }}</option>
-                @endforeach
+        </label>
+        <label>Status
+            <select name="status">
+                <option value="all" @selected($statusFilter === 'all')>All</option>
+                <option value="active" @selected($statusFilter === 'active')>Active</option>
+                <option value="inactive" @selected($statusFilter === 'inactive')>Inactive</option>
             </select>
-        </div>
+        </label>
+        <button type="submit">Filter</button>
+        <a href="{{ route('admin.users.index') }}">Clear</a>
+    </form>
 
+    <section class="card">
         <table>
             <thead>
                 <tr>
@@ -97,16 +89,4 @@
         </div>
     </section>
 
-    <script>
-        function applyFilter(select, param) {
-            const value = select.value;
-            const url = new URL(window.location.href);
-            if (value === 'all') {
-                url.searchParams.delete(param);
-            } else {
-                url.searchParams.set(param, value);
-            }
-            window.location.href = url.toString();
-        }
-    </script>
 @endsection
