@@ -1,15 +1,41 @@
 @extends('layouts.dashboard', ['title' => 'Users | ResQLink'])
 
 @section('content')
+    @php
+        $filters = [
+            ['key' => 'all', 'label' => 'All'],
+            ['key' => 'admin', 'label' => 'Admin'],
+            ['key' => 'barangay-responder', 'label' => 'Barangay Responder'],
+            ['key' => 'dispatcher', 'label' => 'Dispatcher'],
+        ];
+    @endphp
+
     <div class="header-row">
         <div>
             <h1>User Accounts</h1>
-            <p>Admin-managed administrator, dispatcher, and volunteer accounts.</p>
+            <p>Admin-managed administrator, dispatcher, and Barangay Responder accounts.</p>
         </div>
         <a class="button" href="{{ route('admin.users.create') }}">Create User</a>
     </div>
 
     <section class="card">
+        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.5rem;">
+            @foreach ($filters as $filter)
+                @php
+                    $isActive = $roleFilter === $filter['key'];
+                    $queryString = $filter['key'] === 'all' ? [] : ['role' => $filter['key']];
+                @endphp
+                <a
+                    href="{{ route('admin.users.index', $queryString) }}"
+                    class="button {{ $isActive ? '' : 'secondary' }}"
+                    style="padding:0.5rem 0.9rem;"
+                    @if ($isActive) aria-current="page" @endif
+                >
+                    {{ $filter['label'] }}
+                </a>
+            @endforeach
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -23,11 +49,20 @@
             </thead>
             <tbody>
                 @forelse ($users as $managedUser)
+                    @php
+                        $roleName = $managedUser->role?->name;
+                        $displayRole = match ($roleName) {
+                            'admin' => 'Admin',
+                            'dispatcher' => 'Dispatcher',
+                            'volunteer' => 'Barangay Responder',
+                            default => ucfirst((string) $roleName),
+                        };
+                    @endphp
                     <tr>
                         <td>{{ $managedUser->name }}</td>
                         <td>{{ $managedUser->username }}</td>
                         <td>{{ $managedUser->email }}</td>
-                        <td><span class="badge">{{ $managedUser->role?->name }}</span></td>
+                        <td><span class="badge">{{ $displayRole }}</span></td>
                         <td>
                             <span class="badge {{ $managedUser->is_active ? 'active' : 'inactive' }}">
                                 {{ $managedUser->is_active ? 'Active' : 'Inactive' }}

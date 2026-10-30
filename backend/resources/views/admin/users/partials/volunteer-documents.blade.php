@@ -3,7 +3,7 @@
     $documents = $profile->documents->keyBy('document_type');
 @endphp
 
-<h2>Volunteer Documents</h2>
+<h2>Barangay Responder Documents</h2>
 <p>
     Verification:
     <span class="badge status-{{ $profile->verification_status }}">{{ $profile->verification_status }}</span>
@@ -55,7 +55,7 @@
 <form method="POST" action="{{ route('admin.users.verification', $managedUser) }}">
     @csrf
     @method('PATCH')
-    <button type="submit">{{ $profile->verification_status === 'verified' ? 'Mark Pending' : 'Verify Volunteer' }}</button>
+    <button type="submit">{{ $profile->verification_status === 'verified' ? 'Mark Pending' : 'Verify Barangay Responder' }}</button>
 </form>
 
 <h3>Upload Document</h3>

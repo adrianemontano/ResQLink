@@ -4,7 +4,7 @@
     <div class="header-row">
         <div>
             <h1>Incident Management</h1>
-            <p>Live queue of emergencies reported by volunteers.</p>
+            <p>Live queue of emergencies reported by Barangay Responders.</p>
         </div>
     </div>
 

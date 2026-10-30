@@ -60,6 +60,10 @@ visual-verification runtime for the map; use the installed development build.
 These static artifacts introduce no new functional requirements. The volunteer
 mockup remains a design reference for the future Expo implementation.
 
+## Dashboard analytics
+
+Admin and volunteer dashboards use responsive summary cards, compact incident charts, and recent-activity panels while retaining the shared Poppins type and Rosewood, Sangria, cream, and chart-token palette. Admin analytics summarize persisted incident and account data, including the six-month incident trend, category mix, status, severity, and recent records. Volunteer analytics remain scoped to the signed-in volunteer's reports and show their six-month trend, category mix, and recent reports. Empty datasets use explicit empty states rather than sample values. Chart bars and trend columns are scaled to the 100% total of their dataset, so a value is colored only in proportion to its measurement; no minimum fill is applied.
+
 ## Application checklist
 
 - [ ] Shared colors and semantic roles match the current web system.

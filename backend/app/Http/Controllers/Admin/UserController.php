@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\VolunteerProfile;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
@@ -18,11 +19,25 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $roleFilter = $request->query('role', 'all');
+        $allowedFilters = ['all', 'admin', 'barangay-responder', 'dispatcher'];
+        $roleFilter = in_array($roleFilter, $allowedFilters, true) ? $roleFilter : 'all';
+
         $query = User::query()
             ->with('role')
             ->whereHas('role', fn ($query) => $query->whereIn('name', ['admin', 'dispatcher', 'volunteer']));
+
+        $roleMap = [
+            'admin' => 'admin',
+            'barangay-responder' => 'volunteer',
+            'dispatcher' => 'dispatcher',
+        ];
+
+        if ($roleFilter !== 'all' && isset($roleMap[$roleFilter])) {
+            $query->whereRelation('role', 'name', $roleMap[$roleFilter]);
+        }
 
         if (Schema::hasColumn('users', 'name')) {
             $query->orderBy('name');
@@ -30,9 +45,9 @@ class UserController extends Controller
             $query->orderBy('first_name')->orderBy('last_name');
         }
 
-        $users = $query->paginate(15);
+        $users = $query->paginate(15)->appends(['role' => $roleFilter === 'all' ? null : $roleFilter]);
 
-        return view('admin.users.index', ['users' => $users]);
+        return view('admin.users.index', ['users' => $users, 'roleFilter' => $roleFilter]);
     }
 
     public function create(): View
@@ -149,7 +164,7 @@ class UserController extends Controller
             'verification_status' => $verified ? 'verified' : 'pending',
             'verified_at' => $verified ? now() : null,
         ]);
-        return back()->with('status', 'Volunteer verification updated.');
+        return back()->with('status', 'Barangay Responder verification updated.');
     }
 
     /**

@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @else Volunteer Incident Reporting @endif
+                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @else Barangay Responder Incident Reporting @endif
                 </div>
             </div>
 
