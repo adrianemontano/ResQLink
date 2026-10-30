@@ -28,7 +28,6 @@
                 <strong>{{ number_format($totalReports) }}</strong>
                 <small>submitted to date</small>
             </div>
-            <span class="volunteer-hero-mark" aria-hidden="true">R</span>
         </section>
 
         <section class="volunteer-metrics" aria-label="Your incident summary">
