@@ -122,7 +122,7 @@ p {
 
 .stat-blue { border-top: 4px solid var(--primary); }
 .stat-green { border-top: 4px solid #1d8f5f; }
-.stat-red { border-top: 4px solid #d93f3f; }
+.stat-red { border-top: none; }
 .stat-orange { border-top: 4px solid #f59e0b; }
 .stat-teal { border-top: 4px solid #0f766e; }
 .stat-slate { border-top: 4px solid #475569; }
