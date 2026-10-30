@@ -187,6 +187,11 @@ The system also provides administrative tools for managing volunteer accounts, d
 
 ## 1. Barangay Volunteer Mobile Module
 
+The planned Android-first client uses Expo + React Native + TypeScript. It
+communicates with Laravel through Axios and Sanctum personal access tokens and
+uses a project-specific Expo Development Build for native MapLibre. Expo Go
+cannot run the approved map library.
+
 * Incident Alert Submission
 * Incident Category Selection
 * Barangay Entry

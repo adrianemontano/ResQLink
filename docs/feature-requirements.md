@@ -26,7 +26,7 @@ Dispatcher updates status and coordinates response
 
 | Actor | Platform | Primary responsibilities |
 | --- | --- | --- |
-| Volunteer | Flutter mobile application | Submit incident reports and view submission confirmation |
+| Volunteer | Expo React Native mobile application | Submit incident reports and view submission confirmation |
 | Dispatcher | Laravel Blade and Bootstrap web dashboard | Review, prioritize, map, and update incidents |
 | Admin | Laravel Blade and Bootstrap web dashboard | Manage users, volunteer documents, incident records, and reports |
 
@@ -90,7 +90,7 @@ requirements, module boundaries, and workflow models are documented.
 - `DESIGN-003` Design relationships among users, roles, volunteers, incidents,
   incident history, and generated reports.
 - `DESIGN-004` Design MapLibre marker and adjustable impact-radius behavior.
-- `DESIGN-005` Define API request and response contracts between Flutter and
+- `DESIGN-005` Define API request and response contracts between Expo and
   Laravel, including validation errors and submission confirmation.
 - `DESIGN-006` Map names to `naming-conventions.md`: Laravel resources use
   singular PascalCase classes, plural snake_case tables, role-prefixed routes,
@@ -107,7 +107,8 @@ architecture, and API contracts.
 - `SETUP-002` Configure MySQL and database connection settings.
 - `SETUP-003` Configure Blade, Bootstrap 5, MapLibre GL, and Vite assets for the
   web dashboard.
-- `SETUP-004` Create the Flutter application and HTTP/HTTPS API configuration.
+- `SETUP-004` Create the Expo TypeScript application, Expo Development Build,
+  and HTTP/HTTPS API and TileServer configuration.
 - `SETUP-005` Configure Git branches, GitHub collaboration, and documentation
   locations using the naming conventions.
 
@@ -188,7 +189,8 @@ tasks through role-protected, responsive dashboard pages.
 
 ### Phase 8 — Mobile Application Development
 
-**Objective:** Deliver the volunteer incident-reporting workflow in Flutter.
+**Objective:** Deliver the volunteer incident-reporting workflow in Expo React
+Native with TypeScript.
 
 - `MOBILE-001` Allow an authenticated volunteer to log in and log out.
 - `MOBILE-002` Provide a validated incident form for category, barangay,
@@ -200,13 +202,17 @@ tasks through role-protected, responsive dashboard pages.
   submission-confirmation states.
 - `MOBILE-006` Associate every submission with the authenticated volunteer and
   prevent inactive accounts from submitting reports.
+- `MOBILE-007` Use an Expo Development Build containing native MapLibre; Expo Go
+  must not be used to verify map functionality.
+- `MOBILE-008` Store Sanctum tokens with `expo-secure-store` and attach them to
+  Axios requests without exposing passwords or server secrets.
 
 **Completion evidence:** A verified volunteer can submit a complete incident
 report and receive confirmation.
 
 ### Phase 9 — System Integration
 
-**Objective:** Connect the Flutter app, Laravel backend, MySQL database, and
+**Objective:** Connect the Expo app, Laravel backend, MySQL database, and
 web dashboards into one working prototype.
 
 - `INTEGRATION-001` Verify volunteer login, report submission, persistence, and
@@ -233,7 +239,7 @@ across all approved components.
   transitions.
 - `TEST-003` Test dashboard queue, details, map, search, filters, and reports.
 - `TEST-004` Test volunteer account activation and document handling.
-- `TEST-005` Test Flutter-to-Laravel API communication and failure states.
+- `TEST-005` Test Expo-to-Laravel Axios communication and failure states.
 - `TEST-006` Test database relationships, constraints, and incident history.
 - `TEST-007` Conduct acceptance testing with representative volunteers and
   dispatchers using the Notify–Receive–Dispatch workflow.
@@ -278,7 +284,8 @@ panel evaluation.
 - `CROSS-001` Use Laravel for backend logic, authentication, authorization,
   validation, APIs, database communication, and reports.
 - `CROSS-002` Use Blade and Bootstrap 5 for dispatcher and admin web interfaces.
-- `CROSS-003` Use Flutter for the volunteer mobile application.
+- `CROSS-003` Use Expo + React Native + TypeScript for the volunteer mobile
+  application, with Expo Router and an Expo Development Build for MapLibre.
 - `CROSS-004` Use MySQL for centralized relational data storage.
 - `CROSS-005` Use MapLibre GL for map display, markers, coordinates, and impact
   radius visualization.

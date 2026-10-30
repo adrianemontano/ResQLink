@@ -1,405 +1,131 @@
 # ResQLink Technology Stack
-**Project:** ResQLink: A Volunteer-Based Emergency Alert and Dispatch Coordination Support System
 
-Version: 1.0  
-Status: Source of Truth (Technology Stack)
+**Status:** Approved architecture and current implementation summary
 
----
+## Stack overview
 
-# Purpose
+| Component | Technology | State |
+| --- | --- | --- |
+| Backend and REST API | Laravel / PHP | Implemented; mobile token surface incomplete |
+| Database | MySQL with Eloquent | Implemented |
+| Dispatcher/admin dashboard | Laravel Blade + Bootstrap | Implemented |
+| Web asset tooling | Vite | Implemented |
+| Web maps | MapLibre GL JS | Implemented with local/self-hosted data |
+| Local map service | TileServer GL Light | Existing approved service |
+| Volunteer mobile app | Expo + React Native | Approved; not yet generated |
+| Mobile language | TypeScript | Approved |
+| Navigation | Expo Router | Approved |
+| API communication | Axios | Approved |
+| Mobile authentication | Laravel Sanctum personal access tokens | Planned |
+| Secure token storage | `expo-secure-store` | Approved |
+| GPS/location | `expo-location` | Approved |
+| Native maps | `@maplibre/maplibre-react-native` | Approved; proof of concept required |
+| Mobile runtime | Expo Development Build | Mandatory for native MapLibre |
+| Android build | Local Android build or EAS Build | Approved alternatives |
 
-This document defines the official technology stack used throughout the development of the ResQLink system.
+Flutter and Dart are retired. The removed implementation will not be migrated.
+Laravel, MySQL, Blade, Bootstrap, the web MapLibre integration, TileServer, and
+approved local map datasets remain unchanged.
 
-All developers, designers, and documentation writers should refer to this document whenever discussing implementation technologies.
+## Architecture
 
-If future technology changes are approved by the project team, this document must be updated accordingly.
+```text
+Volunteer Android app
+Expo React Native -> Axios -> Laravel REST API -> Eloquent -> MySQL
+       |                              |
+       |                              `-> authoritative identity, severity,
+       |                                  timestamps, status, authorization
+       `-> MapLibre Native -> TileServer GL Light -> approved map dataset
 
----
-
-# Technology Stack Overview
-
-| Layer | Technology |
-|---------|------------|
-| Backend | PHP Laravel |
-| Web UI | Laravel Blade |
-| CSS Framework | Bootstrap 5 |
-| Database | MySQL |
-| Mobile Application | Flutter |
-| Interactive Maps | MapLibre GL |
-| Version Control | Git |
-| Repository Hosting | GitHub |
-
----
-
-# Architecture Overview
-
-```
-                    +----------------------+
-                    |   Flutter Mobile App |
-                    | Barangay Volunteers  |
-                    +----------+-----------+
-                               |
-                               | HTTP/HTTPS
-                               |
-                +--------------v--------------+
-                |     Laravel Backend API     |
-                | Business Logic & Validation |
-                +--------------+--------------+
-                               |
-                +--------------v--------------+
-                |          MySQL Database     |
-                +--------------+--------------+
-                               |
-         +---------------------+---------------------+
-         |                                           |
-+--------v---------+                     +-----------v----------+
-| Dispatcher Portal|                     |   Admin Dashboard    |
-| Blade + Bootstrap|                     | Blade + Bootstrap    |
-+--------+---------+                     +-----------+----------+
-         |                                           |
-         +-------------------+-----------------------+
-                             |
-                       MapLibre Map
-                  (Incident Visualization)
+Dispatcher/Admin browser -> Blade + Bootstrap + MapLibre GL JS -> Laravel
 ```
 
----
+This architecture supports the Notify–Receive–Dispatch workflow without giving
+the client direct database access.
 
-# Backend
+## Backend and database
 
-## Technology
+Laravel owns authentication and authorization, input validation, reporter
+association, preliminary severity assessment, timestamps, incident state, and
+JSON responses. Eloquent is the only application path to MySQL. Existing web
+sessions remain separate from planned mobile Sanctum bearer tokens.
 
-- PHP 8.x
-- Laravel Framework
+Current API status:
 
-## Purpose
+- `POST /api/incidents` exists but still requires alignment to the documented
+  Sanctum mobile middleware and stable JSON contract.
+- Mobile token login, current-user, and logout endpoints are planned, not
+  implemented.
+- Expo never connects directly to MySQL.
 
-Laravel serves as the primary backend framework responsible for:
+## Web dashboard
 
-- Business logic
-- Authentication
-- Authorization
-- RESTful APIs
-- Database communication
-- Validation
-- Report generation
+The dispatcher and admin modules remain server-rendered Laravel Blade with
+Bootstrap and existing application assets. Their MapLibre GL JS integration is
+not replaced by the native mobile library.
 
-## Responsibilities
+## Mobile client
 
-The backend manages:
+Expo and React Native provide the Android-first client; TypeScript supplies
+typed routes, API contracts, and feature logic. Expo Router manages navigation.
+Axios sends JSON and attaches the Sanctum bearer token. SecureStore holds only
+that token. Expo Location handles foreground permission and GPS.
 
-- Volunteer accounts
-- Dispatcher accounts
-- Administrator accounts
-- Incident reports
-- Severity classification
-- Incident status updates
-- Report generation
+The approved client does not include Firebase, Supabase, Google Maps, hosted
+Mapbox APIs, or direct MySQL access.
 
----
+## MapLibre and development builds
 
-# Web Frontend
+`@maplibre/maplibre-react-native` contains native code not bundled into Expo Go.
+Testing the map therefore requires a project-specific Expo Development Build.
+The package config plugin must be included when native projects are generated.
 
-## Technology
+Local Android build:
 
-- Laravel Blade
-- Bootstrap 5
-
-## Purpose
-
-The web application is intended for:
-
-- Dispatchers
-- Administrators
-
-Blade provides server-side rendered pages while Bootstrap provides responsive and consistent user interface components.
-
-## Responsibilities
-
-Dispatcher Module
-
-- Dashboard
-- Incident queue
-- Incident details
-- Incident status management
-- Interactive incident map
-
-Admin Module
-
-- Volunteer management
-- Dispatcher management
-- Incident records
-- Reports
-- User management
-
----
-
-# Mobile Application
-
-## Technology
-
-- Flutter
-
-## Purpose
-
-Flutter is used to develop the Barangay Volunteer mobile application.
-
-The mobile application enables verified volunteers to:
-
-- Login
-- Submit incident reports
-- Select incident category
-- Pin incident location
-- View submission confirmation
-
----
-
-# Database
-
-## Technology
-
-- MySQL
-
-## Purpose
-
-MySQL serves as the centralized relational database.
-
-## Stores
-
-- Users
-- Volunteers
-- Dispatchers
-- Administrators
-- Incident reports
-- Severity levels
-- Incident statuses
-- Generated reports
-- Audit records
-
----
-
-# Mapping and Location Services
-
-## Technology
-
-- MapLibre GL
-
-## Purpose
-
-MapLibre provides interactive map visualization for both the volunteer workflow and the dispatcher dashboard.
-
-## Features
-
-- Map display
-- Incident pinning
-- GPS coordinates
-- Incident markers
-- Impact radius visualization
-- Multiple incident visualization
-
----
-
-# Version Control
-
-## Technology
-
-- Git
-
-## Purpose
-
-Git manages source code history.
-
-It allows developers to:
-
-- Track changes
-- Create branches
-- Merge features
-- Restore previous versions
-- Collaborate safely
-
----
-
-# Repository Hosting
-
-## Technology
-
-- GitHub
-
-## Purpose
-
-GitHub serves as the project's central repository.
-
-The repository is used for:
-
-- Source code hosting
-- Team collaboration
-- Pull requests
-- Code reviews
-- Issue tracking
-- Project documentation
-
----
-
-# Development Workflow
-
-```
-Developer
-     │
-     ▼
-Create Feature Branch
-     │
-     ▼
-Develop Feature
-     │
-     ▼
-Commit Changes
-     │
-     ▼
-Push to GitHub
-     │
-     ▼
-Pull Request
-     │
-     ▼
-Code Review
-     │
-     ▼
-Merge into Main Branch
+```text
+npx expo run:android
+npx expo start --dev-client
 ```
 
----
+An EAS development build is the alternative. Rebuild when native dependencies,
+config plugins, Expo/React Native runtime, or native settings change. Metro is
+sufficient for ordinary TypeScript/JavaScript changes.
 
-# Technology Responsibilities by Module
+Do not pin a version matrix in planning documentation. At implementation time,
+confirm the selected Expo SDK and bundled React Native version, MapLibre stable
+release, New Architecture requirement, Android SDK, Gradle, JDK, and Node
+compatibility. Current MapLibre v11 documentation requires New Architecture
+and uses `Map`, `Camera`, `GeoJSONSource`, and layer APIs; older examples using
+`MapView` or `ShapeSource` may not apply.
 
-| Module | Technology |
-|---------|------------|
-| Volunteer Mobile App | Flutter |
-| Dispatcher Dashboard | Blade + Bootstrap |
-| Admin Dashboard | Blade + Bootstrap |
-| Backend API | Laravel |
-| Authentication | Laravel |
-| Business Logic | Laravel |
-| Database | MySQL |
-| Incident Mapping | MapLibre GL |
-| Team Collaboration | GitHub |
-| Version Control | Git |
+## Self-hosted map architecture
 
----
+Both clients retain the approved local/self-hosted dataset and TileServer GL
+Light. Mobile supports GPS, manual coordinate selection, a movable marker,
+barangay and landmark context, and an impact-radius preview. The radius is a
+real-world geographic distance represented as a GeoJSON polygon and rendered
+through MapLibre layers—not a fixed pixel circle. Laravel, not the app, remains
+authoritative for severity.
 
-# Reasons for Technology Selection
+The design requires reachable tiles and does not claim full offline maps.
 
-## Laravel
+## Device networking
 
-Chosen because:
+A physical phone reaches laptop services through the laptop LAN IP, for example:
 
-- Mature PHP framework
-- MVC architecture
-- Built-in authentication
-- Excellent database integration
-- Secure
-- Suitable for academic capstone projects
-- Large community support
+```text
+http://<LAPTOP_LAN_IP>:8000/api
+http://<LAPTOP_LAN_IP>:8080/styles/<STYLE_ID>/style.json
+```
 
----
+Phone `localhost` is not the laptop. Same-network routing, service binding,
+firewall access, and debug-only cleartext policy must be configured. Production
+uses HTTPS. An Expo tunnel does not automatically expose Laravel or TileServer.
+The actual style endpoint must be verified from the existing server.
 
-## Blade
+## Official compatibility references
 
-Chosen because:
-
-- Native Laravel templating engine
-- Fast rendering
-- Easy integration with Laravel
-- Minimal configuration
-
----
-
-## Bootstrap
-
-Chosen because:
-
-- Responsive design
-- Ready-made UI components
-- Faster interface development
-- Consistent styling
-
----
-
-## Flutter
-
-Chosen because:
-
-- Single codebase
-- Android-ready
-- Modern UI
-- Good performance
-- Easy integration with REST APIs
-
----
-
-## MySQL
-
-Chosen because:
-
-- Reliable relational database
-- Widely used
-- Easy Laravel integration
-- Suitable for structured incident records
-
----
-
-## MapLibre GL
-
-Chosen because:
-
-- Open-source
-- Lightweight
-- Easy integration
-- Excellent support for GPS visualization
-- Radius drawing support
-- Marker clustering support
-
----
-
-## Git
-
-Chosen because:
-
-- Industry-standard version control
-- Enables collaborative development
-- Maintains project history
-- Supports branching strategies
-
----
-
-## GitHub
-
-Chosen because:
-
-- Cloud-based Git repository hosting
-- Supports pull requests
-- Issue tracking
-- Project management
-- Team collaboration
-- Documentation hosting
-
----
-
-# Compatibility Matrix
-
-| Component | Technology |
-|------------|------------|
-| Backend | Laravel |
-| Web Frontend | Blade + Bootstrap |
-| Mobile | Flutter |
-| Database | MySQL |
-| Maps | MapLibre GL |
-| Version Control | Git |
-| Repository | GitHub |
-
----
-
-# Future Technology Changes
-
-Any changes to the technology stack must be approved by the project team and reflected in this document before implementation.
-
-This document serves as the official technology reference for the ResQLink project.
+- <https://docs.expo.dev/>
+- <https://docs.expo.dev/develop/development-builds/introduction/>
+- <https://maplibre.org/maplibre-react-native/>
+- <https://maplibre.org/maplibre-react-native/docs/setup/expo/>

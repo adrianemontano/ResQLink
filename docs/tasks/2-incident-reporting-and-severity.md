@@ -36,7 +36,7 @@ than silently requiring internet access.
 
 Mobile screens are excluded from this four-task plan. The current Laravel web
 application includes a volunteer incident-submission page backed by the same
-validation and submission service as the API. Flutter screens remain outside
+validation and submission service as the API. Expo React Native screens remain outside
 the current repository.
 
 | Page or UI location | Required content |
