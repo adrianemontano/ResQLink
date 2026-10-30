@@ -8,6 +8,11 @@
             ['key' => 'barangay-responder', 'label' => 'Barangay Responder'],
             ['key' => 'dispatcher', 'label' => 'Dispatcher'],
         ];
+        $statusFilters = [
+            ['key' => 'all', 'label' => 'All'],
+            ['key' => 'active', 'label' => 'Active'],
+            ['key' => 'inactive', 'label' => 'Inactive'],
+        ];
     @endphp
 
     <div class="header-row">
@@ -20,10 +25,26 @@
 
     <section class="card">
         <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.5rem;">
+            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-right:0.5rem; color:var(--text-muted);">Role:</span>
             @foreach ($filters as $filter)
                 @php
                     $isActive = $roleFilter === $filter['key'];
-                    $queryString = $filter['key'] === 'all' ? [] : ['role' => $filter['key']];
+                    $queryString = $filter['key'] === 'all' ? [] : ['role' => $filter['key'], 'status' => $statusFilter === 'all' ? null : $statusFilter];
+                @endphp
+                <a
+                    href="{{ route('admin.users.index', $queryString) }}"
+                    class="button {{ $isActive ? '' : 'secondary' }}"
+                    style="padding:0.5rem 0.9rem;"
+                    @if ($isActive) aria-current="page" @endif
+                >
+                    {{ $filter['label'] }}
+                </a>
+            @endforeach
+            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-left:1rem; margin-right:0.5rem; color:var(--text-muted);">Status:</span>
+            @foreach ($statusFilters as $filter)
+                @php
+                    $isActive = $statusFilter === $filter['key'];
+                    $queryString = $filter['key'] === 'all' ? [] : ['status' => $filter['key'], 'role' => $roleFilter === 'all' ? null : $roleFilter];
                 @endphp
                 <a
                     href="{{ route('admin.users.index', $queryString) }}"
