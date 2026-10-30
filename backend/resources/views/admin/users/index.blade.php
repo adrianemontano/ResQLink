@@ -19,7 +19,7 @@
             <option value="dispatcher" @selected($roleFilter === 'dispatcher')>Dispatcher</option>
         </select>
         <label style="font-size:0.875rem; margin-left:8px; margin-right:4px; color:var(--text-muted);">Status:</label>
-        <select name="status" style="width:auto; max-width:180px; padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
+            <select name="status" style="width:auto; max-width:220px; padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
             <option value="all" @selected($statusFilter === 'all')>All</option>
             <option value="active" @selected($statusFilter === 'active')>Active</option>
             <option value="inactive" @selected($statusFilter === 'inactive')>Inactive</option>
