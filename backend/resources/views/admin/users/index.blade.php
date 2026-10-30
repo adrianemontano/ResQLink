@@ -12,7 +12,7 @@
 
     <form class="card filter-row" method="GET" action="{{ route('admin.users.index') }}">
         <label>Role
-            <select name="role">
+            <select name="role" style="max-width:220px;">
                 <option value="all" @selected($roleFilter === 'all')>All</option>
                 <option value="admin" @selected($roleFilter === 'admin')>Admin</option>
                 <option value="barangay-responder" @selected($roleFilter === 'barangay-responder')>Barangay Responder</option>
@@ -20,7 +20,7 @@
             </select>
         </label>
         <label>Status
-            <select name="status">
+            <select name="status" style="max-width:180px;">
                 <option value="all" @selected($statusFilter === 'all')>All</option>
                 <option value="active" @selected($statusFilter === 'active')>Active</option>
                 <option value="inactive" @selected($statusFilter === 'inactive')>Inactive</option>
