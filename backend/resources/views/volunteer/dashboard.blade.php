@@ -22,9 +22,6 @@
                 <span class="volunteer-hero-kicker">Every report moves response forward</span>
                 <h2 id="volunteer-hero-title">Your community counts on clear information.</h2>
                 <p>Share what is happening. Dispatchers use your reports to understand local needs and coordinate support.</p>
-                <a class="volunteer-hero-link" href="{{ route('volunteer.incidents.create') }}">
-                    Create a new report <span aria-hidden="true">&rarr;</span>
-                </a>
             </div>
             <div class="volunteer-hero-total" aria-label="{{ $totalReports }} reports submitted by you">
                 <span>Your reports</span>
@@ -131,7 +128,6 @@
                     <span class="volunteer-eyebrow">Your activity</span>
                     <h2>Recent reports</h2>
                 </div>
-                <a class="volunteer-text-link" href="{{ route('volunteer.incidents.create') }}">Submit another <span aria-hidden="true">&rarr;</span></a>
             </div>
             @forelse ($recentIncidents as $incident)
                 <article class="volunteer-recent-row">
