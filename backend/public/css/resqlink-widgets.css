@@ -123,6 +123,54 @@
     display: grid;
     gap: var(--space-4);
     grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+    align-items: start;
+}
+
+.detail-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.detail-right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.card.compact {
+    padding: var(--space-2) var(--space-3);
+}
+
+.card.compact > h2 {
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+    font-size: 14px;
+}
+
+.map-wrap {
+    flex: 1;
+    min-height: 160px;
+    width: 100%;
+}
+
+.detail-grid .card > form + h2 {
+    margin-top: var(--space-5);
+}
+
+.detail-grid .card h2 + table {
+    margin-top: var(--space-4);
+}
+
+.bar-fill {
+    align-items: center;
+    border-radius: 10px;
+    color: #ffffff;
+    display: flex;
+    font-size: 12px;
+    font-weight: 600;
+    height: 100%;
+    padding-left: var(--space-3);
 }
 
 .detail-list {
