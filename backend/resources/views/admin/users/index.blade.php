@@ -1,14 +1,6 @@
 @extends('layouts.dashboard', ['title' => 'Users | ResQLink'])
 
 @section('content')
-    @php
-        $filters = [
-            ['key' => 'all', 'label' => 'All'],
-            ['key' => 'admin', 'label' => 'Admin'],
-            ['key' => 'barangay-responder', 'label' => 'Barangay Responder'],
-            ['key' => 'dispatcher', 'label' => 'Dispatcher'],
-        ];
-    @endphp
 
     <div class="header-row">
         <div>
@@ -18,24 +10,27 @@
         <a class="button" href="{{ route('admin.users.create') }}">Create User</a>
     </div>
 
-    <section class="card">
-        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.5rem;">
-            @foreach ($filters as $filter)
-                @php
-                    $isActive = $roleFilter === $filter['key'];
-                    $queryString = $filter['key'] === 'all' ? [] : ['role' => $filter['key']];
-                @endphp
-                <a
-                    href="{{ route('admin.users.index', $queryString) }}"
-                    class="button {{ $isActive ? '' : 'secondary' }}"
-                    style="padding:0.5rem 0.9rem;"
-                    @if ($isActive) aria-current="page" @endif
-                >
-                    {{ $filter['label'] }}
-                </a>
-            @endforeach
-        </div>
+    <form class="card filter-row" method="GET" action="{{ route('admin.users.index') }}" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto; gap: var(--space-1);">
+        <label>Role
+            <select name="role" style="max-width:220px;">
+                <option value="all" @selected($roleFilter === 'all')>All</option>
+                <option value="admin" @selected($roleFilter === 'admin')>Admin</option>
+                <option value="barangay-responder" @selected($roleFilter === 'barangay-responder')>Barangay Responder</option>
+                <option value="dispatcher" @selected($roleFilter === 'dispatcher')>Dispatcher</option>
+            </select>
+        </label>
+        <label>Status
+            <select name="status" style="max-width:180px;">
+                <option value="all" @selected($statusFilter === 'all')>All</option>
+                <option value="active" @selected($statusFilter === 'active')>Active</option>
+                <option value="inactive" @selected($statusFilter === 'inactive')>Inactive</option>
+            </select>
+        </label>
+        <button type="submit" style="padding:0 var(--space-2); max-width:90px;">Filter</button>
+        <a href="{{ route('admin.users.index') }}">Clear</a>
+    </form>
 
+    <section class="card">
         <table>
             <thead>
                 <tr>
@@ -93,4 +88,5 @@
             {{ $users->links() }}
         </div>
     </section>
+
 @endsection
