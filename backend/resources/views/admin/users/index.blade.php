@@ -24,7 +24,7 @@
             <option value="active" @selected($statusFilter === 'active')>Active</option>
             <option value="inactive" @selected($statusFilter === 'inactive')>Inactive</option>
         </select>
-        <button type="submit" style="padding:0 var(--space-2); max-width:90px;">Filter</button>
+        <button type="submit" style="padding:0 var(--space-3); max-width:140px;">Filter</button>
         <a href="{{ route('admin.users.index') }}" style="padding:0 var(--space-3); margin-left:8px; text-decoration:none;">Clear</a>
     </form>
 
