@@ -24,14 +24,14 @@
     </div>
 
     <section class="card">
-        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; margin-bottom:1.5rem;">
-            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-right:0.5rem; color:var(--text-muted);">Role:</span>
+        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-bottom:1.5rem;">
+            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-right:0.25rem; color:var(--text-muted);">Role:</span>
             <select name="role" id="roleFilter" onchange="applyFilter(this, 'role')" style="padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
                 @foreach ($filters as $filter)
                     <option value="{{ $filter['key'] }}" @selected($roleFilter === $filter['key'])>{{ $filter['label'] }}</option>
                 @endforeach
             </select>
-            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-left:1rem; margin-right:0.5rem; color:var(--text-muted);">Status:</span>
+            <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-left:0.75rem; margin-right:0.25rem; color:var(--text-muted);">Status:</span>
             <select name="status" id="statusFilter" onchange="applyFilter(this, 'status')" style="padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
                 @foreach ($statusFilters as $filter)
                     <option value="{{ $filter['key'] }}" @selected($statusFilter === $filter['key'])>{{ $filter['label'] }}</option>
