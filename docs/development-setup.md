@@ -154,10 +154,27 @@ After successful seeding, use these accounts:
 | Role | Email | Password |
 | --- | --- | --- |
 | Administrator | `admin@resqlink.local` | `Admin@12345` |
-| Volunteer | `volunteer@resqlink.local` | `Volunteer@12345` |
+| Dispatcher | `a@gmail.com` | `admin123` |
+| Default Volunteer | `volunteer@resqlink.local` | `Volunteer@12345` |
+| Mock Defense Responders (10 verified) | `responder.<barangay>@resqlink.local` (e.g. `responder.mabolo@resqlink.local`) | `Volunteer@12345` |
 
 The values can be overridden by the corresponding `DEFAULT_*` variables in
 `.env`.
+
+### Mock defense dataset & verification
+
+To seed the full mock defense dataset (at least 8 responders, 20+ incidents per category across all statuses and severities, with complete status transition histories):
+
+```powershell
+php artisan db:seed --class=MockDefenseSeeder
+```
+
+To run verification queries confirming counts and sample records:
+
+```powershell
+php artisan mock-defense:verify
+```
+
 
 ## Map-server troubleshooting on Windows
 
