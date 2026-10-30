@@ -10,7 +10,7 @@
         <a class="button" href="{{ route('admin.users.create') }}">Create User</a>
     </div>
 
-    <form class="card filter-row" method="GET" action="{{ route('admin.users.index') }}" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto; gap: var(--space-2);">
+    <form class="card filter-row" method="GET" action="{{ route('admin.users.index') }}" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto; gap: var(--space-1);">
         <label>Role
             <select name="role" style="max-width:220px;">
                 <option value="all" @selected($roleFilter === 'all')>All</option>
