@@ -7,7 +7,7 @@
 </div>
 
 <div class="field">
-    <label for="barangay">Barangay (required for volunteers)</label>
+    <label for="barangay">Barangay (required for Barangay Responders)</label>
     <input id="barangay" name="barangay" value="{{ old('barangay', $managedUser?->volunteerProfile?->barangay) }}" maxlength="100">
     @error('barangay')
         <div class="error-text">{{ $message }}</div>
@@ -35,7 +35,15 @@
     <select id="role_id" name="role_id">
         @foreach ($roles as $role)
             <option value="{{ $role->id }}" @selected((int) old('role_id', $managedUser?->role_id) === $role->id)>
-                {{ $role->name }}
+                @php
+                    $roleLabel = match ($role->name) {
+                        'admin' => 'Admin',
+                        'dispatcher' => 'Dispatcher',
+                        'volunteer' => 'Barangay Responder',
+                        default => ucfirst((string) $role->name),
+                    };
+                @endphp
+                {{ $roleLabel }}
             </option>
         @endforeach
     </select>

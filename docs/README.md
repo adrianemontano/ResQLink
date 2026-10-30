@@ -5,6 +5,12 @@ Welcome to the **ResQLink** project documentation.
 Developer setup: [fresh clone, pull/merge, and local map server
 runbook](development-setup.md).
 
+Design system: [ResQLink visual tokens, contrast guidance, component rules,
+and screen mockups](design-system/resqlink-visual-system.md).
+
+Mobile development: [Android Studio first configuration and implementation
+guide](mobile/android-studio-setup-and-implementation-guide.md).
+
 This directory serves as the **single source of truth** for the project's technical documentation, system requirements, architecture, development workflow, and technology stack. Team members should refer to these documents throughout the development lifecycle to ensure consistency and alignment.
 
 ---

@@ -2,9 +2,14 @@
 
 ## Overview
 
-Implemented Phase 1 web authentication for ResQLink. The web application now supports session-based login and logout for administrator and dispatcher accounts, role-based route protection, seeded roles, a seeded default administrator, placeholder dashboards, and administrator-managed dispatcher/volunteer account creation.
+Implemented session-based web authentication for ResQLink. The application
+supports login and logout for administrators, dispatchers, and active verified
+volunteers, role-based route protection, seeded development accounts, database-
+backed dashboards, and administrator-managed accounts.
 
-Public registration was not added. Volunteer accounts exist for future mobile use, but they are blocked from the web login.
+Public registration is not available. Volunteer accounts are created by an
+administrator. Active, verified volunteers can use the web dashboard and
+incident-reporting workflow; inactive or unverified volunteers are denied.
 
 ## Default Administrator
 
@@ -47,16 +52,21 @@ The seeded values can be overridden with `DEFAULT_DISPATCHER_FIRST_NAME`,
 `DEFAULT_VOLUNTEER_USERNAME`, `DEFAULT_VOLUNTEER_EMAIL`,
 `DEFAULT_VOLUNTEER_PASSWORD`, and `DEFAULT_VOLUNTEER_BARANGAY`.
 
-The volunteer profile is seeded with `pending` verification and must be verified
-by an admin before the volunteer can submit an incident report.
+The seeded volunteer profile is active and verified for development and
+demonstration. Volunteers created through Admin start with `pending`
+verification and must be verified before they can access volunteer routes or
+submit an incident report.
 
 ## Authentication Flow
 
 Login: Users submit a username or email address and password at `/login`.
 
-Session creation: Valid admin or dispatcher credentials create a Laravel web session and regenerate the session ID.
+Session creation: Valid credentials create a Laravel web session and regenerate
+the session ID.
 
-Authorization: Role middleware protects admin and dispatcher routes. Volunteers and users without web roles are denied web access.
+Authorization: Role middleware protects Admin, Dispatcher, and Volunteer route
+groups. Inactive accounts are denied. Volunteer routes additionally require a
+verified volunteer profile.
 
 Logout: `/logout` signs out the user, invalidates the session, regenerates the CSRF token, and redirects to `/login`.
 
@@ -78,16 +88,19 @@ Dispatcher
 
 Volunteer
 
-* Mobile Only
-* No Web Login
-* Account can be created by an administrator for future mobile authentication
+* Web access when active and verified
+* Can access the volunteer dashboard and incident-reporting form
+* Account and verification state are managed by an administrator
 
 ## Seeders Created
 
 * `RoleSeeder`
 * `AdminSeeder`
+* `DispatcherSeeder`
+* `VolunteerSeeder`
 
-`DatabaseSeeder` calls both seeders, so `php artisan migrate:fresh --seed` creates the roles and the default administrator account.
+`DatabaseSeeder` creates the roles and the default Admin, Dispatcher, and
+verified Volunteer development accounts.
 
 ## Routes Added
 
@@ -105,6 +118,9 @@ Volunteer
 * `PATCH /admin/users/{user}/password`
 * `PATCH /admin/users/{user}/activation`
 * `GET /dispatcher/dashboard`
+* `GET /volunteer/dashboard`
+* `GET /volunteer/incidents/create`
+* `POST /volunteer/incidents`
 
 ## Middleware
 
@@ -154,7 +170,8 @@ Default administrator:
 * [ ] Admin can access Admin Dashboard.
 * [ ] Dispatcher cannot access Admin Dashboard.
 * [ ] Dispatcher can access Dispatcher Dashboard.
-* [ ] Volunteer cannot log in through the web.
+* [ ] Active, verified Volunteer can log in through the web.
+* [ ] Inactive or unverified Volunteer cannot access volunteer routes.
 * [ ] Unauthorized URLs return the correct response.
 
 ### User Management
@@ -162,7 +179,8 @@ Default administrator:
 * [ ] Admin creates a Dispatcher.
 * [ ] Admin creates a Volunteer.
 * [ ] Newly created Dispatcher can log in.
-* [ ] Newly created Volunteer cannot log in through the web.
+* [ ] Newly created Volunteer remains blocked until verified.
+* [ ] Verified Volunteer can log in and open the incident-reporting form.
 * [ ] Admin deactivates a Dispatcher.
 * [ ] Deactivated Dispatcher cannot log in.
 * [ ] Admin resets a user's password.

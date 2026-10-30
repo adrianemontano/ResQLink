@@ -12,13 +12,22 @@ use Illuminate\View\View;
 
 class IncidentController extends Controller
 {
+    private const ALLOWED_TRANSITIONS = [
+        'Reported' => ['Reported', 'Received'],
+        'Received' => ['Received', 'Dispatched'],
+        'Dispatched' => ['Dispatched', 'Completed'],
+        'Completed' => ['Completed'],
+    ];
+
     public function index(): View
     {
-        $incidents = Incident::query()
-            ->with('reporter')
+        $baseQuery = Incident::query()
             ->when(request('category'), fn ($query, $category) => $query->where('category', $category))
             ->when(request('status'), fn ($query, $status) => $query->where('status', $status))
-            ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangay', $barangay))
+            ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangay', $barangay));
+
+        $incidents = (clone $baseQuery)
+            ->with('reporter')
             ->orderByRaw("CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END")
             ->orderByRaw("CASE status WHEN 'Reported' THEN 1 WHEN 'Received' THEN 2 WHEN 'Dispatched' THEN 3 WHEN 'Completed' THEN 4 ELSE 5 END")
             ->orderByDesc('reported_at')
@@ -31,9 +40,11 @@ class IncidentController extends Controller
 
         return view('dispatcher.incidents.index', [
             'incidents' => $incidents,
-            'categories' => Incident::query()->distinct()->orderBy('category')->pluck('category'),
+            'categories' => (clone $baseQuery)->select('category')->distinct()->orderBy('category')->pluck('category'),
             'statuses' => ['Reported', 'Received', 'Dispatched', 'Completed'],
-            'barangays' => $this->mapBarangays(),
+            'barangays' => request()->hasAny(['category', 'status', 'barangay'])
+                ? (clone $baseQuery)->select('barangay')->distinct()->orderBy('barangay')->pluck('barangay')->filter()->values()->all()
+                : $this->mapBarangays(),
         ]);
     }
 
@@ -51,7 +62,11 @@ class IncidentController extends Controller
         $data = $request->validated();
         $status = $data['status'];
 
-        abort_unless($this->isValidTransition($incident->status, $status), 422, 'Invalid incident status transition.');
+        if (! $this->isValidTransition($incident->status, $status)) {
+            return redirect()->route('dispatcher.incidents.show', $incident)
+                ->withErrors(['status' => $this->invalidTransitionMessage($incident->status)])
+                ->withInput();
+        }
 
         DB::transaction(function () use ($incident, $data, $request, $status): void {
             $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
@@ -110,19 +125,7 @@ class IncidentController extends Controller
         return response()->json([
             'type' => 'FeatureCollection',
             'features' => $features,
-        ]);
-    }
-
-    private function isValidTransition(?string $currentStatus, string $nextStatus): bool
-    {
-        $allowed = [
-            'Reported' => ['Reported', 'Received'],
-            'Received' => ['Received', 'Dispatched'],
-            'Dispatched' => ['Dispatched', 'Completed'],
-            'Completed' => ['Completed'],
-        ];
-
-        return in_array($nextStatus, $allowed[$currentStatus] ?? [], true);
+        ], 200, [], JSON_PRESERVE_ZERO_FRACTION);
     }
 
     private function mapBarangays(): array
@@ -140,4 +143,20 @@ class IncidentController extends Controller
 
         return $barangays;
     }
+
+    private function isValidTransition(?string $currentStatus, string $nextStatus): bool
+    {
+        return in_array($nextStatus, self::ALLOWED_TRANSITIONS[$currentStatus] ?? [], true);
+    }
+
+    private function invalidTransitionMessage(?string $currentStatus): string
+    {
+        $label = $currentStatus ?? 'This';
+        $next = array_values(array_diff(self::ALLOWED_TRANSITIONS[$currentStatus] ?? [], [$currentStatus]));
+
+        return $next === []
+            ? "{$label} incidents can no longer change status."
+            : "{$label} incidents can only move to {$next[0]} next.";
+    }
+
 }

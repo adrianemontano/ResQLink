@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VolunteerDocumentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\Dispatcher\DashboardController as DispatcherDashboardController;
@@ -35,7 +36,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('users', UserController::class)->except(['show', 'destroy']);
         Route::patch('/users/{user}/password', [UserController::class, 'resetPassword'])->name('users.password');
         Route::patch('/users/{user}/activation', [UserController::class, 'toggleActivation'])->name('users.activation');
-        Route::post('/users/{user}/documents', [UserController::class, 'uploadDocument'])->name('users.documents.store');
+        Route::post('/users/{user}/documents', [VolunteerDocumentController::class, 'store'])->name('users.documents.store');
+        Route::get('/users/{user}/documents/{document}', [VolunteerDocumentController::class, 'show'])->name('users.documents.show');
+        Route::patch('/users/{user}/documents/{document}/review', [VolunteerDocumentController::class, 'review'])->name('users.documents.review');
         Route::patch('/users/{user}/verification', [UserController::class, 'toggleVerification'])->name('users.verification');
         Route::get('/incidents', [AdminIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidents/{incident}', [AdminIncidentController::class, 'show'])->name('incidents.show');

@@ -17,6 +17,12 @@ roles. The development Admin account is `admin` / `admin@resqlink.local` /
 `Admin@12345`. Create and verify a volunteer through Admin before reporting.
 These credentials are development-only.
 
+## Status
+
+The web incident-reporting flow, shared web/API submission service, preliminary
+severity calculation, and dispatcher handoff are implemented. Automated and
+manual acceptance verification remains before TASK2 is marked complete.
+
 ## Objective
 
 Complete the server-side incident submission workflow and preliminary severity
@@ -62,3 +68,13 @@ read-only for coordination.
   identifier, and `Reported` data.
 - Severity rules are documented and remain separate from dispatcher judgment.
 - Incident data is consumable by Tasks 3 and 4.
+
+## Remaining verification
+
+- Exercise invalid categories, coordinates, radius, affected population, and
+  missing fields through both web and JSON requests.
+- Confirm inactive and unverified volunteers are denied through direct URLs and
+  submission requests.
+- Verify the local map's behavior when the TileServer style is unavailable.
+- Record the focused automated-test and manual-browser results before marking
+  TASK2 complete.

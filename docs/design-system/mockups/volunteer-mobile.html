@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ResQLink Volunteer Mobile Mockups</title>
+    <link rel="stylesheet" href="resqlink-mockups.css">
+</head>
+<body>
+<main class="m-page">
+    <header class="m-page-head"><div><h1>Volunteer mobile flow</h1><p>Static Flutter handoff frames • designed for 360–412px screens • no new behavior implied</p></div><span class="m-pill">7 screens + states</span></header>
+    <section class="m-phone-grid">
+        <article class="m-phone"><div class="m-phone-screen">
+            <div class="m-phone-top"><span>9:41</span><span>●●● 100%</span></div>
+            <div class="m-mobile-content" style="padding-top:54px">
+                <div class="m-mobile-card" style="text-align:center;padding:26px 18px">
+                    <div class="m-brand-mark" style="margin:0 auto 16px">✦</div><h1 style="font-size:25px">ResQLink</h1><p class="muted" style="margin:6px 0 20px">Volunteer Incident Reporting</p>
+                    <label style="text-align:left">Email or username<input placeholder="you@example.com"></label>
+                    <label style="margin-top:14px;text-align:left">Password<input type="password" placeholder="Enter password"></label>
+                    <button style="width:100%;margin-top:18px">Sign in</button>
+                    <p class="muted" style="margin-top:14px;font-size:12px">Your community, connected to help.</p>
+                </div>
+            </div>
+        </div></article>
+        <article class="m-phone"><div class="m-phone-screen">
+            <div class="m-phone-top"><span>9:41</span><span>●●● 100%</span></div>
+            <header class="m-appbar"><h2>Good morning, Angela</h2><p>Help your community stay safe.</p></header>
+            <div class="m-mobile-content">
+                <div class="m-mobile-card"><small>YOUR REPORTS</small><h1 style="margin:5px 0;color:var(--tangelo)">3</h1><p class="muted">Reports submitted</p></div>
+                <button style="width:100%">＋ Report an incident</button>
+                <h3>Recent reports</h3>
+                <div class="m-mobile-card"><div class="m-card-head"><strong>Flood • Lahug</strong><span class="m-pill">Reported</span></div><small>INC-0018 · Today, 9:20 AM</small></div>
+                <div class="m-mobile-card"><div class="m-card-head"><strong>Fire • Mabolo</strong><span class="m-pill done">✓ Completed</span></div><small>INC-0012 · Oct 21</small></div>
+            </div><nav class="m-bottom-nav"><span>⌂ Home</span><span>＋ Report</span><span>◎ Profile</span></nav>
+        </div></article>
+        <article class="m-phone"><div class="m-phone-screen">
+            <div class="m-phone-top"><span>9:41</span><span>●●● 100%</span></div>
+            <header class="m-appbar"><h2>Report incident</h2><p>Step 1 of 3 · Incident details</p></header>
+            <div class="m-mobile-content">
+                <div class="m-mobile-card"><label>Incident category</label><div class="m-category-grid"><div class="m-category selected">▤ Flood</div><div class="m-category">⌁ Earthquake</div><div class="m-category">△ Landslide</div><div class="m-category">♨ Fire</div></div></div>
+                <label>Barangay<select><option>Select barangay</option><option>Lahug</option></select></label>
+                <label>Nearest landmark<input placeholder="Search nearby landmark"></label>
+                <div class="m-mobile-card"><label>Affected persons</label><div class="m-stepper"><button class="secondary">−</button><strong>12 people</strong><button>＋</button></div></div>
+                <label>Notes (optional)<textarea rows="2" placeholder="Important details for dispatch"></textarea></label>
+                <button>Continue to map →</button>
+            </div>
+        </div></article>
+        <article class="m-phone"><div class="m-phone-screen">
+            <div class="m-phone-top"><span>9:41</span><span>●●● 100%</span></div>
+            <header class="m-appbar"><h2>Pin the location</h2><p>Step 2 of 3 · Map location</p></header>
+            <div class="m-mobile-content">
+                <button class="secondary" style="width:100%">◎ Use my current location</button>
+                <div class="m-map" style="min-height:255px"><div class="m-legend">Lahug • Cebu City</div><div class="m-radius" style="top:90px;left:96px"></div><div class="m-pin" style="top:132px;left:137px"></div></div>
+                <div class="m-mobile-card"><div class="m-card-head"><strong>Impact radius</strong><strong>300 m</strong></div><input type="range" value="25" aria-label="Impact radius"></div>
+                <div class="m-mobile-card"><small>PIN COORDINATES</small><p style="margin-top:6px">10.3266, 123.8846</p></div>
+                <button>Confirm location</button>
+                <div class="m-state">⚠ Location permission is off. Place the pin manually or enable location access.</div>
+            </div>
+        </div></article>
+        <article class="m-phone"><div class="m-phone-screen">
+            <div class="m-phone-top"><span>9:41</span><span>●●● 100%</span></div>
+            <header class="m-appbar"><h2>Review report</h2><p>Step 3 of 3 · Confirm details</p></header>
+            <div class="m-mobile-content">
+                <div class="m-mobile-card"><small>INCIDENT</small><h3 style="margin-top:5px">Flood</h3><p>Lahug · Near Cebu IT Park</p></div>
+                <div class="m-mobile-card"><small>AFFECTED PERSONS</small><h2 style="margin-top:5px">12 people</h2></div>
+                <div class="m-mobile-card"><small>LOCATION & RADIUS</small><p style="margin-top:5px">10.3266, 123.8846 · 300 m</p></div>
+                <div class="m-mobile-card"><small>NOTES</small><p style="margin-top:5px">Water rising near homes.</p></div>
+                <button style="width:100%">Submit incident report</button><button class="secondary" style="width:100%">Back to edit</button>
+                <small>Submission may be retried if you go offline.</small>
+            </div>
+        </div></article>
+        <article class="m-phone"><div class="m-phone-screen">
+            <div class="m-phone-top"><span>9:41</span><span>●●● 100%</span></div>
+            <div class="m-mobile-content" style="padding-top:80px;text-align:center">
+                <div class="m-mobile-card" style="padding:28px 18px"><div style="font-size:48px;color:var(--success)">✓</div><h2>Report sent</h2><p class="muted" style="margin:8px 0 18px">Dispatch has received your incident report.</p><div class="m-state success">INC-0019 · Status: Reported</div><button style="width:100%;margin-top:18px">Back to home</button></div>
+            </div>
+        </div></article>
+        <article class="m-phone"><div class="m-phone-screen">
+            <div class="m-phone-top"><span>9:41</span><span>●●● 100%</span></div>
+            <header class="m-appbar"><h2>Report an incident</h2><p>Connection status</p></header>
+            <div class="m-mobile-content">
+                <div class="m-state">⚠ Barangay is required. Select a barangay before continuing.</div>
+                <div class="m-state">⚠ Offline right now. Your report is not sent yet. Reconnect to submit.</div>
+                <div class="m-mobile-card"><h3>GPS unavailable</h3><p class="muted" style="margin-top:6px">Location access was denied. You can still place the map pin manually.</p><button class="secondary" style="width:100%;margin-top:12px">Open map picker</button></div>
+                <div class="m-mobile-card"><h3>Submitting report…</h3><div class="m-skeleton" style="width:70%"></div><div class="m-skeleton"></div><small>Please keep the app open.</small></div>
+                <button>Try again</button>
+            </div>
+        </div></article>
+    </section>
+    <p class="muted" style="margin-top:22px">States shown: field validation, GPS/permission denied, offline, submitting, and success. Actual offline queue behavior must follow the approved mobile implementation requirements.</p>
+</main>
+</body>
+</html>

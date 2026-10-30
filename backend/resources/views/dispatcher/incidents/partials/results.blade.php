@@ -21,7 +21,7 @@
                 <td>{{ $incident->persons_count }}</td>
                 <td>{{ $incident->barangay }}</td>
                 <td>{{ $incident->reported_at?->diffForHumans() ?? $incident->created_at->diffForHumans() }}</td>
-                <td><span class="badge">{{ $incident->severity ?? 'Unrated' }}</span></td>
+                <td><span class="badge severity-{{ strtolower($incident->severity ?? 'unrated') }}">{{ $incident->severity ?? 'Unrated' }}</span></td>
                 <td><span class="badge status-{{ strtolower($incident->status) }}">{{ $incident->status }}</span></td>
                 <td><a href="{{ route('dispatcher.incidents.show', $incident) }}">Open</a></td>
             </tr>

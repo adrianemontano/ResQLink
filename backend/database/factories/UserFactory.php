@@ -26,7 +26,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'username' => fake()->unique()->userName(),
+            'username' => $this->validUsername(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -43,5 +43,19 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Generate a unique username that satisfies the application's
+     * `alpha_dash` username validation rule (letters, numbers,
+     * dashes, and underscores only).
+     */
+    private function validUsername(): string
+    {
+        do {
+            $username = preg_replace('/[^A-Za-z0-9_-]/', '_', fake()->unique()->userName()) ?? 'user';
+        } while (User::query()->where('username', $username)->exists());
+
+        return $username;
     }
 }

@@ -1,13 +1,22 @@
 @extends('layouts.dashboard', ['title' => 'Reports | ResQLink'])
 
 @php
-    $categoryPalette = ['var(--blue)', 'var(--red)', 'var(--navy)', 'var(--amber)', 'var(--green)'];
+    use App\Models\Incident;
+
+    $categoryPalette = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
     $statusColors = [
-        'reported' => 'var(--red)',
-        'received' => 'var(--amber)',
-        'dispatched' => 'var(--green)',
-        'completed' => 'var(--blue)',
+        'Reported' => 'var(--status-reported)',
+        'Received' => 'var(--status-received)',
+        'Dispatched' => 'var(--status-dispatched)',
+        Incident::STATUS_COMPLETED => 'var(--status-completed)',
     ];
+    $statusLabels = [
+        'Reported' => 'Active — Reported',
+        'Received' => 'Active — Received',
+        'Dispatched' => 'Active — Dispatched',
+        Incident::STATUS_COMPLETED => 'Archived — Completed',
+    ];
+    $daysWithIncidents = collect($byFrequency)->where('total', '>', 0)->count();
 @endphp
 
 @section('content')
@@ -18,7 +27,7 @@
         </div>
     </div>
 
-    <form class="card" method="GET" action="{{ route('admin.reports.index') }}">
+    <form class="card report-filter-row" method="GET" action="{{ route('admin.reports.index') }}">
         <label for="report-period">Reporting period</label>
         <select id="report-period" name="period">
             <option value="daily" @selected($period === 'daily')>Daily</option>
@@ -27,7 +36,7 @@
         </select>
         <label for="report-date">Date in selected period</label>
         <input id="report-date" type="date" name="date" value="{{ $date }}">
-        <button type="submit">Generate report</button>
+        <button type="submit">Generate Report</button>
         <p>
             Report window: [{{ $from->format('Y-m-d H:i') }}, {{ $until->format('Y-m-d H:i') }})
             {{ $timezone }}. Weekly periods run Monday through Sunday.
@@ -37,7 +46,18 @@
     <div class="report-stat-grid">
         <div class="report-stat">
             <div class="report-stat-val">{{ $totalIncidents }}</div>
-            <div class="report-stat-label">Total incidents</div>
+            <div class="report-stat-label">Total Incidents</div>
+        </div>
+        @foreach ($statusLabels as $status => $label)
+            @php $statusTotal = $byStatus->firstWhere('label', $status)?->total ?? 0; @endphp
+            <div class="report-stat">
+                <div class="report-stat-val">{{ $statusTotal }}</div>
+                <div class="report-stat-label">{{ $label }}</div>
+            </div>
+        @endforeach
+        <div class="report-stat">
+            <div class="report-stat-val">{{ $daysWithIncidents }}</div>
+            <div class="report-stat-label">Days With Incidents</div>
         </div>
     </div>
 
@@ -52,9 +72,8 @@
             <div class="bar-row">
                 <div class="bar-label">{{ $row->label }}</div>
                 <div class="bar-track">
-                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};">
-                        {{ $row->total }} ({{ $percent }}%)
-                    </div>
+                    <div class="bar-fill" style="width: {{ $percent }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};"></div>
+                    <strong class="bar-value">{{ $row->total }} ({{ $percent }}%)</strong>
                 </div>
             </div>
         @empty
@@ -67,11 +86,10 @@
         @forelse ($byStatus as $row)
             @php $percent = $totalIncidents > 0 ? round($row->total / $totalIncidents * 100) : 0; @endphp
             <div class="bar-row">
-                <div class="bar-label">{{ $row->label }}</div>
+                <div class="bar-label">{{ $statusLabels[$row->label] ?? $row->label }}</div>
                 <div class="bar-track">
-                    <div class="bar-fill" style="width: {{ max($percent, 6) }}%; background: {{ $statusColors[strtolower($row->label)] ?? 'var(--navy)' }};">
-                        {{ $row->total }} ({{ $percent }}%)
-                    </div>
+                    <div class="bar-fill" style="width: {{ $percent }}%; background: {{ $statusColors[$row->label] ?? 'var(--rosewood)' }};"></div>
+                    <strong class="bar-value">{{ $row->total }} ({{ $percent }}%)</strong>
                 </div>
             </div>
         @empty

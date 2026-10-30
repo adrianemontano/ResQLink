@@ -1,0 +1,371 @@
+/*
+ * Final shared overrides for the ResQLink warm emergency-response design system.
+ * Colour, status, severity, chart, spacing, and font tokens live in resqlink-tokens.css;
+ * this file only holds cross-component refinements and the responsive layer.
+ */
+
+:root {
+    --text-xs: 12px;
+    --text-sm: 14px;
+    --text-md: 16px;
+    --text-lg: 18px;
+    --text-xl: 24px;
+}
+
+body,
+input,
+select,
+textarea,
+button {
+    font-family: var(--font-body);
+}
+
+.header-row h1,
+.volunteer-topbar h1,
+.card > h2,
+.form-section-title {
+    color: var(--rosewood);
+}
+
+.header-row > div > p,
+.volunteer-topbar p,
+.volunteer-map-head span,
+.volunteer-section-head span {
+    color: var(--text-muted);
+}
+
+.card,
+.panel,
+.report-stat,
+.chart-card,
+.map-legend {
+    background: var(--surface);
+    border-color: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Stat cards: quiet muted label, dark figure; numbers carry the meaning. */
+.grid .card > h2 {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.grid .card {
+    padding: var(--space-4) var(--space-5);
+}
+
+/* Tables inside cards: rounded header, zebra rows, warm hover. */
+.card > table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+.card > table thead th:first-child { border-top-left-radius: var(--radius-sm); }
+.card > table thead th:last-child { border-top-right-radius: var(--radius-sm); }
+.card > table tbody tr:nth-child(even) { background: var(--gray-50); }
+.card > table tbody tr:hover { background: var(--accent-light); }
+
+.card > table a,
+.header-row a:not(.button),
+.filter-row a,
+.record-scope-item {
+    text-decoration-color: var(--tangelo);
+    text-underline-offset: 3px;
+}
+
+/* Form states. */
+input:hover:not(:focus),
+select:hover:not(:focus),
+textarea:hover:not(:focus) {
+    border-color: var(--sangria);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background: var(--gray-100);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"] {
+    accent-color: var(--sangria);
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"],
+.is-invalid {
+    border-color: var(--maximum-red);
+}
+
+input[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus,
+.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(217, 34, 0, .18);
+}
+
+/* Filter bars for records and reports. */
+.record-filter-row {
+    align-items: end;
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: minmax(220px, 2fr) minmax(150px, 1fr) minmax(150px, 1fr) auto auto;
+}
+
+.report-filter-row {
+    align-items: end;
+    display: grid;
+    gap: var(--space-2) var(--space-3);
+    grid-template-columns: minmax(150px, .7fr) minmax(200px, 1fr) auto;
+}
+
+.report-filter-row label {
+    grid-row: 1;
+    margin: 0;
+}
+
+.report-filter-row select,
+.report-filter-row input,
+.report-filter-row button {
+    grid-row: 2;
+}
+
+.report-filter-row p {
+    color: var(--text-muted);
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+/* Report bars: value label sits on the track, never on the coloured fill. */
+.bar-track {
+    position: relative;
+}
+
+.bar-value {
+    color: var(--rosewood);
+    font-size: 12px;
+    line-height: 20px;
+    position: absolute;
+    right: var(--space-2);
+    top: 0;
+}
+
+.bar-fill {
+    color: transparent;
+}
+
+/* MapLibre's default close button needs !important to drop browser button styles. */
+.resqlink-map .maplibregl-popup .maplibregl-popup-content > .maplibregl-popup-close-button,
+.resqlink-map .maplibregl-popup .maplibregl-popup-content > button.maplibregl-popup-close-button {
+    align-items: center !important;
+    appearance: none;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    color: var(--rosewood) !important;
+    display: flex !important;
+    height: 28px !important;
+    justify-content: center !important;
+    min-height: 28px !important;
+    padding: 0 !important;
+    width: 28px !important;
+}
+
+.resqlink-map .maplibregl-popup .maplibregl-popup-content > .maplibregl-popup-close-button:hover,
+.resqlink-map .maplibregl-popup .maplibregl-popup-content > button.maplibregl-popup-close-button:hover {
+    background: var(--surface-alt) !important;
+    color: var(--rosewood) !important;
+}
+
+/* Volunteer incident form cards. */
+.volunteer-form-card,
+.volunteer-map-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* The map card's own header provides the inset; the map runs edge to edge. */
+.card.volunteer-map-card {
+    padding: 0;
+}
+
+.volunteer-map-head {
+    padding: var(--space-4) var(--space-5);
+}
+
+/* Form rhythm: a form that opens a card starts flush with the card padding,
+ * labels that wrap their control keep an 8px gap, and stacked fields 16px. */
+.card > form:first-child > .field:first-of-type {
+    margin-top: 0;
+}
+
+label > input:not([type="checkbox"]):not([type="radio"]),
+label > select,
+label > textarea {
+    margin-top: var(--space-2);
+}
+
+.form-grid label > input,
+.form-grid label > select,
+.form-grid label > textarea {
+    margin-top: 0;
+}
+
+/* Filter bars align on the control bottom edge, so labels carry no margin. */
+.filter-row label,
+.record-filter-row label,
+.report-filter-row label,
+.filter-row > button,
+.filter-row > .button {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+form > label + label,
+form > label + button,
+form > label + .button {
+    margin-top: var(--space-4);
+}
+
+/* Card sub-sections (e.g. volunteer documents on Edit User). */
+.card > p + table,
+.card > h2 + table {
+    margin-top: var(--space-3);
+}
+
+.card > table + form,
+.card > table + .actions {
+    margin-top: var(--space-4);
+}
+
+.card > h3 {
+    border-top: 1px solid var(--border);
+    color: var(--rosewood);
+    margin: var(--space-5) 0 0;
+    padding-top: var(--space-5);
+}
+
+.volunteer-section-head,
+.volunteer-field label,
+.volunteer-map-head h2 {
+    color: var(--rosewood);
+}
+
+.volunteer-section-head-spaced {
+    margin-top: var(--space-5);
+}
+
+.volunteer-field input[readonly] {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+}
+
+.volunteer-map-search input {
+    background: #ffffff;
+    height: var(--control-height);
+}
+
+.incident-pagination a,
+.incident-pagination span {
+    border-radius: var(--radius-sm);
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+    .dashboard-main { padding: var(--space-5); }
+}
+
+@media (max-width: 760px) {
+    /* Larger touch targets on phones, still one shared height. */
+    :root { --control-height: 44px; }
+    body { font-size: var(--text-md); }
+    input, select, textarea { font-size: 16px; }
+
+    .record-filter-row,
+    .report-filter-row { grid-template-columns: 1fr; }
+
+    .report-filter-row label,
+    .report-filter-row select,
+    .report-filter-row input,
+    .report-filter-row button,
+    .report-filter-row p { grid-column: auto; grid-row: auto; }
+
+    /* Tables reflow into labelled cards on small screens. */
+    .card { overflow: visible; }
+
+    .card > table {
+        display: block;
+        min-width: 0;
+        overflow: visible;
+    }
+
+    .card > table thead {
+        clip: rect(0, 0, 0, 0);
+        clip-path: inset(50%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+    }
+
+    .card > table tbody { display: grid; gap: var(--space-3); }
+
+    .card > table tbody tr {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        display: grid;
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .card > table tbody tr:nth-child(even) { background: #ffffff; }
+
+    .card > table tbody td {
+        border-bottom: 1px solid var(--border);
+        display: grid;
+        font-size: 16px;
+        gap: var(--space-3);
+        align-items: center;
+        grid-template-columns: minmax(110px, .7fr) minmax(0, 1.3fr);
+        justify-items: start;
+        overflow-wrap: anywhere;
+        padding: var(--space-2) 0;
+    }
+
+    .card > table tbody td:last-child { border-bottom: 0; }
+
+    .card > table tbody td::before {
+        color: var(--text-muted);
+        content: attr(data-label);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .card > table tbody td[colspan] { display: block; }
+    .card > table tbody td[colspan]::before { content: none; }
+
+    .volunteer-report-grid { grid-template-columns: minmax(0, 1fr); }
+    .volunteer-field label { font-size: 14px; }
+
+    .volunteer-field input,
+    .volunteer-field select,
+    .volunteer-field textarea { font-size: 16px; }
+
+    .volunteer-section-head span,
+    .volunteer-map-head span { font-size: 14px; }
+
+    .volunteer-map-card { height: auto; max-height: none; position: static; }
+    .volunteer-map-wrap { height: 58vh; min-height: 420px; }
+    .volunteer-map { min-height: 420px; }
+}

@@ -2,7 +2,7 @@
 
 **Assigned owner:** Angela  
 **Task:** Task 3 — Dispatcher Incident Coordination  
-**Status:** Local datasets prepared; application integration is pending
+**Status:** Local datasets integrated into the volunteer and dispatcher web maps
 
 ## Development test accounts
 
@@ -36,7 +36,7 @@ backend/public/maps/
 | `cebu-city-osm-landmarks.geojson` | Named OpenStreetMap points of interest | 3,516 |
 | `cebu-city-osm-emergency-facilities.geojson` | Detected hospitals, clinics, fire stations, police facilities, and shelters | 48 |
 
-All files are GeoJSON in WGS84 / EPSG:4326, which is suitable for Leaflet.
+All files are GeoJSON in WGS84 / EPSG:4326, which is suitable for MapLibre.
 
 ## Barangay boundaries
 
@@ -95,7 +95,7 @@ The GeoPackage layers were inspected with GDAL/QGIS and processed as follows:
 
 ## Intended project usage
 
-The files are static public assets and can later be requested from the browser
+The files are static public assets requested by the browser
 using these paths:
 
 ```text
@@ -105,17 +105,18 @@ using these paths:
 /maps/cebu-city-osm-emergency-facilities.geojson
 ```
 
-Suggested map responsibilities:
+Current map responsibilities:
 
-- Barangays: boundary overlay, names, and future point-in-polygon lookup.
+- Barangays: boundary overlay, names, search, and point-in-polygon lookup.
 - Roads: local road and path linework.
 - Landmarks: named local places and points of interest.
 - Emergency facilities: optional dispatch reference markers.
 - Incident records: continue to come from the ResQLink database and remain
   separate from geographic reference data.
 
-These assets are not yet integrated into the map JavaScript or Blade views.
-Adding the files alone does not change the current application map.
+These assets are registered by `resources/js/map/local-map.js` and rendered by
+the volunteer and dispatcher map modules. Database incident markers remain
+separate and are supplied to dispatchers by the authenticated map feed.
 
 ## Limitations
 

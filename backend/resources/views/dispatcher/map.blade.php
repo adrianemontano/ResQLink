@@ -4,7 +4,7 @@
     <div class="header-row">
         <div>
             <h1>Incident Map</h1>
-            <p>Live incident locations reported by volunteers.</p>
+            <p>Live incident locations reported by Barangay Responders.</p>
         </div>
     </div>
 

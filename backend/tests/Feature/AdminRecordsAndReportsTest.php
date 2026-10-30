@@ -71,6 +71,57 @@ class AdminRecordsAndReportsTest extends TestCase
         ]))->assertOk()->assertSee('Lahug')->assertDontSee('Mabolo');
     }
 
+    public function test_admin_search_matches_nearest_landmark_field(): void
+    {
+        $admin = $this->admin();
+        Incident::factory()->create(['nearest_landmark' => 'Capitol Fountain', 'barangay' => 'Capitol Site']);
+        Incident::factory()->create(['nearest_landmark' => 'Pier Landing', 'barangay' => 'Mabolo']);
+
+        $this->actingAs($admin)->get(route('admin.incidents.index', ['search' => 'Capitol Fountain']))
+            ->assertOk()
+            ->assertSee('Capitol Fountain')
+            ->assertDontSee('Pier Landing');
+    }
+
+    public function test_admin_can_view_archived_completed_records(): void
+    {
+        $admin = $this->admin();
+        Incident::factory()->create(['status' => 'Reported', 'barangay' => 'Active Area']);
+        Incident::factory()->create(['status' => 'Completed', 'barangay' => 'Closed Area']);
+
+        $this->actingAs($admin)->get(route('admin.incidents.index', ['scope' => 'archived']))
+            ->assertOk()
+            ->assertSee('Closed Area')
+            ->assertDontSee('Active Area');
+    }
+
+    public function test_admin_active_scope_excludes_archived_records(): void
+    {
+        $admin = $this->admin();
+        Incident::factory()->create(['status' => 'Reported', 'barangay' => 'Active Area']);
+        Incident::factory()->create(['status' => 'Completed', 'barangay' => 'Closed Area']);
+
+        $this->actingAs($admin)->get(route('admin.incidents.index', ['scope' => 'active']))
+            ->assertOk()
+            ->assertSee('Active Area')
+            ->assertDontSee('Closed Area');
+    }
+
+    public function test_record_scope_counts_are_exposed_for_the_switcher(): void
+    {
+        $admin = $this->admin();
+        Incident::factory()->count(2)->create(['status' => 'Reported']);
+        Incident::factory()->count(3)->create(['status' => 'Completed']);
+
+        $this->actingAs($admin)->get(route('admin.incidents.index'))
+            ->assertOk()
+            ->assertSee('Archived / Historical');
+        $this->assertSame(
+            ['all' => 5, 'active' => 2, 'archived' => 3],
+            $this->get(route('admin.incidents.index'))->viewData('recordCounts'),
+        );
+    }
+
     public function test_admin_incident_search_paginates_and_preserves_query_filters(): void
     {
         $admin = $this->admin();
@@ -111,12 +162,14 @@ class AdminRecordsAndReportsTest extends TestCase
 
         $this->actingAs($admin)->get(route('admin.incidents.show', $incident))
             ->assertOk()
+            ->assertSee('Archived / Historical')
             ->assertSee('Completed')
             ->assertSee('Received')
             ->assertSee('Dispatch User')
             ->assertSee('Reviewed by dispatcher')
             ->assertSee('Read-only administrative incident record.')
-            ->assertDontSee('Update status');
+            ->assertDontSee('Update status')
+            ->assertDontSee('Update Status');
     }
 
     public function test_admin_can_report_daily_totals_and_distributions_from_persisted_incidents(): void
@@ -180,6 +233,16 @@ class AdminRecordsAndReportsTest extends TestCase
         $response->assertOk()->assertSee('Weekly periods run Monday through Sunday.');
         $this->assertSame(2, $response->viewData('totalIncidents'));
         $this->assertCount(7, $response->viewData('byFrequency'));
+    }
+
+    public function test_report_shows_status_and_frequency_totals_for_selected_period(): void
+    {
+        $this->actingAs($this->admin())->get(route('admin.reports.index', [
+            'period' => 'daily', 'date' => '2026-08-10',
+        ]))->assertOk()
+            ->assertSee('Total Incidents')
+            ->assertSee('Archived — Completed')
+            ->assertSee('Days With Incidents');
     }
 
     public function test_monthly_report_includes_full_month_and_excludes_neighboring_dates(): void

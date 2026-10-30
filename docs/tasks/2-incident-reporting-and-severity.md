@@ -34,16 +34,17 @@ than silently requiring internet access.
 
 ## Required pages and visibility
 
-Mobile screens are excluded from this four-task plan. The desktop prototype does
-not show a volunteer web submission page, so this task should deliver the
-server-side incident submission capability and define the page contract for a
-future approved client without implementing Flutter screens.
+Mobile screens are excluded from this four-task plan. The current Laravel web
+application includes a volunteer incident-submission page backed by the same
+validation and submission service as the API. Flutter screens remain outside
+the current repository.
 
 | Page or UI location | Required content |
 | --- | --- |
 | Incident submission page/API contract | Category, barangay, nearest landmark, estimated affected persons, local map coordinates, impact radius, optional notes, and Submit Incident action |
 | Submission validation area | Field-level errors, invalid-location/radius errors, and inactive-account message |
 | Submission success state | Incident identifier, reported timestamp, initial `Reported` status, and preliminary severity |
+| Volunteer dashboard | The signed-in volunteer's total, open, and completed reports; six-month reporting trend; category mix; and recent reports |
 | Dispatcher Incident Management page | Newly submitted incident appears in the incident table used by Task 3 |
 | Dispatcher Incident Details panel | Submitted fields, map location, impact radius, severity, and status are available to the details view |
 
@@ -83,6 +84,7 @@ web workflow to submit incident data.
 - `TASK2-007` Severity is preliminary decision support and does not replace
   dispatcher judgment or official emergency assessment.
 - `TASK2-008` A newly accepted incident receives the `Reported` workflow status.
+- `TASK2-009` The volunteer dashboard presents analytics and recent reports scoped to the signed-in volunteer.
 
 ## Expected implementation outputs
 
@@ -97,7 +99,7 @@ web workflow to submit incident data.
 
 Depends on Task 1 for authenticated volunteer identity and roles. Coordinate
 incident fields and severity thresholds with the database and dispatcher task
-owners. Do not implement dispatcher queue screens or mobile screens here.
+owners. Dispatcher queue screens and mobile screens remain outside TASK2.
 
 ## Acceptance criteria
 
@@ -111,6 +113,8 @@ The feature is complete when:
 - Severity is consistently calculated as Low, Moderate, High, or Critical.
 - The incident can be retrieved in a format usable by the dispatcher map and
   details view.
+- The volunteer dashboard shows only that volunteer's report totals, status
+  totals, recent reports, category breakdown, and six-month reporting trend.
 - Unauthorized users cannot submit incidents.
 - The requirement-to-code mapping and severity rules are documented.
 

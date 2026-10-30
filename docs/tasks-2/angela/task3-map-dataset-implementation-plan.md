@@ -10,9 +10,9 @@ are for development only.
 
 ## Objective
 
-Integrate the locally stored Cebu City barangay GeoJSON into the dispatcher
-Leaflet map so barangay boundaries and names can be used during incident
-coordination, including when the barangay selection workflow is offline.
+Maintain and verify the locally integrated Cebu City GeoJSON layers in the
+dispatcher MapLibre map so barangay boundaries and names remain usable during
+incident coordination without an internet dependency.
 
 ## Dataset and loading contract
 
@@ -27,14 +27,14 @@ Additional prepared reference layers are `backend/public/maps/cebu-city-osm-road
 (14,067 features), `backend/public/maps/cebu-city-osm-landmarks.geojson`
 (3,516 features), and
 `backend/public/maps/cebu-city-osm-emergency-facilities.geojson` (48 features).
-These are clipped OpenStreetMap-derived GeoJSON assets and remain pending
-integration.
+These clipped OpenStreetMap-derived GeoJSON assets are loaded by the volunteer
+and dispatcher map modules.
 
 ## Implementation steps
 
 1. Inspect the GeoJSON structure and identify the exact properties used for the
    barangay name and code.
-2. Load the local GeoJSON with Leaflet's local JavaScript assets and render it
+2. Load the local GeoJSON with bundled MapLibre assets and render it
    as a boundary layer on the dispatcher map.
 3. Apply clear boundary styling and add hover highlighting.
 4. Add a popup or tooltip showing the barangay name and code when a boundary is
@@ -48,20 +48,19 @@ integration.
 8. Document the completed integration and any unsupported or unmatched
    coordinates.
 
-## External-service limitation
+## Local-service dependency
 
-The GeoJSON is local and requires no API. The current map background still uses
-CARTO/OpenStreetMap tiles, and place search still uses the Nominatim API. These
-services may fail offline. The implementation must keep the barangay boundary
-layer local and must document the background/search dependency until local
-replacements are implemented.
+The GeoJSON, JavaScript, CSS, and search data are local and require no external
+API. The detailed basemap style is served by the locally operated TileServer at
+the configured `LOCAL_MAP_STYLE_URL`. The application must display a useful
+message or reference layers when that local process is unavailable.
 
 ## Acceptance criteria
 
 - All 80 barangay features can be loaded from the documented local path.
-- Boundaries appear on the dispatcher Leaflet map with no GeoJSON API endpoint.
+- Boundaries appear on the dispatcher MapLibre map with no GeoJSON API endpoint.
 - Hovering or clicking a boundary identifies its barangay name/code.
 - Incident locations can be associated with a barangay when they fall within a
   boundary.
 - Barangay boundary display and selection continue to work without internet.
-- The external tile and Nominatim limitations are documented.
+- The local TileServer dependency and fallback behavior are documented.

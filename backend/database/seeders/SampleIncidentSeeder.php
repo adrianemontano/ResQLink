@@ -12,10 +12,10 @@ class SampleIncidentSeeder extends Seeder
 {
     public function run(): void
     {
-        $reporter = User::query()->where('email', 'admin@resqlink.local')->first();
+        // Real submissions set reported_by and volunteer_id to the same volunteer.
         $volunteer = User::query()->where('email', 'volunteer@resqlink.local')->first();
 
-        if ($reporter === null || $volunteer === null) {
+        if ($volunteer === null) {
             return;
         }
 
@@ -63,7 +63,7 @@ class SampleIncidentSeeder extends Seeder
 
             $attributes = [
                     ...$sample,
-                    'reported_by' => $reporter->id,
+                    'reported_by' => $volunteer->id,
                     'volunteer_id' => $volunteer->id,
                     'category_id' => $categoryId,
                     'barangay_id' => $barangayId,

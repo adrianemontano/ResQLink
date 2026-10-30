@@ -20,23 +20,23 @@
         </div>
 
         <div class="map-status-legend" aria-label="Incident status legend">
-            <button type="button" class="map-status-pill active" data-map-filter="all">
+            <button type="button" class="map-status-pill active" data-map-filter="all" aria-pressed="true">
                 <span class="status-dot all"></span>
                 <span>All</span>
             </button>
-            <button type="button" class="map-status-pill" data-map-filter="Reported">
+            <button type="button" class="map-status-pill" data-map-filter="Reported" aria-pressed="false">
                 <span class="status-dot reported"></span>
                 <span>Reported</span>
             </button>
-            <button type="button" class="map-status-pill" data-map-filter="Received">
+            <button type="button" class="map-status-pill" data-map-filter="Received" aria-pressed="false">
                 <span class="status-dot received"></span>
                 <span>Received</span>
             </button>
-            <button type="button" class="map-status-pill" data-map-filter="Dispatched">
+            <button type="button" class="map-status-pill" data-map-filter="Dispatched" aria-pressed="false">
                 <span class="status-dot dispatched"></span>
                 <span>Dispatched</span>
             </button>
-            <button type="button" class="map-status-pill" data-map-filter="Completed">
+            <button type="button" class="map-status-pill" data-map-filter="Completed" aria-pressed="false">
                 <span class="status-dot completed"></span>
                 <span>Completed</span>
             </button>

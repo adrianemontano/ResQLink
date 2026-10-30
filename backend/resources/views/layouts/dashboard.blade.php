@@ -20,16 +20,19 @@
                     </button>
                 </div>
                 <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @else Volunteer Incident Reporting @endif
+                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @else Barangay Responder Incident Reporting @endif
                 </div>
             </div>
 
             @include('layouts.partials.sidebar-nav')
 
             <div class="sidebar-footer">
-                <div class="sidebar-user sidebar-label">
-                    Logged in as
-                    <strong>{{ auth()->user()->name }}</strong>
+                <div class="sidebar-user">
+                    <span class="sidebar-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                    <span class="sidebar-label">
+                        Logged in as
+                        <strong>{{ auth()->user()->name }}</strong>
+                    </span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -44,6 +47,10 @@
         <main class="dashboard-main">
             @if (session('status'))
                 <div class="alert success">{{ session('status') }}</div>
+            @endif
+
+            @if ($errors->has('account'))
+                <div class="alert error">{{ $errors->first('account') }}</div>
             @endif
 
             @yield('content')
