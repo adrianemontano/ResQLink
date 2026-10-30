@@ -24,37 +24,19 @@
     </div>
 
     <section class="card">
-        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.5rem;">
+        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; margin-bottom:1.5rem;">
             <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-right:0.5rem; color:var(--text-muted);">Role:</span>
-            @foreach ($filters as $filter)
-                @php
-                    $isActive = $roleFilter === $filter['key'];
-                    $queryString = $filter['key'] === 'all' ? [] : ['role' => $filter['key'], 'status' => $statusFilter === 'all' ? null : $statusFilter];
-                @endphp
-                <a
-                    href="{{ route('admin.users.index', $queryString) }}"
-                    class="button {{ $isActive ? '' : 'secondary' }}"
-                    style="padding:0.5rem 0.9rem;"
-                    @if ($isActive) aria-current="page" @endif
-                >
-                    {{ $filter['label'] }}
-                </a>
-            @endforeach
+            <select name="role" id="roleFilter" onchange="applyFilter(this, 'role')" style="padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
+                @foreach ($filters as $filter)
+                    <option value="{{ $filter['key'] }}" @selected($roleFilter === $filter['key'])>{{ $filter['label'] }}</option>
+                @endforeach
+            </select>
             <span class="sidebar-section-label" style="font-size:0.875rem; padding:0; margin-left:1rem; margin-right:0.5rem; color:var(--text-muted);">Status:</span>
-            @foreach ($statusFilters as $filter)
-                @php
-                    $isActive = $statusFilter === $filter['key'];
-                    $queryString = $filter['key'] === 'all' ? [] : ['status' => $filter['key'], 'role' => $roleFilter === 'all' ? null : $roleFilter];
-                @endphp
-                <a
-                    href="{{ route('admin.users.index', $queryString) }}"
-                    class="button {{ $isActive ? '' : 'secondary' }}"
-                    style="padding:0.5rem 0.9rem;"
-                    @if ($isActive) aria-current="page" @endif
-                >
-                    {{ $filter['label'] }}
-                </a>
-            @endforeach
+            <select name="status" id="statusFilter" onchange="applyFilter(this, 'status')" style="padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
+                @foreach ($statusFilters as $filter)
+                    <option value="{{ $filter['key'] }}" @selected($statusFilter === $filter['key'])>{{ $filter['label'] }}</option>
+                @endforeach
+            </select>
         </div>
 
         <table>
@@ -114,4 +96,17 @@
             {{ $users->links() }}
         </div>
     </section>
+
+    <script>
+        function applyFilter(select, param) {
+            const value = select.value;
+            const url = new URL(window.location.href);
+            if (value === 'all') {
+                url.searchParams.delete(param);
+            } else {
+                url.searchParams.set(param, value);
+            }
+            window.location.href = url.toString();
+        }
+    </script>
 @endsection
