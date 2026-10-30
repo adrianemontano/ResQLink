@@ -135,6 +135,12 @@ class AdminRecordsAndReportsTest extends TestCase
             'status' => 'Received',
         ]);
         Incident::factory()->create([
+            'reported_at' => '2026-08-10 12:00:00',
+            'category' => 'Earthquake',
+            'barangay' => 'Mabolo',
+            'status' => 'Completed',
+        ]);
+        Incident::factory()->create([
             'reported_at' => '2026-08-11 00:00:00',
             'category' => 'Fire',
             'barangay' => 'Mabolo',
@@ -150,11 +156,12 @@ class AdminRecordsAndReportsTest extends TestCase
             ->assertSee('2026-08-10 00:00')
             ->assertSee('2026-08-11 00:00')
             ->assertSee('UTC. Weekly periods run Monday through Sunday.');
-        $this->assertSame(2, $response->viewData('totalIncidents'));
+        $this->assertSame(3, $response->viewData('totalIncidents'));
         $this->assertSame(2, $response->viewData('byCategory')->first()->total);
         $this->assertSame('Lahug', $response->viewData('byBarangay')->first()->label);
         $this->assertCount(1, $response->viewData('byStatus')->where('label', 'Reported'));
-        $this->assertSame([['date' => '2026-08-10', 'total' => 2]], $response->viewData('byFrequency'));
+        $this->assertCount(1, $response->viewData('byStatus')->where('label', 'Completed'));
+        $this->assertSame([['date' => '2026-08-10', 'total' => 3]], $response->viewData('byFrequency'));
     }
 
     public function test_weekly_report_uses_monday_to_monday_exclusive_boundaries(): void
