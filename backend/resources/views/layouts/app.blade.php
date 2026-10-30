@@ -9,10 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="{{ asset('css/resqlink-tokens.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-theme.css') }}?v=2">
     <link rel="stylesheet" href="{{ asset('css/resqlink-badges.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}?v=21">
     <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}">
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}">
