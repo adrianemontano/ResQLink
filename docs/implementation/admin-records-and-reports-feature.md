@@ -38,6 +38,31 @@ at 15 incidents per page, and retain filters when navigating pages.
 status. The reporter display falls back to the volunteer relationship when
 `reported_by` is absent. Missing history displays an explicit empty state.
 
+## Field meanings and dependencies
+
+Task 4 consumes the existing Task 2 incident fields without changing their
+schema. `category` is the incident category; `barangay` is the reported
+barangay; `nearest_landmark` falls back to the legacy `landmark` field;
+`affected_population` falls back to `persons_count`; `severity` is the
+preliminary classification; and `status` is the incident workflow status.
+`reported_at` is the report time used for report-window inclusion and display;
+legacy rows with no `reported_at` use `created_at`.
+
+Task 4 consumes Task 3 history through `incident_histories`: `status_id` gives
+the status label, `changed_by` identifies the dispatcher, `changed_at` is the
+transition time, and `notes` is the optional transition note. The admin page
+only displays this data and does not change it. Report frequency means the
+number of persisted incidents per calendar date in the selected window.
+
+Dependencies are Task 2's incident fields and reporter relationships, plus
+Task 3's incident status values and status-history relationships. No Task 2 or
+Task 3 endpoint or workflow is changed by Task 4.
+
+For Task 4, archived records mean existing completed and historical incidents
+already stored in the database. They remain visible in the all-records list and
+are included in reports according to their report date, with their existing
+workflow statuses unchanged. No separate archive marker or workflow is used.
+
 ## Report definitions
 
 `GET /admin/reports` accepts `period=daily|weekly|monthly` and an optional
@@ -60,7 +85,8 @@ frequency for each date, and an explicit empty-state message.
 
 ## Task 4 implementation-step mapping
 
-1. Reviewed incident reporter/volunteer, status, and history relationships.
+1. Reviewed incident reporter/volunteer, status, and history relationships;
+   field meanings and Task 2/3 dependencies are recorded above.
 2. Reused the existing role-protected `admin.incidents.*` and
    `admin.reports.*` route names.
 3. Added persisted incident and reporter-field search, category/status filters,
