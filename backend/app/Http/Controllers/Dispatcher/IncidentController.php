@@ -27,7 +27,7 @@ class IncidentController extends Controller
             ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangay', $barangay));
 
         $incidents = (clone $baseQuery)
-            ->with('reporter')
+            ->with(['reporter.volunteerProfile', 'photos'])
             ->orderByRaw("CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END")
             ->orderByRaw("CASE status WHEN 'Reported' THEN 1 WHEN 'Received' THEN 2 WHEN 'Dispatched' THEN 3 WHEN 'Completed' THEN 4 ELSE 5 END")
             ->orderByDesc('reported_at')
@@ -50,7 +50,7 @@ class IncidentController extends Controller
 
     public function show(Incident $incident): View
     {
-        $incident->load(['reporter', 'history.dispatcher', 'history.status']);
+        $incident->load(['reporter.volunteerProfile', 'photos', 'history.dispatcher', 'history.status']);
 
         return view('dispatcher.incidents.show', compact('incident'));
     }

@@ -449,3 +449,35 @@ nav[role="navigation"] svg {
     .volunteer-map-wrap { height: 58vh; min-height: 420px; }
     .volunteer-map { min-height: 420px; }
 }
+
+.notification-read-button {
+    background: transparent;
+    border: 0;
+    color: var(--sangria);
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    min-height: 28px;
+    padding: 2px 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.notification-read-button:hover,
+.notification-read-button:focus-visible { color: var(--rosewood); }
+
+.incident-photo-preview {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    max-height: 240px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.notification-dropdown { max-width: calc(100vw - 24px); }
+
+@media (max-width: 760px) {
+    .notification-toast-container { left: 12px !important; right: 12px !important; top: 12px !important; width: auto !important; }
+    .notification-dropdown { right: -6px !important; width: min(340px, calc(100vw - 24px)) !important; }
+}

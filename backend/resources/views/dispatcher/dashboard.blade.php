@@ -26,13 +26,18 @@
         </div>
         <table>
             <thead>
-                <tr><th>Incident</th><th>Reporter</th><th>Category</th><th>Persons</th><th>Barangay</th><th>Severity</th><th>Status</th><th></th></tr>
+                <tr><th>Incident</th><th>Reported by</th><th>Reported at</th><th>Category</th><th>Persons</th><th>Barangay</th><th>Severity</th><th>Status</th><th></th></tr>
             </thead>
             <tbody>
                 @forelse ($incidents as $incident)
                     <tr>
                         <td>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</td>
-                        <td>{{ $incident->reporter?->name ?? 'Unknown' }}</td>
+                        <td>{{ $incident->reporter?->name ?? 'Unknown' }}
+                            @if ($incident->reporter?->volunteerProfile?->barangay || $incident->reporter?->contact_number)
+                                <br><small style="color:var(--text-muted)">{{ $incident->reporter?->volunteerProfile?->barangay ?? $incident->reporter?->contact_number }}</small>
+                            @endif
+                        </td>
+                        <td>{{ ($incident->reported_at ?? $incident->created_at)->timezone('Asia/Manila')->format('M d, Y, h:i A') }}</td>
                         <td>{{ $incident->category }}</td>
                         <td>{{ $incident->affected_population ?? $incident->persons_count }}</td>
                         <td>{{ $incident->barangay }}</td>
@@ -41,7 +46,7 @@
                         <td><a href="{{ route('dispatcher.incidents.show', $incident) }}">Open</a></td>
                     </tr>
                 @empty
-                    <tr><td colspan="8">No active incidents have been reported.</td></tr>
+                    <tr><td colspan="9">No active incidents have been reported.</td></tr>
                 @endforelse
             </tbody>
         </table>

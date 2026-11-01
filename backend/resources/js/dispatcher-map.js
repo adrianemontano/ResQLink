@@ -7,7 +7,7 @@ import {
 // badges, legends, and charts always agree; fallbacks match those tokens.
 const STATUS_COLORS = {
     Reported: cssToken('--status-reported', '#C81E1E'),
-    Received: cssToken('--status-received', '#B45309'),
+    Received: cssToken('--status-received', '#FFB366'),
     Dispatched: cssToken('--status-dispatched', '#0F766E'),
     Completed: cssToken('--status-completed', '#4B5563'),
 };
