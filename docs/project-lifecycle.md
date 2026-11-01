@@ -144,7 +144,8 @@ Prepare the development environment.
 * Configure branching strategy
 * Install Laravel
 * Configure MySQL
-* Create Flutter project
+* Create the Expo + React Native + TypeScript project under `mobile/`
+* Establish the Expo Development Build workflow required by MapLibre
 * Install Bootstrap
 * Install MapLibre GL
 * Configure development environments
@@ -270,7 +271,7 @@ Develop the volunteer mobile application.
 
 ## Deliverables
 
-* Flutter mobile application
+* Expo React Native mobile application
 
 **Completion Criteria**
 
@@ -286,7 +287,7 @@ Connect all system components into a working application.
 
 ## Activities
 
-* Connect Flutter to Laravel APIs
+* Connect Expo to Laravel APIs through Axios and Sanctum bearer tokens
 * Connect dashboard to database
 * Verify authentication
 * Verify map functionality

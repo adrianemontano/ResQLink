@@ -40,6 +40,8 @@ Detected project technologies:
 | JavaScript | JavaScript / ES modules | `resources/js/app.js`, Vite config |
 | Testing | PHPUnit | `12.5.30` from `composer.lock` |
 | Code Style | Laravel Pint | `v1.29.3` from `composer.lock` |
+| Planned Volunteer Mobile | Expo + React Native + TypeScript | Android-first; source not yet generated |
+| Planned Mobile Map | `@maplibre/maplibre-react-native` | Requires an Expo Development Build; Expo Go is insufficient |
 
 Not currently installed:
 
@@ -49,7 +51,7 @@ Not currently installed:
 * Pest
 * Bootstrap package
 * Leaflet package (the current maps use MapLibre instead)
-* Flutter/mobile application code
+* Expo mobile application code (the old Flutter implementation was removed)
 
 ## Prerequisites
 
@@ -431,8 +433,8 @@ Current development order:
 3. Mobile application for volunteers
 
 The repository has an authenticated incident-submission API, but it does not yet
-provide mobile-token authentication or the complete API surface needed by a
-Flutter client. Keep session-based web authentication separate from future
+provide Sanctum mobile-token login/logout or the complete JSON contract needed
+by the Expo client. Keep session-based web authentication separate from future
 mobile authentication.
 
 Recommended contributor workflow:
@@ -478,8 +480,9 @@ Recommended contributor workflow:
 ### Remaining work
 
 * Volunteer mobile application
-* Mobile/API authentication for Flutter clients
-* Flutter-to-Laravel integration
+* Sanctum personal-access-token authentication for the Expo client
+* Expo React Native-to-Laravel integration through Axios
+* Physical-device MapLibre proof of concept using an Expo Development Build
 * Notification system
 * Admin user-list search
 * Complete volunteer-document review and protected file-download workflow

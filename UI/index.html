@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ResQLink MVP Prototype</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="palette.css"><link rel="stylesheet" href="dispatcher-enhancements.css">
+</head>
+<body>
+  <div id="login" class="login-screen"><div class="login-card"><div class="brand"><span class="brand-mark">✚</span><div><strong>ResQLink</strong><small>Emergency coordination</small></div></div><p class="eyebrow">MVP prototype</p><h1>Welcome back</h1><p class="muted">Use a demo role to explore each workflow.</p><label>Email or username<input value="admin"></label><label>Password<input type="password" value="Admin@12345"></label><button class="primary full" onclick="enterApp()">Sign in to prototype</button><div class="demo-login"><b>Demo access</b><span>Admin · Dispatcher · Verified Volunteer</span></div></div></div>
+  <div id="app" class="app hidden"><aside><div class="brand"><span class="brand-mark">✚</span><div><strong>ResQLink</strong><small>Operations center</small></div></div><div class="role-switch"><small>VIEWING AS</small><select id="role" onchange="switchRole(this.value)"><option>Admin</option><option>Dispatcher</option><option>Volunteer</option></select></div><nav id="nav"></nav><div class="sidebar-bottom"><div class="mini-avatar">SA</div><div><b id="userName">System Admin</b><small id="userRole">Administrator</small></div><button class="icon-btn" onclick="logout()" title="Log out">↪</button></div></aside><main><header><div><p class="eyebrow" id="pageKicker">ADMIN CONTROL PANEL</p><h1 id="pageTitle">Overview</h1></div><div class="header-actions"><span class="live-dot">Live demo data</span><button class="outline" onclick="toast('Notifications are up to date')">♢ Notifications <i>3</i></button></div></header><div id="content"></div></main></div><div id="toast" class="toast"></div><script src="app.js"></script>
+<script src="dispatcher-enhancements.js"></script><script src="dispatcher-pages.js"></script></body></html>

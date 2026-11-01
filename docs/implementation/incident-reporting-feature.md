@@ -97,7 +97,10 @@ volunteer through `volunteer_id` or `reported_by`. It displays total, open, and
 completed report counts, a six-month trend, category distribution, and the five
 most recent reports. Records without `reported_at` use their creation timestamp
 for the trend and recent-report date. The dashboard uses the existing local
-ResQLink palette and responsive layout; it does not add schema or API changes.
+ResQLink palette and responsive layout. Existing databases missing
+`incidents.reported_by` must run `php artisan migrate` from `backend/`; the
+compatibility migration adds the nullable column without changing incident
+records.
 
 ## TASK2-010 — Map-independent volunteer submission
 

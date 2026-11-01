@@ -5,6 +5,29 @@ changes from a remote branch. Run application commands from `backend/`.
 
 ## Prerequisites
 
+For future mobile work, also install a Node version supported by the selected
+Expo SDK, Android Studio and its compatible Android SDK/JDK tooling, and Android
+platform tools. Exact versions must be selected and recorded during the
+Expo/React Native/MapLibre compatibility proof of concept; the Expo application
+has not yet been generated.
+
+## Planned Expo Android workflow
+
+MapLibre React Native cannot run in Expo Go. After the fresh `mobile/` project
+is created and its native dependencies and config plugin are installed, create
+a local development build with `npx expo run:android` or use an EAS development
+build. Start Metro for the installed client with
+`npx expo start --dev-client`. Rebuild after native dependency, config-plugin,
+Expo/React Native runtime, or native configuration changes.
+
+A physical phone must use the laptop LAN IP, for example
+`http://<LAPTOP_LAN_IP>:8000/api` and
+`http://<LAPTOP_LAN_IP>:8080/styles/<STYLE_ID>/style.json`; phone `localhost`
+does not reach the laptop. Keep devices on the same network, bind services to
+reachable interfaces, allow firewall ports, and use only debug-scoped cleartext
+HTTP allowances. Production endpoints require HTTPS. An Expo tunnel does not
+automatically expose Laravel or TileServer.
+
 - PHP 8.3 or newer with the extensions listed in the root `README.md`
 - Composer 2
 - Node.js 20 or newer and npm
@@ -154,10 +177,27 @@ After successful seeding, use these accounts:
 | Role | Email | Password |
 | --- | --- | --- |
 | Administrator | `admin@resqlink.local` | `Admin@12345` |
-| Volunteer | `volunteer@resqlink.local` | `Volunteer@12345` |
+| Dispatcher | `a@gmail.com` | `admin123` |
+| Default Volunteer | `volunteer@resqlink.local` | `Volunteer@12345` |
+| Mock Defense Responders (10 verified) | `responder.<barangay>@resqlink.local` (e.g. `responder.mabolo@resqlink.local`) | `Volunteer@12345` |
 
 The values can be overridden by the corresponding `DEFAULT_*` variables in
 `.env`.
+
+### Mock defense dataset & verification
+
+To seed the full mock defense dataset (at least 8 responders, 20+ incidents per category across all statuses and severities, with complete status transition histories):
+
+```powershell
+php artisan db:seed --class=MockDefenseSeeder
+```
+
+To run verification queries confirming counts and sample records:
+
+```powershell
+php artisan mock-defense:verify
+```
+
 
 ## Map-server troubleshooting on Windows
 

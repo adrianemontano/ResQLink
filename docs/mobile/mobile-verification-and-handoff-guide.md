@@ -1,150 +1,87 @@
 # ResQLink Mobile Verification and Handoff Guide
 
-**Companion to:** [Mobile application implementation guide](mobile-implementation-guide.md)  
-**Related work:** `TASK1` and `TASK2`
+**Status:** Planned verification for the future Expo implementation
 
-## Purpose
+Do not run repository lint, test, or build commands without explicit user
+approval. Record the command, environment, result, and unresolved failures when
+verification is authorized.
 
-Use this checklist after implementing the core authentication, incident form,
-GPS, and MapLibre phases. It separates final reliability and handoff work from
-the main implementation instructions so both documents remain focused and
-within the repository file-size limit.
+## Development-build evidence
 
-## Reliability and security
+- [ ] Selected Expo SDK and React Native versions are recorded.
+- [ ] Selected MapLibre version and New Architecture requirement are recorded.
+- [ ] Node, JDK, Android SDK, Gradle, and device prerequisites are recorded.
+- [ ] MapLibre config plugin is present in Expo app configuration.
+- [ ] A local `npx expo run:android` or EAS development build succeeds.
+- [ ] The installed client opens through `npx expo start --dev-client`.
+- [ ] No map certification relies on Expo Go.
+- [ ] Native rebuild triggers are documented.
 
-### Prevent duplicate reports
+## Authentication
 
-- Disable submit while a request is active.
-- Do not automatically retry a timed-out POST without knowing whether Laravel
-  stored it.
-- Consider an idempotency design later if unstable networks cause duplicates.
+- [ ] Implemented endpoint paths match Laravel routes and API documentation.
+- [ ] Invalid credentials, inactive accounts, wrong roles, and unverified
+  volunteers are rejected by Laravel.
+- [ ] Sanctum token is stored only in SecureStore.
+- [ ] Axios sends the bearer token to protected operations.
+- [ ] Session restoration handles missing, expired, and revoked tokens.
+- [ ] Logout revokes the server token and clears the device copy.
+- [ ] Web session authentication remains unchanged.
 
-### Handle authentication expiry
+## Incident reporting
 
-When Laravel returns `401` for a protected operation:
+- [ ] Category, barangay, landmark, affected population, coordinates, radius,
+  and notes match the final Laravel contract.
+- [ ] Laravel rejects invalid data independently of client validation.
+- [ ] Reporter identity comes from the authenticated token.
+- [ ] Laravel calculates severity and assigns timestamps and initial status.
+- [ ] A successful request is visible through Laravel-backed records in MySQL.
+- [ ] In-flight submit protection prevents accidental duplicates.
+- [ ] Retryable failure retains entered values.
 
-1. Stop the operation.
-2. Clear the invalid local token.
-3. Preserve a safe incident draft in memory where possible.
-4. Return to login with an expired-session message.
+## Location and map
 
-Handle `403` separately because the volunteer may need admin support rather
-than a fresh login.
+- [ ] Foreground permission granted, denied, disabled, and unavailable states
+  are understandable.
+- [ ] Manual selection works without GPS permission.
+- [ ] Marker and displayed coordinates stay synchronized.
+- [ ] Impact radius is a geographic GeoJSON polygon, not a pixel circle.
+- [ ] Actual TileServer style, barangays, and required landmarks render.
+- [ ] Unavailable tiles produce a graceful state and recovery path.
+- [ ] Documentation does not claim fully offline maps.
 
-### Protect sensitive information
+## Physical Android networking
 
-- Use HTTPS outside local development.
-- Never log tokens, passwords, or sensitive profile data.
-- Never store passwords.
-- Keep Laravel and database secrets out of Flutter assets.
-- Return user-safe server messages without stack traces.
-- Apply rate limiting to login and incident submission as appropriate.
+- [ ] Phone and laptop share a reachable network.
+- [ ] API and TileServer use the laptop LAN address, not phone `localhost`.
+- [ ] Laravel and TileServer listen on reachable interfaces.
+- [ ] Firewall permits the configured development ports.
+- [ ] Any cleartext HTTP allowance is debug-only.
+- [ ] Production URLs use HTTPS.
+- [ ] Handoff notes explain that a Metro tunnel does not expose other services.
 
-## Verification permission
+## Handoff record
 
-Do not run automated tests, lint, builds, or other testing commands through an
-AI coding agent until the user explicitly answers yes. Once approval is given,
-run checks in proportion to the affected work and record the results.
+Include:
 
-## Authentication checklist
+- exact tool and dependency versions;
+- physical device/Android version and USB-debugging steps;
+- local or EAS build procedure;
+- API base URL and actual TileServer style URL format;
+- implemented versus planned Laravel endpoints;
+- environment-variable names without secret values;
+- verification results and approved commands run;
+- known limitations and remaining TASK1/TASK2/TASK3 work; and
+- links to architecture, stack, setup, and implementation documents.
 
-- Active, verified volunteer login succeeds.
-- Username and email login behave as documented.
-- Incorrect credentials fail safely.
-- Inactive and unverified volunteers are rejected.
-- Admin and dispatcher accounts are rejected.
-- Saved token restores a valid session.
-- Revoked or invalid token returns to login.
-- Logout revokes the current device token.
+## Recommended delivery sequence
 
-## Incident validation checklist
+1. Stage 1: Expo foundation.
+2. Stage 2: physical-device MapLibre proof of concept.
+3. Stage 3: Sanctum authentication.
+4. Stage 4: volunteer incident reporting.
+5. Stage 5: approved tests and verification.
+6. Stage 6: documentation and handoff.
 
-- All four approved categories are accepted.
-- An unsupported category is rejected.
-- Population and radius boundaries are enforced.
-- Latitude and longitude boundaries are enforced.
-- Required barangay and landmark values are enforced.
-- Notes length is enforced.
-- The client cannot choose another reporting volunteer.
-
-## Submission checklist
-
-- A valid request receives `201`.
-- Identifier, time, status, and severity parse correctly.
-- Repeated tapping does not issue concurrent submissions.
-- Form values survive a recoverable failure.
-- Dispatcher/admin workflows display the stored report.
-
-## Location and map checklist
-
-- GPS success centers or selects the correct position.
-- Permission denial leaves manual map selection usable.
-- Permanently denied permission gives useful settings guidance.
-- Map pin and form coordinates remain synchronized.
-- Impact radius renders and submits in metres.
-- Barangay and landmark data work without prohibited external APIs.
-- The application handles map or tile-service unavailability safely.
-
-## Quality checklist
-
-- Each modified or created code file is below 500 lines.
-- Target files are preferably 300–400 lines or fewer.
-- No secrets or machine-specific production values are committed.
-- API errors do not reveal stack traces.
-- Setup and behavior documentation matches the implementation.
-- The application remains usable when GPS permission is denied.
-
-## Documentation handoff
-
-For each approved implementation milestone, update documentation in the same
-change. At minimum, keep these areas current:
-
-- Root `README.md` project structure and mobile status.
-- `docs/development-setup.md` Flutter and Android prerequisites.
-- `docs/implementation/incident-reporting-feature.md` mobile API behavior.
-- Relevant `TASK1` documentation for mobile authentication.
-- Relevant `TASK2` documentation for mobile incident reporting.
-- Files under `docs/mobile/` for scope, stack, architecture, and implementation.
-
-Document:
-
-- Supported Flutter and Dart versions.
-- Required Android SDK configuration.
-- Commands for installing packages and launching the application.
-- API and map URL configuration.
-- Android permissions.
-- Authentication request and response examples.
-- Incident request and response examples.
-- Emulator and physical-device networking.
-- Map tile availability and offline limitations.
-- Known issues and deferred features.
-
-## Recommended commit sequence
-
-Keep commits focused and include the applicable task identifier where it helps
-traceability:
-
-1. Create Flutter mobile application foundation.
-2. Add `TASK1` Sanctum mobile authentication API.
-3. Add Flutter volunteer authentication flow.
-4. Add `TASK2` mobile incident form and API submission.
-5. Add `TASK2` MapLibre location selection.
-6. Document mobile setup and approved behavior.
-
-Do not mark a task complete until both its approved implementation and related
-documentation are complete.
-
-## Recommended first-session checkpoint
-
-For the first development session, stop after this achievable checkpoint:
-
-1. Install and validate Flutter/Android tooling.
-2. Create the root `mobile/` Flutter project.
-3. Add the initial packages.
-4. Create the application theme and environment configuration.
-5. Display a basic ResQLink login screen without connecting it to Laravel.
-6. Review and agree on the authentication contract with the `TASK1` owner.
-
-The next session can implement Sanctum and connect the login screen. This avoids
-mixing Flutter setup, backend schema changes, authentication, and mapping into
-one difficult debugging session.
+Keep task identifiers and owners in handoff notes and commits. Do not place
+owner names or task numbers in application domain identifiers.

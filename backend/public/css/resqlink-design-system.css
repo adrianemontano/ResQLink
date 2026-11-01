@@ -276,9 +276,89 @@ form > label + .button {
     height: var(--control-height);
 }
 
+/* Pagination styling & SVG size constraint */
+.incident-pagination,
+.records-pagination {
+    margin-top: var(--space-4);
+}
+
+.incident-pagination nav[role="navigation"],
+.records-pagination nav[role="navigation"] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+@media (min-width: 641px) {
+    .incident-pagination nav[role="navigation"] > div:first-child:not(:only-child),
+    .records-pagination nav[role="navigation"] > div:first-child:not(:only-child) {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .incident-pagination nav[role="navigation"] > div:last-child:not(:only-child),
+    .records-pagination nav[role="navigation"] > div:last-child:not(:only-child) {
+        display: none;
+    }
+}
+
+.incident-pagination nav[role="navigation"] > div,
+.records-pagination nav[role="navigation"] > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.incident-pagination svg,
+.records-pagination svg,
+nav[role="navigation"] svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .incident-pagination a,
-.incident-pagination span {
+.incident-pagination span,
+.records-pagination a,
+.records-pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
     border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    background: #ffffff;
+    border: 1px solid var(--border);
+    text-decoration: none;
+}
+
+.incident-pagination a:hover,
+.records-pagination a:hover {
+    background: var(--surface-alt);
+    border-color: var(--border-dark, #cbd5e1);
+}
+
+.incident-pagination span[aria-current="page"],
+.records-pagination span[aria-current="page"] {
+    background: var(--rosewood, #7c2d37);
+    color: #ffffff;
+    border-color: var(--rosewood, #7c2d37);
+    font-weight: 600;
+}
+
+.incident-pagination span[aria-disabled="true"],
+.records-pagination span[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--surface-alt, #f8fafc);
 }
 
 @media (min-width: 761px) and (max-width: 1024px) {

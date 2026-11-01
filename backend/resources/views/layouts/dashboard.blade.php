@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @else Barangay Responder Incident Reporting @endif
+                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @endif
                 </div>
             </div>
 
@@ -31,7 +31,7 @@
                     <span class="sidebar-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
                     <span class="sidebar-label">
                         Logged in as
-                        <strong>{{ auth()->user()->name }}</strong>
+                        <strong>@if (auth()->user()->hasRole('dispatcher')) Dispatcher @else {{ auth()->user()->name }} @endif</strong>
                     </span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
