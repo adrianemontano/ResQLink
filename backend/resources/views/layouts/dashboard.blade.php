@@ -2,6 +2,9 @@
 
 @push('scripts')
     <script src="{{ asset('js/sidebar-toggle.js') }}"></script>
+    @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
+        <script src="{{ asset('js/dispatcher-notifications.js') }}"></script>
+    @endif
 @endpush
 
 @section('body')
@@ -45,6 +48,16 @@
         </aside>
 
         <main class="dashboard-main">
+            @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
+                <div class="dashboard-topbar" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border);">
+                    <div style="font-size: 13px; color: var(--text-muted); margin-right: auto; display: flex; align-items: center; gap: 6px;">
+                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22C55E;"></span>
+                        <strong>Dispatcher Live Center</strong> &bull; Cebu City Emergency Grid
+                    </div>
+                    @include('layouts.partials.notifications')
+                </div>
+            @endif
+
             @if (session('status'))
                 <div class="alert success">{{ session('status') }}</div>
             @endif
