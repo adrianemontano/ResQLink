@@ -1,5 +1,11 @@
 # ResQLink Mobile Verification and Handoff Guide
 
+> **Current implementation note:** Run `flutter pub get` after pulling. The
+> initial volunteer app now supports secure bearer login, forced password
+> change, and optional compressed incident photos. The interactive map picker,
+> offline queue, and push notifications remain future work. The current mobile
+> API uses Laravel-managed hashed tokens, not Sanctum.
+
 **Companion to:** [Mobile application implementation guide](mobile-implementation-guide.md)  
 **Related work:** `TASK1` and `TASK2`
 
@@ -125,7 +131,7 @@ Keep commits focused and include the applicable task identifier where it helps
 traceability:
 
 1. Create Flutter mobile application foundation.
-2. Add `TASK1` Sanctum mobile authentication API.
+2. Verify `TASK1` mobile bearer login, profile, and logout API.
 3. Add Flutter volunteer authentication flow.
 4. Add `TASK2` mobile incident form and API submission.
 5. Add `TASK2` MapLibre location selection.
@@ -145,6 +151,6 @@ For the first development session, stop after this achievable checkpoint:
 5. Display a basic ResQLink login screen without connecting it to Laravel.
 6. Review and agree on the authentication contract with the `TASK1` owner.
 
-The next session can implement Sanctum and connect the login screen. This avoids
+The next session can implement the deferred map picker and connect it to the API. This avoids
 mixing Flutter setup, backend schema changes, authentication, and mapping into
 one difficult debugging session.
