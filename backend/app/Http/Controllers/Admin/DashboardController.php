@@ -38,7 +38,7 @@ class DashboardController extends Controller
 
         $statusBreakdown = Incident::query()
             ->leftJoin('incident_statuses', 'incident_statuses.id', '=', 'incidents.status_id')
-            ->selectRaw("COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, ''), ?) as label, COUNT(*) as total", ['Unassigned'])
+            ->selectRaw("COALESCE(NULLIF(incident_statuses.name, ''), ?) as label, COUNT(*) as total", ['Unassigned'])
             ->groupBy('label')
             ->orderByDesc('total')
             ->orderBy('label')
@@ -51,7 +51,7 @@ class DashboardController extends Controller
 
         $categoryBreakdown = Incident::query()
             ->leftJoin('incident_categories', 'incident_categories.id', '=', 'incidents.category_id')
-            ->selectRaw("COALESCE(NULLIF(incident_categories.name, ''), NULLIF(incidents.category, ''), ?) as label, COUNT(*) as total", ['Other'])
+            ->selectRaw("COALESCE(NULLIF(incident_categories.name, ''), ?) as label, COUNT(*) as total", ['Other'])
             ->groupBy('label')
             ->orderByDesc('total')
             ->orderBy('label')
@@ -64,7 +64,7 @@ class DashboardController extends Controller
 
         $severityBreakdown = Incident::query()
             ->leftJoin('severity_levels', 'severity_levels.id', '=', 'incidents.severity_id')
-            ->selectRaw("COALESCE(NULLIF(severity_levels.name, ''), NULLIF(incidents.severity, ''), ?) as label, COUNT(*) as total", ['Unspecified'])
+            ->selectRaw("COALESCE(NULLIF(severity_levels.name, ''), ?) as label, COUNT(*) as total", ['Unspecified'])
             ->groupBy('label')
             ->orderByDesc('total')
             ->orderBy('label')
@@ -81,10 +81,10 @@ class DashboardController extends Controller
             ->leftJoin('severity_levels', 'severity_levels.id', '=', 'incidents.severity_id')
             ->leftJoin('incident_statuses', 'incident_statuses.id', '=', 'incidents.status_id')
             ->select('incidents.*')
-            ->selectRaw("COALESCE(NULLIF(incident_categories.name, ''), NULLIF(incidents.category, '')) as category")
-            ->selectRaw("COALESCE(NULLIF(barangays.name, ''), NULLIF(incidents.barangay, '')) as barangay")
-            ->selectRaw("COALESCE(NULLIF(severity_levels.name, ''), NULLIF(incidents.severity, '')) as severity")
-            ->selectRaw("COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, '')) as status")
+            ->selectRaw("NULLIF(incident_categories.name, '') as category")
+            ->selectRaw("NULLIF(barangays.name, '') as barangay")
+            ->selectRaw("NULLIF(severity_levels.name, '') as severity")
+            ->selectRaw("NULLIF(incident_statuses.name, '') as status")
             ->orderByRaw('COALESCE(incidents.reported_at, incidents.created_at) DESC')
             ->limit(5)
             ->get();
@@ -101,15 +101,15 @@ class DashboardController extends Controller
             'openIncidents' => Incident::query()
                 ->leftJoin('incident_statuses', 'incident_statuses.id', '=', 'incidents.status_id')
                 ->whereRaw(
-                    "COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, '')) IS NULL
-                    OR COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, '')) != ?",
+                    "COALESCE(NULLIF(incident_statuses.name, ''), '') = ''
+                    OR COALESCE(NULLIF(incident_statuses.name, ''), '') != ?",
                     [Incident::STATUS_COMPLETED]
                 )
                 ->count(),
             'completedIncidents' => Incident::query()
                 ->leftJoin('incident_statuses', 'incident_statuses.id', '=', 'incidents.status_id')
                 ->whereRaw(
-                    "COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, '')) = ?",
+                    "NULLIF(incident_statuses.name, '') = ?",
                     [Incident::STATUS_COMPLETED]
                 )
                 ->count(),
