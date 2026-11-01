@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'first_name', 'last_name', 'contact_number', 'username', 'email', 'password', 'role_id', 'is_active'])]
+#[Fillable(['name', 'first_name', 'last_name', 'contact_number', 'username', 'email', 'password', 'role_id', 'is_active', 'must_change_password', 'password_changed_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -42,6 +43,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'is_active' => 'boolean',
             'password' => 'hashed',
+            'must_change_password' => 'boolean',
+            'password_changed_at' => 'datetime',
         ];
     }
 
@@ -56,6 +59,12 @@ class User extends Authenticatable
     public function volunteerProfile(): HasOne
     {
         return $this->hasOne(VolunteerProfile::class);
+    }
+
+    /** @return HasMany<MobileAccessToken, $this> */
+    public function mobileAccessTokens(): HasMany
+    {
+        return $this->hasMany(MobileAccessToken::class);
     }
 
     public function hasRole(string|array $roles): bool
