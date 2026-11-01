@@ -1,26 +1,24 @@
 # ResQLink - Volunteer-Based Emergency Alert and Dispatch Coordination Support System
 
-ResQLink is a capstone project for supporting emergency incident reporting and dispatch coordination. The current implementation focuses on the Laravel backend and web application used by administrators and dispatchers.
+ResQLink is a capstone project for supporting emergency incident reporting and dispatch coordination. The implementation includes a Laravel backend and web application for administrators/dispatchers plus an initial Flutter volunteer app.
 
 ## Project Overview
 
 ResQLink is designed to help emergency operations teams receive, organize, and act on structured incident information from verified volunteers. The system addresses the problem of scattered or incomplete emergency reports by moving toward a centralized workflow for account management, incident coordination, and role-based access.
 
-Current users:
+Current users and clients:
 
 * Administrators
 * Dispatchers
-* Verified volunteers through the web incident-reporting workflow
-
-Planned users:
-
-* Barangay volunteers through a future mobile application
+* Verified volunteers through the web incident-reporting workflow and initial
+	Flutter authentication/report/photo flows
 
 Current development phase:
 
 * Laravel backend
 * Web application for Admin and Dispatcher roles
-* Volunteer mobile application is planned but is not currently implemented in this repository
+* Flutter foundation: bearer login, forced password change, incident submission,
+  and optional compressed photo upload; map picker and offline sync remain future work
 
 ## Technology Stack
 
@@ -49,7 +47,7 @@ Not currently installed:
 * Pest
 * Bootstrap package
 * Leaflet package (the current maps use MapLibre instead)
-* Flutter/mobile application code
+* Advanced Flutter map picker, offline synchronization, and mobile push notifications
 
 ## Prerequisites
 
