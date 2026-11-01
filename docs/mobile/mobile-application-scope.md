@@ -12,9 +12,10 @@ the existing Laravel application through a JSON API. Laravel remains
 responsible for authentication, authorization, validation, severity
 classification, timestamps, and database access.
 
-The initial mobile release should be intentionally small. Its primary goal is
-to let an authorized volunteer sign in, describe an incident, select its
-location, submit it, and receive a clear confirmation.
+The initial mobile foundation supports volunteer sign-in, forced temporary
+password change, structured incident submission, and optional compressed photo
+upload. GPS/map location picking and the richer submission-confirmation workflow
+remain planned work.
 
 ## Ownership and coordination
 
@@ -54,6 +55,7 @@ The mobile application will provide:
 
 - Login using a username or email and password.
 - Secure storage of a Laravel API token.
+- Required change of an Admin-issued temporary password before incident access.
 - Restoration of a valid login when the application restarts.
 - Retrieval of the current volunteer's basic profile.
 - Logout and revocation of the current device token.
@@ -74,6 +76,7 @@ The incident form will collect:
 - Latitude and longitude.
 - Impact radius in metres.
 - Optional notes.
+- Optional camera/gallery JPG or PNG photo (resized/compressed, maximum 5 MB).
 
 The mobile application may validate fields immediately for usability, but
 Laravel is the authoritative validator. The authenticated volunteer must be
@@ -133,7 +136,7 @@ stable and approved:
 - Continuous background location tracking.
 - Chat, voice calls, or video calls.
 - Push notifications.
-- Uploading incident photos or videos.
+- Uploading incident videos.
 - Public incident browsing.
 - Volunteer-to-volunteer messaging.
 - A separate mobile database that duplicates the Laravel database.
@@ -145,19 +148,21 @@ server.
 
 ## API dependency
 
-The existing `POST /api/incidents` operation contains the main incident
-submission behavior, but mobile token authentication is not yet implemented.
-Before the Flutter login flow is considered complete, Laravel should provide:
+The implemented mobile API endpoints are:
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| `POST` | `/api/auth/login` | Validate the volunteer and issue a device token |
-| `GET` | `/api/auth/user` | Return the authenticated volunteer profile |
-| `POST` | `/api/auth/logout` | Revoke the current device token |
-| `POST` | `/api/incidents` | Submit an authenticated incident report |
+| `POST` | `/api/login` | Validate the volunteer and issue a 30-day device token |
+| `GET` | `/api/user` | Validate a restored token and return the volunteer profile |
+| `PUT` | `/api/password/change` | Change a temporary password and clear the forced-change flag |
+| `POST` | `/api/logout` | Revoke the current device token |
+| `POST` | `/api/incidents` | Submit an authenticated incident report and optional photo |
 
-Protected mobile endpoints should use Laravel Sanctum bearer-token
-authentication rather than relying on the browser session used by Blade views.
+Protected mobile endpoints use random bearer tokens stored as SHA-256 hashes in
+`mobile_access_tokens`, separate from browser sessions. Tokens expire after 30
+days and are invalidated after an Admin password reset. This lightweight
+first-party token implementation is a project-specific alternative to Sanctum;
+review it as security-sensitive code before production deployment.
 
 ## Error and recovery expectations
 
@@ -192,31 +197,33 @@ request fails safely, the volunteer should be able to correct or retry it.
 
 ## Delivery milestones
 
-### Milestone 1: Mobile foundation
+### Milestone 1: Mobile foundation — implemented
 
 - Create the Flutter application under the repository root `mobile/` directory.
 - Add application theme, configuration, navigation, and shared error handling.
 - Document Android development prerequisites and API URL configuration.
 
-### Milestone 2: Mobile authentication
+### Milestone 2: Mobile authentication — initial implementation
 
-- Add Laravel Sanctum mobile endpoints.
-- Implement login, secure token storage, session restoration, and logout.
+- Implement `/api/login`, `/api/password/change`, and `/api/logout` with hashed
+   expiring mobile access tokens and secure device storage.
+- Implement login, forced password update, token restoration, and logout.
 - Enforce active, volunteer-role, and verified-profile requirements server-side.
 
-### Milestone 3: Basic incident submission
+### Milestone 3: Basic incident submission and optional photo — initial implementation
 
 - Build the incident form without the map.
 - Submit valid JSON to Laravel.
 - Display field errors and successful confirmation.
+- Support optional compressed photo upload and private server storage.
 
-### Milestone 4: Map and GPS
+### Milestone 4: Map and GPS — planned
 
 - Add MapLibre.
 - Add location permission handling and GPS capture.
 - Add pin placement, radius display, barangay boundaries, and landmarks.
 
-### Milestone 5: Reliability and handoff
+### Milestone 5: Reliability and handoff — ongoing
 
 - Verify failure and recovery behavior.
 - Confirm submitted incidents appear in dispatcher and admin workflows.
