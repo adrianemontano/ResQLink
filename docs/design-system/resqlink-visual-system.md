@@ -167,6 +167,7 @@ Static mockups for design review:
 
 - [Volunteer mobile flow](mockups/volunteer-mobile.html): login, home/recent reports, incident form, map picker, review, submission success, GPS-denied and offline states.
 - [Dispatcher web screens](mockups/dispatcher-web.html): overview, incident queue, incident detail, map with selected-incident panel.
+- [Dispatcher enhancements](mockups/dispatcher-enhancements.html): reporter/timestamp queue/detail, Received action, notifications, forced-password, self-account, handling reports, and photo states.
 - [Admin web screens](mockups/admin-web.html): dashboard, volunteer accounts/documents, user management, incident records/archive, reports.
 - [Shared states](mockups/shared-states.html): web login, 404, empty/loading, confirmation dialog, alert/toast.
 
