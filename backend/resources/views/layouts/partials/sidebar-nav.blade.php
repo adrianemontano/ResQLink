@@ -32,7 +32,7 @@
             <div class="sidebar-section-label sidebar-label">Main</div>
             <a class="sidebar-item {{ request()->routeIs('dispatcher.dashboard') ? 'active' : '' }}" href="{{ route('dispatcher.dashboard') }}">
                 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                <span class="sidebar-label">Overview</span>
+                <span class="sidebar-label">Dashboard</span>
             </a>
         </div>
 

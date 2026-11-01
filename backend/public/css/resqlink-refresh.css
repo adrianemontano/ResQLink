@@ -228,7 +228,7 @@ td {
 
 .bar-track,
 .bar-fill {
-    border-radius: 2px;
+    border-radius: 0 6px 6px 0;
 }
 
 .eyebrow {

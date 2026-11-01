@@ -1,14 +1,6 @@
 @extends('layouts.dashboard', ['title' => 'Users | ResQLink'])
 
 @section('content')
-    @php
-        $filters = [
-            ['key' => 'all', 'label' => 'All'],
-            ['key' => 'admin', 'label' => 'Admin'],
-            ['key' => 'barangay-responder', 'label' => 'Barangay Responder'],
-            ['key' => 'dispatcher', 'label' => 'Dispatcher'],
-        ];
-    @endphp
 
     <div class="header-row">
         <div>
@@ -18,24 +10,25 @@
         <a class="button" href="{{ route('admin.users.create') }}">Create User</a>
     </div>
 
-    <section class="card">
-        <div class="user-role-filters" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.5rem;">
-            @foreach ($filters as $filter)
-                @php
-                    $isActive = $roleFilter === $filter['key'];
-                    $queryString = $filter['key'] === 'all' ? [] : ['role' => $filter['key']];
-                @endphp
-                <a
-                    href="{{ route('admin.users.index', $queryString) }}"
-                    class="button {{ $isActive ? '' : 'secondary' }}"
-                    style="padding:0.5rem 0.9rem;"
-                    @if ($isActive) aria-current="page" @endif
-                >
-                    {{ $filter['label'] }}
-                </a>
-            @endforeach
-        </div>
+    <form class="card" method="GET" action="{{ route('admin.users.index') }}" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:1rem;">
+        <label style="font-size:0.875rem; margin-right:4px; color:var(--text-muted);">Role:</label>
+            <select name="role" style="width:220px; padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
+            <option value="all" @selected($roleFilter === 'all')>All</option>
+            <option value="admin" @selected($roleFilter === 'admin')>Admin</option>
+            <option value="barangay-responder" @selected($roleFilter === 'barangay-responder')>Barangay Responder</option>
+            <option value="dispatcher" @selected($roleFilter === 'dispatcher')>Dispatcher</option>
+        </select>
+        <label style="font-size:0.875rem; margin-left:8px; margin-right:4px; color:var(--text-muted);">Status:</label>
+            <select name="status" style="width:220px; padding:0.5rem 0.9rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff;">
+            <option value="all" @selected($statusFilter === 'all')>All</option>
+            <option value="active" @selected($statusFilter === 'active')>Active</option>
+            <option value="inactive" @selected($statusFilter === 'inactive')>Inactive</option>
+        </select>
+        <button type="submit" style="padding:0 var(--space-4); max-width:180px; margin-left:12px;">Filter</button>
+        <a href="{{ route('admin.users.index') }}" style="padding:0 var(--space-3); margin-left:8px; text-decoration:none;">Clear</a>
+    </form>
 
+    <section class="card">
         <table>
             <thead>
                 <tr>
@@ -93,4 +86,5 @@
             {{ $users->links() }}
         </div>
     </section>
+
 @endsection

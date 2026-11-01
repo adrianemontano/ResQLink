@@ -22,8 +22,10 @@ class UserController extends Controller
     public function index(Request $request): View
     {
         $roleFilter = $request->query('role', 'all');
+        $statusFilter = $request->query('status', 'all');
         $allowedFilters = ['all', 'admin', 'barangay-responder', 'dispatcher'];
         $roleFilter = in_array($roleFilter, $allowedFilters, true) ? $roleFilter : 'all';
+        $statusFilter = in_array($statusFilter, ['all', 'active', 'inactive'], true) ? $statusFilter : 'all';
 
         $query = User::query()
             ->with('role')
@@ -39,15 +41,22 @@ class UserController extends Controller
             $query->whereRelation('role', 'name', $roleMap[$roleFilter]);
         }
 
+        if ($statusFilter !== 'all') {
+            $query->where('is_active', $statusFilter === 'active');
+        }
+
         if (Schema::hasColumn('users', 'name')) {
             $query->orderBy('name');
         } else {
             $query->orderBy('first_name')->orderBy('last_name');
         }
 
-        $users = $query->paginate(15)->appends(['role' => $roleFilter === 'all' ? null : $roleFilter]);
+        $users = $query->paginate(15)->appends([
+            'role' => $roleFilter === 'all' ? null : $roleFilter,
+            'status' => $statusFilter === 'all' ? null : $statusFilter,
+        ]);
 
-        return view('admin.users.index', ['users' => $users, 'roleFilter' => $roleFilter]);
+        return view('admin.users.index', ['users' => $users, 'roleFilter' => $roleFilter, 'statusFilter' => $statusFilter]);
     }
 
     public function create(): View
