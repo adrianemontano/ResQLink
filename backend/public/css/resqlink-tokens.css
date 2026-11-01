@@ -31,8 +31,12 @@
 
     /* Incident workflow status: outlined pills, map markers, legends, charts. */
     --status-reported: #C81E1E;
-    --status-received: #B45309;
-    --status-dispatched: #0F766E;
+    --status-received: #FFB366;
+    --status-received-text: #5A0006;
+    --status-received-hover: #FFA447;
+    --status-received-active: #E68A2E;
+    --status-received-border: #E69543;
+    --status-dispatched: #16A34A;
     --status-completed: #4B5563;
     --status-all: #2563EB;
 
