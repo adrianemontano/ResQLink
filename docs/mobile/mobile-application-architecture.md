@@ -4,6 +4,12 @@
 **Primary goal:** Keep mobile development simple without mixing UI, networking,
 security, and backend business rules
 
+**Current implementation:** `mobile/` now contains the first Flutter shell,
+secure bearer login, forced-password gate, incident form, and optional photo
+upload. The map/GPS picker remains planned. Mobile tokens are random opaque
+values whose SHA-256 hashes are stored by Laravel; this is the current
+first-party alternative to the earlier Sanctum proposal.
+
 ## System context
 
 The Flutter application is a client of the existing Laravel system. It does not
@@ -68,7 +74,7 @@ replace, browser session authentication.
 ### MySQL responsibilities
 
 - Persist users, roles, and volunteer profiles.
-- Persist API token records managed by Laravel Sanctum.
+- Persist hashed mobile access-token records managed by Laravel.
 - Persist incidents and reference data.
 - Persist dispatcher and admin workflow records.
 
@@ -188,7 +194,7 @@ Read secure token
     `-- token found
             |
             v
-       GET /api/auth/user
+      GET /api/user
             |
             +-- 200 -------> Volunteer home/form
             |
@@ -198,13 +204,13 @@ Read secure token
 Login should follow this sequence:
 
 1. Validate that login, password, and device name are available.
-2. Send them to `POST /api/auth/login` as JSON.
+2. Send them to `POST /api/login` as form data.
 3. Laravel checks credentials, activation, role, and volunteer verification.
-4. Laravel creates and returns a Sanctum device token and user summary.
+4. Laravel creates a random expiring bearer token and returns it with the user summary.
 5. Flutter stores the token using secure storage.
 6. Flutter updates authentication state and opens the volunteer area.
 
-Logout should attempt `POST /api/auth/logout`, revoke the current token on the
+Logout should attempt `POST /api/logout`, revoke the current token on the
 server, remove the local token, clear volunteer state, and return to login. If
 the network is unavailable, the UI should clearly explain whether server-side
 revocation could not be confirmed.
@@ -412,7 +418,7 @@ security and data behavior, and remain within the repository file-size rules.
 - Use a feature-oriented layout rather than a large monolithic screen file.
 - Use Provider for limited shared presentation state.
 - Use small services over HTTP for Laravel operations.
-- Use Sanctum bearer tokens for mobile authentication.
+- Use Laravel-managed, hashed bearer tokens for mobile authentication.
 - Use secure platform storage for tokens.
 - Use MapLibre and approved local map data.
 - Keep authorization, validation, severity, and persistence in Laravel.
