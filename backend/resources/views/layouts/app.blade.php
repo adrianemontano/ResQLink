@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}">
     <script src="{{ asset('js/responsive-tables.js') }}" defer></script>
 </head>
 <body>

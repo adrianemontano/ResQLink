@@ -96,6 +96,7 @@ Status uses white outline pills in the `--status-*` colours with written labels 
 - Family: Poppins (400/500/600/700, loaded from Google Fonts in `layouts/app.blade.php`) through the `--font-body` token, with system sans-serif fallbacks if the font cannot load. Keep emergency content compact and highly scannable.
 - Desktop scale: H1 22px/600 Rosewood; H2 16px/600 Rosewood; H3 15px/600; body and table text 14px in ink (`--text-primary` `#2B1D1B`, 16.2:1); labels 13px/500 in `--text-label` `#493832` (11.1:1); secondary copy in `--text-muted`; table headers and stat labels 11.5–12px/500–600 uppercase; stat figures 28px/600 Rosewood (24px on phones); badges 20px tall. Nothing heavier than 600; input focus borders are 1.5px. Reading text is near-black ink rather than Rosewood: Rosewood marks titles, figures, and links, which keeps long records formal and easy to read.
 - Mobile body: minimum 16px; labels/captions may be 14px. Inputs and buttons share `--control-height`, which rises from 40px to 44px on phones.
+- Responsive QA: the shared `resqlink-responsive.css` layer is loaded last so shell, filters, map controls, notifications, report cards, and forms adapt at 1180px, 760px, 480px, and 360px. On phones the sidebar becomes a compact two-row top navigation with horizontal scrolling; on narrow tables the existing accessible table helper shows labelled cards, and explicitly dense report tables scroll within their container. Landscape-height and reduced-motion states are included.
 - Use the spacing tokens above (4px base: 4, 8, 12, 16, 24, 32px). Shapes are deliberately restrained: fields and buttons 6px (`--radius-sm`), cards 10px (`--radius-lg`), sign-in panel 8px (`--radius-md`), badges 4px. Borders are 1px everywhere. Shadows are minimal neutral elevation (`--shadow-sm` on cards), never decoration.
 
 ## Formal presentation layer
@@ -184,6 +185,6 @@ Admin and volunteer dashboards use responsive summary cards, compact incident ch
 - [ ] Check text, icon, and control contrast; never use color as the only status/severity cue.
 - [ ] Use the same sidebar, title, cards, buttons, fields, badges, and table rules across Admin and Dispatcher.
 - [ ] Keep all incident fields and existing actions; do not add behavior in a visual-only change.
-- [ ] Check responsive layout, 48px mobile controls, keyboard focus, errors, disabled, empty, loading, and success states.
+- [ ] Check at 320px, 360px, 390px, 412px, 768px, 1024px, and desktop widths; include short landscape, 48px mobile controls, keyboard focus, errors, disabled, empty, loading, and success states.
 - [ ] Recheck actual ratios when changing token values or overlays.
 - [ ] For Flutter, mirror tokens in Material 3 and validate on 360–412px widths.
