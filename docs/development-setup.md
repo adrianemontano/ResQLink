@@ -6,6 +6,7 @@ changes from a remote branch. Run application commands from `backend/`.
 ## Prerequisites
 
 - PHP 8.3 or newer with the extensions listed in the root `README.md`
+- PHP `zip` extension for Dispatcher XLSX report downloads
 - Composer 2
 - Node.js 20 or newer and npm
 - MySQL 8.0 or MariaDB 10.6 or newer
@@ -132,6 +133,7 @@ each developer's `backend/.env`:
 
 ```env
 LOCAL_MAP_STYLE_URL=http://localhost:8080/styles/positron/style.json
+APP_TIMEZONE=Asia/Manila
 ```
 
 A default `tileserver-gl-light` install only serves the `basic-preview` style;
@@ -160,6 +162,38 @@ After successful seeding, use these accounts:
 
 The values can be overridden by the corresponding `DEFAULT_*` variables in
 `.env`.
+
+## Volunteer Flutter app
+
+Install Flutter packages from `mobile/` after pulling changes:
+
+```powershell
+cd mobile
+flutter pub get
+```
+
+For an Android emulator with Laravel running on the development host, the app
+defaults to `http://10.0.2.2:8000/api`. Override this with
+`--dart-define=RESQLINK_API_URL=https://your-api.example/api` for other targets.
+Android network security allows cleartext only for `10.0.2.2` and `localhost`
+for emulator development; production builds must use HTTPS. Mobile login returns a 30-day
+bearer token stored in Flutter secure storage. Admin-created accounts must
+change their temporary password before submitting an incident.
+
+The incident form can attach an optional camera/gallery JPG or PNG. Flutter
+resizes and JPEG-compresses it before upload; Laravel independently validates
+the detected image type and a 5 MB maximum, then stores it on the private local
+disk. Only authenticated dispatchers/admins can stream or download that file.
+
+## Pending database migrations
+
+This enhancement adds password-change fields, Laravel database notifications,
+private incident-photo metadata, and hashed mobile access tokens. Review the
+migration files and configured database before applying them. From `backend/`,
+use `php artisan migrate` on an existing database; do not use `migrate:fresh`
+unless that database is disposable. Existing `incident_histories` already
+contains status, actor, and timestamp data and is reused for Dispatcher
+resolution-time reporting.
 
 ### Mock defense dataset & verification
 
