@@ -1,17 +1,26 @@
-# mobile
+# ResQLink Volunteer Mobile App
 
-A new Flutter project.
+Initial Flutter implementation for verified volunteer login, mandatory
+password change, incident submission, and optional compressed JPG/PNG photo
+upload. Laravel remains the source of truth for authentication, validation,
+severity, timestamps, and persistence.
 
-## Getting Started
+## Local setup
 
-This project is a starting point for a Flutter application.
+From this directory, install Flutter packages and run the app:
 
-A few resources to get you started if this is your first Flutter project:
+```powershell
+flutter pub get
+flutter run --dart-define=RESQLINK_API_URL=http://10.0.2.2:8000/api
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+`10.0.2.2` is the Android emulator bridge to the host machine. For another
+emulator or physical device, provide a reachable API base URL with
+`--dart-define=RESQLINK_API_URL=...`. Use HTTPS outside local development.
+Android network security allows cleartext only to local emulator hosts.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The app stores bearer tokens and the forced-password flag in
+`flutter_secure_storage`. Photos are resized and JPEG-compressed before upload;
+Laravel validates the image again and stores it on the private disk. The
+advanced local map picker, offline synchronization, and mobile push
+notifications are not implemented yet.
