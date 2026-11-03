@@ -76,17 +76,17 @@
 }
 
 .status-modal-backdrop {
-    background: rgba(25, 10, 10, .68);
+    background: rgba(43, 29, 27, .58);
     inset: 0;
     position: absolute;
 }
 
 .status-modal-dialog {
-    background: var(--cream, #fff8ee);
-    border: 1px solid var(--rosewood, #5A0006);
-    border-radius: 12px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, .28);
-    color: var(--rosewood, #5A0006);
+    background: var(--surface, #FFFFFF);
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: var(--radius-xl, 12px);
+    box-shadow: var(--shadow-lg, 0 8px 24px rgba(43, 29, 27, .10));
+    color: var(--text-primary, #2B1D1B);
     max-height: calc(100vh - 2rem);
     max-width: 34rem;
     overflow-y: auto;
@@ -108,10 +108,10 @@
 }
 
 .status-final-warning {
-    background: #fff1dc;
-    border: 1px solid #8a4b00;
-    border-radius: 6px;
-    color: #5c3100;
+    background: var(--red-light, #FCE8E3);
+    border: 1px solid var(--sangria, #920004);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--rosewood, #5A0006);
     font-weight: 600;
     margin: 0 0 1rem;
     padding: .65rem .75rem;
@@ -124,10 +124,11 @@
 }
 
 .status-modal-dialog textarea {
-    border: 1px solid #6b5150;
-    border-radius: 6px;
+    background: var(--surface, #FFFFFF);
+    border: 1px solid var(--control-border, #8A766A);
+    border-radius: var(--radius-sm, 6px);
     box-sizing: border-box;
-    color: #251414;
+    color: var(--text-primary, #2B1D1B);
     display: block;
     font: inherit;
     min-height: 6rem;
@@ -137,19 +138,19 @@
 }
 
 .status-modal-dialog :focus-visible {
-    outline: 3px solid #5A0006;
-    outline-offset: 3px;
+    box-shadow: var(--focus-ring);
+    outline: none;
 }
 
 .status-note-counter {
-    color: #51403f;
+    color: var(--text-muted, #6B5B55);
     font-size: .85rem;
     margin-top: .25rem;
     text-align: right;
 }
 
 .status-modal-error {
-    color: #8b0008;
+    color: var(--sangria, #920004);
     font-weight: 600;
     margin-top: .5rem;
 }
@@ -162,14 +163,19 @@
 }
 
 .status-confirm-button {
-    background: #920004;
-    border: 1px solid #920004;
-    border-radius: 6px;
+    background: var(--sangria, #920004);
+    border: 1px solid var(--sangria, #920004);
+    border-radius: var(--radius-sm, 6px);
     color: #ffffff;
     cursor: pointer;
     font: inherit;
     font-weight: 600;
     padding: .55rem 1rem;
+}
+
+.status-confirm-button:hover {
+    background: var(--rosewood, #5A0006);
+    border-color: var(--rosewood, #5A0006);
 }
 
 .status-confirm-button:disabled {
@@ -183,11 +189,11 @@
 }
 
 .incident-status-toast {
-    background: var(--cream, #fff8ee);
-    border: 2px solid #345333;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(43, 29, 27, .2);
-    color: #243b24;
+    background: var(--surface, #FFFFFF);
+    border: 2px solid var(--success, #476B45);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: var(--shadow-lg, 0 8px 24px rgba(43, 29, 27, .10));
+    color: var(--text-primary, #2B1D1B);
     font-weight: 600;
     padding: .9rem 1.1rem;
     position: fixed;
