@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-badges.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}?v=21">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-status-filters.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}">
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}">

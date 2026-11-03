@@ -67,9 +67,11 @@ map, and recording status changes through completion.
 
 ## Functional requirements
 
-- `TASK3-001` A dispatcher can view incoming incidents in an incident queue.
+- `TASK3-001` A dispatcher can view incidents in a queue and filter by All,
+  Reported, Received, Dispatched, or Completed, with each filter showing its
+  incident count.
 - `TASK3-002` The queue organizes incidents according to preliminary severity
-  and displays the current workflow status.
+  within the selected status filter and displays the current workflow status.
 - `TASK3-003` A dispatcher can open an incident summary containing category,
   volunteer, reported date/time, affected persons, location, barangay,
   landmark, impact radius, notes, severity, and status.
@@ -86,8 +88,10 @@ map, and recording status changes through completion.
 
 ## Implementation Checklist
 
-- [x] `TASK3-001` Incident queue is available to authorized dispatchers.
-- [x] `TASK3-002` Queue ordering uses severity, workflow status, and report time.
+- [x] `TASK3-001` The dispatcher queue provides counted status filters that
+  preserve the selected filter in the URL.
+- [x] `TASK3-002` Queue ordering prioritizes severity within each status filter,
+  followed by workflow status and report time.
 - [x] `TASK3-003` Incident details include the required report, location, severity,
   status, and history information.
 - [x] `TASK3-004` Local MapLibre map renders database incident markers and
@@ -147,11 +151,11 @@ The split below defines the concrete interface and server responsibilities for
 each requirement; no requirements are added.
 
 - **`TASK3-001`** Dispatchers can view incoming incidents in an incident queue.
-  - Frontend: Build the dispatcher queue with required summary fields.
-  - Backend: Provide dispatcher-authorized access to incoming incidents.
+  - Frontend: Show counted status filter chips, incident summaries, and filter-preserving pagination.
+  - Backend: Provide dispatcher-authorized, server-side queue filters and counts.
 - **`TASK3-002`** The queue is ordered by preliminary severity and shows workflow status.
-  - Frontend: Display severity ordering and current status.
-  - Backend: Order incidents and return workflow status.
+  - Frontend: Display severity ordering and current status in each filtered queue.
+  - Backend: Preserve severity ordering within each status query.
 - **`TASK3-003`** Dispatchers can view complete incident summaries and details.
   - Frontend: Build the incident details view.
   - Backend: Return all required summary fields.

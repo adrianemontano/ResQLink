@@ -24,6 +24,18 @@
             <h2>Active Incident Queue</h2>
             <a class="button" href="{{ route('dispatcher.incidents.index') }}">View all incidents</a>
         </div>
+        <nav class="status-filter-chips" aria-label="Filter incidents by status">
+            @foreach ($statusFilters as $filter)
+                <a
+                    class="status-filter-chip{{ $selectedStatus === $filter['slug'] ? ' active' : '' }}"
+                    href="{{ route('dispatcher.dashboard', ['status' => $filter['slug']]) }}"
+                    @if ($selectedStatus === $filter['slug']) aria-current="page" @endif
+                >
+                    {{ $filter['label'] }}
+                    <span class="status-filter-count">{{ $filter['count'] }}</span>
+                </a>
+            @endforeach
+        </nav>
         <table>
             <thead>
                 <tr><th>Incident</th><th>Reported by</th><th>Reported at</th><th>Category</th><th>Persons</th><th>Barangay</th><th>Severity</th><th>Status</th><th></th></tr>
@@ -46,9 +58,12 @@
                         <td><a href="{{ route('dispatcher.incidents.show', $incident) }}">Open</a></td>
                     </tr>
                 @empty
-                    <tr><td colspan="9">No active incidents have been reported.</td></tr>
+                    <tr><td colspan="9">No incidents with this status.</td></tr>
                 @endforelse
             </tbody>
         </table>
+        @if ($incidents->hasPages())
+            <div class="status-filter-pagination">{{ $incidents->links() }}</div>
+        @endif
     </section>
 @endsection
