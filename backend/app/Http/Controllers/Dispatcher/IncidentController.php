@@ -13,10 +13,10 @@ use Illuminate\View\View;
 class IncidentController extends Controller
 {
     private const ALLOWED_TRANSITIONS = [
-        'Reported' => ['Reported', 'Received'],
-        'Received' => ['Received', 'Dispatched'],
-        'Dispatched' => ['Dispatched', 'Completed'],
-        'Completed' => ['Completed'],
+        'Reported' => ['Received'],
+        'Received' => ['Dispatched'],
+        'Dispatched' => ['Completed'],
+        'Completed' => [],
     ];
 
     public function index(): View
@@ -58,35 +58,65 @@ class IncidentController extends Controller
     public function updateStatus(
         UpdateIncidentStatusRequest $request,
         Incident $incident,
-    ): RedirectResponse {
+    ): JsonResponse|RedirectResponse {
         $data = $request->validated();
         $status = $data['status'];
 
-        if (! $this->isValidTransition($incident->status, $status)) {
+        $change = DB::transaction(function () use ($incident, $data, $request, $status): ?array {
+            $lockedIncident = Incident::query()->lockForUpdate()->findOrFail($incident->id);
+
+            if (! $this->isValidTransition($lockedIncident->status, $status)) {
+                return null;
+            }
+
+            $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
+            $changedAt = now();
+            $lockedIncident->update([
+                'status' => $status,
+                'status_id' => $statusId,
+                'dispatched_at' => $status === 'Dispatched' ? $changedAt : $lockedIncident->dispatched_at,
+                'completed_at' => $status === 'Completed' ? $changedAt : $lockedIncident->completed_at,
+            ]);
+
+            $lockedIncident->history()->create([
+                'status_id' => $statusId,
+                'changed_by' => $request->user()->id,
+                'notes' => $data['notes'],
+                'changed_at' => $changedAt,
+            ]);
+
+            return [
+                'dispatcher' => $request->user()->name,
+                'changed_at' => $changedAt->timezone('Asia/Manila')->format('M d, Y, h:i A'),
+            ];
+        });
+
+        if ($change === null) {
+            $message = $this->invalidTransitionMessage($incident->fresh()->status);
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 422);
+            }
+
             return redirect()->route('dispatcher.incidents.show', $incident)
-                ->withErrors(['status' => $this->invalidTransitionMessage($incident->status)])
+                ->withErrors(['status' => $message])
                 ->withInput();
         }
 
-        DB::transaction(function () use ($incident, $data, $request, $status): void {
-            $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
-            $incident->update([
-                'status' => $status,
-                'status_id' => $statusId,
-                'dispatched_at' => $status === 'Dispatched' ? now() : $incident->dispatched_at,
-                'completed_at' => $status === 'Completed' ? now() : $incident->completed_at,
-            ]);
+        $message = 'Incident status updated successfully.';
 
-            $incident->history()->create([
-                'status_id' => $statusId,
-                'changed_by' => $request->user()->id,
-                'notes' => $data['notes'] ?? null,
-                'changed_at' => now(),
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $message,
+                'status' => $status,
+                'dispatcher' => $change['dispatcher'],
+                'changed_at' => $change['changed_at'],
+                'notes' => $data['notes'],
             ]);
-        });
+        }
 
         return redirect()->route('dispatcher.incidents.show', $incident)
-            ->with('status', 'Incident status updated successfully.');
+            ->with('incident_status_success', $message);
     }
 
     public function map(): View

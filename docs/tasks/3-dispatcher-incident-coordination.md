@@ -75,10 +75,11 @@ map, and recording status changes through completion.
   landmark, impact radius, notes, severity, and status.
 - `TASK3-004` The dashboard displays active and historical incidents on a
   MapLibre map using markers and impact-radius visualization.
-- `TASK3-005` A dispatcher can update status only through Reported, Received,
-  Dispatched, and Completed.
-- `TASK3-006` Every status change records the dispatcher and timestamp in the
-  complete incident history.
+- `TASK3-005` A dispatcher can update status only through the forward-only
+  Reported, Received, Dispatched, and Completed workflow. Each update requires
+  confirmation and a note of at most 300 characters; completion is irreversible.
+- `TASK3-006` Every status change records the dispatcher, timestamp, status, and
+  required note in `incident_histories`.
 - `TASK3-007` The dispatcher can distinguish active incidents from completed or
   archived incidents.
 - `TASK3-008` Unauthorized users cannot access dispatcher operations.
@@ -91,9 +92,11 @@ map, and recording status changes through completion.
   status, and history information.
 - [x] `TASK3-004` Local MapLibre map renders database incident markers and
   impact-radius polygons from stored coordinates.
-- [x] `TASK3-005` Status updates are limited to Reported, Received, Dispatched,
-  and Completed with validated transitions.
-- [x] `TASK3-006` Status history stores the dispatcher, timestamp, status, and notes.
+- [x] `TASK3-005` Status updates show only the next forward transition, require
+  confirmation and a note (maximum 300 characters), and warn that completion
+  cannot be undone.
+- [x] `TASK3-006` `incident_histories` stores the dispatcher, timestamp, status,
+  and required note for every status change.
 - [x] `TASK3-007` Status badges and filters distinguish active and completed
   incidents; archived-record behavior remains coordinated with the admin module.
 - [x] `TASK3-008` Dispatcher routes and operations are protected by authentication

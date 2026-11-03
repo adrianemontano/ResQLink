@@ -7,14 +7,13 @@
             <h1>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</h1>
             <p>{{ $incident->category }} emergency reported {{ ($incident->reported_at ?? $incident->created_at)->timezone('Asia/Manila')->format('M d, Y, h:i A') }}</p>
         </div>
-        <span class="badge status-{{ strtolower($incident->status) }}">{{ $incident->status }}</span>
+        <span id="incident-current-status" class="badge status-{{ strtolower($incident->status) }}" tabindex="-1">{{ $incident->status }}</span>
     </div>
 
     <section class="detail-grid">
         <div class="detail-left">
             <section class="card compact">
                 <h2 style="margin-top: 0">Update Status</h2>
-                {{-- Quick action transition if next step is available --}}
                 @php
                     $nextSteps = [
                         'Reported' => ['name' => 'Received', 'class' => 'btn-status-received', 'label' => 'Acknowledge & Mark as Received'],
@@ -22,37 +21,51 @@
                         'Dispatched' => ['name' => 'Completed', 'class' => 'btn-status-completed', 'label' => 'Mark as Completed / Resolved'],
                     ];
                     $next = $nextSteps[$incident->status] ?? null;
+                    $modalStatus = old('status', $next['name'] ?? '');
                 @endphp
 
-                @if ($next)
-                    <form method="POST" action="{{ route('dispatcher.incidents.status', $incident) }}" style="margin-bottom: var(--space-4);">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="status" value="{{ $next['name'] }}">
-                        <button type="submit" class="btn-status-action {{ $next['class'] }}" style="width: 100%; padding: 10px 16px; font-size: 14px;">
+                <div id="incident-status-actions" style="margin-bottom: var(--space-4);">
+                    @if ($next)
+                        <button type="button" class="btn-status-action {{ $next['class'] }}" data-status="{{ $next['name'] }}" style="width: 100%; padding: 10px 16px; font-size: 14px;">
                             {{ $next['label'] }}
                         </button>
-                    </form>
-                @endif
+                    @else
+                        <p style="margin: 0; color: var(--text-muted);">This incident is complete. No further status changes are available.</p>
+                    @endif
+                </div>
 
-                <form method="POST" action="{{ route('dispatcher.incidents.status', $incident) }}">
-                    @csrf
-                    @method('PATCH')
-                    <label>Change Status Manually
-                        <select name="status" required>
-                            @foreach (['Reported', 'Received', 'Dispatched', 'Completed'] as $status)
-                                <option value="{{ $status }}" @selected($incident->status === $status)>{{ $status }}</option>
-                            @endforeach
-                        </select>
-                    </label>
-                    @error('status')
-                        <div class="error-text">{{ $message }}</div>
-                    @enderror
-                    <label>History Note
-                        <textarea name="notes" rows="2" maxlength="5000" placeholder="Optional dispatch note">{{ old('notes') }}</textarea>
-                    </label>
-                    <button type="submit" class="button secondary">Save status</button>
-                </form>
+                <div id="status-confirmation-modal" class="status-modal" role="presentation" hidden data-open-on-load="{{ $errors->has('status') || $errors->has('notes') ? 'true' : 'false' }}">
+                    <div class="status-modal-backdrop" data-modal-dismiss></div>
+                    <section class="status-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="status-modal-title" aria-describedby="status-modal-description">
+                        <h2 id="status-modal-title">Confirm status update</h2>
+                        <p id="status-modal-description">Incident <strong>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</strong></p>
+
+                        <div class="status-transition" aria-label="Status transition">
+                            <span id="status-modal-current" class="badge status-{{ strtolower($incident->status) }}">{{ $incident->status }}</span>
+                            <span aria-hidden="true">→</span>
+                            <span id="status-modal-next" class="badge status-{{ strtolower($modalStatus ?: 'reported') }}">{{ $modalStatus ?: 'Select a status' }}</span>
+                        </div>
+
+                        <p id="status-final-warning" class="status-final-warning" @if ($modalStatus !== 'Completed') hidden @endif>
+                            This action cannot be undone.
+                        </p>
+
+                        <form id="incident-status-form" method="POST" action="{{ route('dispatcher.incidents.status', $incident) }}">
+                            @csrf
+                            @method('PATCH')
+                            <input id="status-modal-value" type="hidden" name="status" value="{{ $modalStatus }}">
+                            <label for="status-modal-notes">Required note</label>
+                            <textarea id="status-modal-notes" name="notes" rows="4" maxlength="300" required aria-describedby="status-note-counter status-note-error" @if ($errors->has('notes')) aria-invalid="true" @endif placeholder="Add a note about this status change">{{ old('notes') }}</textarea>
+                            <div id="status-note-counter" class="status-note-counter" aria-live="polite">{{ mb_strlen(old('notes', '')) }} / 300 characters</div>
+                            <div id="status-note-error" class="status-modal-error" role="alert" @if (! $errors->has('notes')) hidden @endif>@error('notes'){{ $message }}@enderror</div>
+                            <div id="status-modal-error" class="status-modal-error" role="alert" @if (! $errors->has('status')) hidden @endif>@error('status'){{ $message }}@enderror</div>
+                            <div class="status-modal-actions">
+                                <button type="button" class="button secondary" data-modal-dismiss>Cancel</button>
+                                <button id="status-confirm-button" type="submit" class="status-confirm-button">Confirm</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
 
                 <h2 style="margin-top: 24px">Incident Summary</h2>
                 <dl class="detail-list">
@@ -85,7 +98,7 @@
                 <h2 style="margin-top: 24px">Status & Activity History</h2>
                 <table style="margin-top: 0">
                     <thead><tr><th>Status</th><th>Changed by</th><th>Timestamp</th><th>Notes</th></tr></thead>
-                    <tbody>
+                    <tbody data-status-history-body>
                         @forelse ($incident->history as $entry)
                             <tr>
                                 <td><span class="badge status-{{ strtolower($entry->status?->name ?? 'unknown') }}">{{ $entry->status?->name ?? 'Unknown' }}</span></td>
@@ -94,7 +107,7 @@
                                 <td>{{ $entry->notes ?? '—' }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="4">No status changes recorded yet.</td></tr>
+                            <tr data-empty-history><td colspan="4">No status changes recorded yet.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -153,4 +166,15 @@
             </section>
         </div>
     </section>
+    <div id="incident-status-toast" class="incident-status-toast" role="status" aria-live="polite" @if (! session('incident_status_success')) hidden @endif>
+        {{ session('incident_status_success') }}
+    </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('js/dispatcher-status-confirmation.js') }}" defer></script>
+@endpush
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dispatcher-status-confirmation.css') }}">
+@endpush
