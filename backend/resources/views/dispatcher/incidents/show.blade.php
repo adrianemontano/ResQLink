@@ -1,9 +1,9 @@
 @extends('layouts.dashboard', ['title' => 'Incident Details | ResQLink'])
 
 @section('content')
-    <div class="header-row">
-        <div>
-            <a href="{{ route('dispatcher.incidents.index') }}">← Back to incidents</a>
+    <a class="incident-back-link" href="{{ route('dispatcher.incidents.index') }}">← Back to incidents</a>
+    <div class="header-row incident-header-row">
+        <div class="incident-identity-card">
             <h1>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</h1>
             <p>{{ $incident->category }} emergency reported {{ ($incident->reported_at ?? $incident->created_at)->timezone('Asia/Manila')->format('M d, Y, h:i A') }}</p>
         </div>
@@ -24,13 +24,13 @@
                     $modalStatus = old('status', $next['name'] ?? '');
                 @endphp
 
-                <div id="incident-status-actions" style="margin-bottom: var(--space-4);">
+                <div id="incident-status-actions" class="incident-status-actions">
                     @if ($next)
-                        <button type="button" class="btn-status-action {{ $next['class'] }}" data-status="{{ $next['name'] }}" style="width: 100%; padding: 10px 16px; font-size: 14px;">
+                        <button type="button" class="btn-status-action {{ $next['class'] }}" data-status="{{ $next['name'] }}">
                             {{ $next['label'] }}
                         </button>
                     @else
-                        <p style="margin: 0; color: var(--text-muted);">This incident is complete. No further status changes are available.</p>
+                        <p class="status-complete-message">This incident is complete. No further status changes are available.</p>
                     @endif
                 </div>
 

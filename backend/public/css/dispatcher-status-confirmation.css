@@ -5,6 +5,58 @@
     display: none;
 }
 
+.dashboard-main > .incident-back-link {
+    display: inline-flex;
+    margin-bottom: var(--space-2);
+}
+
+.dashboard-main > .header-row.incident-header-row {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.incident-identity-card {
+    background: var(--surface, #ffffff);
+    border: 1px solid var(--border, #e8dcd3);
+    border-radius: var(--radius-md, 10px);
+    box-shadow: var(--shadow-sm);
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-4) var(--space-5);
+}
+
+.incident-identity-card h1 {
+    margin: 0;
+}
+
+.incident-identity-card p {
+    margin: var(--space-1) 0 0;
+}
+
+#incident-current-status {
+    border-width: 2px;
+    box-shadow: 0 2px 6px rgba(43, 29, 27, .12);
+    font-size: 14px;
+    height: auto;
+    min-height: 40px;
+    min-width: 144px;
+    padding: 0 16px;
+}
+
+.incident-status-actions {
+    margin-bottom: var(--space-4);
+}
+
+.incident-status-actions .btn-status-action {
+    border-width: 2px;
+    box-shadow: 0 2px 5px rgba(43, 29, 27, .12);
+    font-size: 16px;
+    font-weight: 700;
+    min-height: 56px;
+    padding: 14px 20px;
+    width: 100%;
+}
+
 .status-modal {
     align-items: center;
     display: flex;
