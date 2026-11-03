@@ -2,18 +2,18 @@
 
 @section('content')
     <a class="incident-back-link" href="{{ route('dispatcher.incidents.index') }}">← Back to incidents</a>
-    <div class="header-row incident-header-row">
-        <div class="incident-identity-card">
-            <h1>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</h1>
-            <p>{{ $incident->category }} emergency reported {{ ($incident->reported_at ?? $incident->created_at)->timezone('Asia/Manila')->format('M d, Y, h:i A') }}</p>
-        </div>
-        <span id="incident-current-status" class="badge status-{{ strtolower($incident->status) }}" tabindex="-1">{{ $incident->status }}</span>
-    </div>
-
     <section class="detail-grid">
         <div class="detail-left">
-            <section class="card compact">
-                <h2 style="margin-top: 0">Update Status</h2>
+            <section class="card compact incident-details-card">
+                <div class="incident-identity">
+                    <div>
+                        <h1>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</h1>
+                        <p>{{ $incident->category }} emergency reported {{ ($incident->reported_at ?? $incident->created_at)->timezone('Asia/Manila')->format('M d, Y, h:i A') }}</p>
+                    </div>
+                    <span id="incident-current-status" class="badge status-{{ strtolower($incident->status) }}" tabindex="-1">{{ $incident->status }}</span>
+                </div>
+
+                <h2 class="incident-section-title">Update Status</h2>
                 @php
                     $nextSteps = [
                         'Reported' => ['name' => 'Received', 'class' => 'btn-status-received', 'label' => 'Acknowledge & Mark as Received'],
