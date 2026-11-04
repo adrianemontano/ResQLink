@@ -1,254 +1,288 @@
 /**
- * ResQLink Dispatcher Real-Time Notifications
- * Manages 10-12s polling, Web Audio alerts, unread badge, dropdown list, and live toast banners.
+ * Dispatcher notification dropdown, unread count, and live incident alerts.
  */
 document.addEventListener('DOMContentLoaded', () => {
     const widget = document.getElementById('notifications-widget');
     if (!widget) return;
 
-    const bellBtn = document.getElementById('notification-bell-btn');
+    const bell = document.getElementById('notification-bell-btn');
     const badge = document.getElementById('notification-badge');
     const dropdown = document.getElementById('notification-dropdown');
     const list = document.getElementById('notification-list');
-    const markAllBtn = document.getElementById('mark-all-read-btn');
-    const soundToggle = document.getElementById('notification-sound-toggle');
-    const soundOn = document.getElementById('sound-icon-on');
-    const soundOff = document.getElementById('sound-icon-off');
+    const errorMessage = document.getElementById('notification-error');
+    const markAllButton = document.getElementById('mark-all-read-btn');
     const toastContainer = document.getElementById('notification-toast-container');
-
-    let isMuted = localStorage.getItem('resqlink_sound_muted') === 'true';
-    updateSoundIcons();
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
     let lastTimestamp = new Date().toISOString();
-    let audioCtx = null;
 
-    function initAudio() {
-        if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    async function requestJson(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                Accept: 'application/json',
+                ...(options.headers || {}),
+            },
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || 'The notification request failed.');
+        }
+        return data;
+    }
+
+    function updateUnreadCount(count) {
+        const unreadCount = Math.max(0, Number(count) || 0);
+        badge.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
+        badge.hidden = unreadCount === 0;
+        bell.setAttribute('aria-label', `Notifications, ${unreadCount} unread`);
+    }
+
+    function showError(message, revealDropdown = false) {
+        errorMessage.textContent = message;
+        errorMessage.hidden = false;
+        if (revealDropdown) {
+            dropdown.hidden = false;
+            bell.setAttribute('aria-expanded', 'true');
         }
     }
 
-    function playAlertSound(isHighCritical) {
-        if (isMuted) return;
-        try {
-            initAudio();
-            if (!audioCtx) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.type = isHighCritical ? 'sawtooth' : 'sine';
-            osc.frequency.setValueAtTime(isHighCritical ? 880 : 587.33, audioCtx.currentTime); // A5 or D5
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (isHighCritical ? 0.6 : 0.35));
-
-            osc.start();
-            osc.stop(audioCtx.currentTime + (isHighCritical ? 0.6 : 0.35));
-        } catch (e) {
-            console.warn('Audio alert blocked:', e);
-        }
+    function clearError() {
+        errorMessage.textContent = '';
+        errorMessage.hidden = true;
     }
-
-    function updateSoundIcons() {
-        if (isMuted) {
-            soundOn.style.display = 'none';
-            soundOff.style.display = 'inline-block';
-        } else {
-            soundOn.style.display = 'inline-block';
-            soundOff.style.display = 'none';
-        }
-    }
-
-    soundToggle.addEventListener('click', () => {
-        isMuted = !isMuted;
-        localStorage.setItem('resqlink_sound_muted', isMuted ? 'true' : 'false');
-        updateSoundIcons();
-        initAudio();
-    });
-
-    bellBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = dropdown.style.display === 'block';
-        dropdown.style.display = isOpen ? 'none' : 'block';
-        bellBtn.setAttribute('aria-expanded', !isOpen);
-        if (!isOpen) loadNotifications();
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!widget.contains(e.target)) {
-            dropdown.style.display = 'none';
-            bellBtn.setAttribute('aria-expanded', 'false');
-        }
-    });
 
     async function loadNotifications() {
         try {
-            const res = await fetch('/dispatcher/notifications', {
-                headers: { 'Accept': 'application/json' }
-            });
-            if (!res.ok) return;
-            const data = await res.json();
-            updateBadge(data.unread_count);
-            renderList(data.notifications);
-        } catch (e) {
-            console.error('Failed to load notifications', e);
+            const data = await requestJson(widget.dataset.indexUrl);
+            updateUnreadCount(data.unread_count);
+            renderNotifications(data.notifications);
+            clearError();
+        } catch (error) {
+            console.error('Failed to load dispatcher notifications.', error);
+            showError('Notifications could not be loaded. Please try again.');
         }
     }
 
-    function updateBadge(count) {
-        if (count > 0) {
-            badge.textContent = count > 99 ? '99+' : count;
-            badge.style.display = 'inline-block';
-        } else {
-            badge.style.display = 'none';
-        }
-    }
-
-    function renderList(notifications) {
-        if (!notifications || notifications.length === 0) {
-            list.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 12px;">No recent emergency alerts.</div>';
+    function renderNotifications(notifications) {
+        if (!Array.isArray(notifications) || notifications.length === 0) {
+            list.innerHTML = '<div class="notification-empty" role="status">No recent notifications.</div>';
             return;
         }
 
-        list.innerHTML = notifications.map(n => {
-            const isHighOrCritical = ['High', 'Critical'].includes(n.data.severity);
-            const borderStyle = isHighOrCritical ? 'border-left: 4px solid var(--maximum-red, #D92200); background: #FFF8F6;' : 'border-left: 4px solid var(--border);';
-            const badgeClass = `severity-${n.data.severity ? n.data.severity.toLowerCase() : 'unrated'}`;
+        list.innerHTML = notifications.map((notification) => {
+            const data = notification.data || {};
+            const severity = ['low', 'moderate', 'high', 'critical'].includes(
+                String(data.severity || '').toLowerCase()
+            ) ? String(data.severity).toLowerCase() : 'unrated';
+            const unreadClass = notification.read_at ? '' : ' unread';
+            const readButton = notification.read_at ? '' : `
+                <button type="button" class="notification-read-button"
+                    data-notification-read="${escapeHtml(notification.id)}">
+                    Mark as read
+                </button>`;
 
             return `
-                <div class="notification-item" style="padding: 10px 14px; border-bottom: 1px solid var(--border); text-decoration: none; display: block; ${borderStyle} transition: background 0.15s;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <a href="${escapeHtml(n.data.detail_url)}" style="font-weight: 700; font-size: 13px; color: var(--rosewood);">${escapeHtml(n.data.identifier || 'Incident')} - ${escapeHtml(n.data.category)}</a>
-                        <span class="badge ${badgeClass}" style="font-size: 10px; height: 18px; padding: 0 6px;">${escapeHtml(n.data.severity)}</span>
-                    </div>
-                    <div style="font-size: 12px; color: var(--text-label); margin-bottom: 2px;">
-                        📍 ${escapeHtml(n.data.barangay)} &bull; ${escapeHtml(n.data.reporter_name || 'Reporter')}
-                    </div>
-                    <div style="font-size: 11px; color: var(--text-muted);">
-                        ${n.created_at}
-                    </div>
-                    ${n.read_at ? '' : `<button type="button" data-notification-read="${escapeHtml(n.id)}" class="secondary notification-read-button">Mark as read</button>`}
-                </div>
-            `;
+                <article class="notification-item severity-${severity}${unreadClass}">
+                    <a class="notification-item-link"
+                        data-notification-link="${escapeHtml(notification.id)}"
+                        href="${escapeHtml(data.detail_url || '#')}">
+                        <div class="notification-item-heading">
+                            <span class="notification-category">
+                                ${escapeHtml(data.category || 'Incident')}
+                                <span class="notification-identifier">${escapeHtml(data.identifier || '')}</span>
+                            </span>
+                            <span class="badge severity-${severity}">
+                                ${escapeHtml(data.severity || 'Unrated')}
+                            </span>
+                        </div>
+                        <div class="notification-item-meta">
+                            <span>Barangay: ${escapeHtml(data.barangay || 'Not provided')}</span>
+                        </div>
+                        <div class="notification-item-time">${escapeHtml(notification.created_at || '')}</div>
+                    </a>
+                    ${readButton}
+                </article>`;
         }).join('');
     }
 
-    list.addEventListener('click', async (event) => {
-        const button = event.target.closest('[data-notification-read]');
-        if (!button) return;
-        const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
-        const response = await fetch(`/dispatcher/notifications/${encodeURIComponent(button.dataset.notificationRead)}/read`, {
-            method: 'POST', headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+    function notificationReadUrl(id) {
+        return widget.dataset.readUrlTemplate.replace('__NOTIFICATION__', encodeURIComponent(id));
+    }
+
+    async function markAsRead(id) {
+        return requestJson(notificationReadUrl(id), {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrfToken },
         });
-        if (response.ok) await loadNotifications();
+    }
+
+    function closeDropdown(returnFocus = false) {
+        dropdown.hidden = true;
+        bell.setAttribute('aria-expanded', 'false');
+        if (returnFocus) bell.focus();
+    }
+
+    bell.addEventListener('click', () => {
+        const opening = dropdown.hidden;
+        dropdown.hidden = !opening;
+        bell.setAttribute('aria-expanded', String(opening));
+        if (opening) loadNotifications();
     });
 
+    document.addEventListener('click', (event) => {
+        if (!event.composedPath().includes(widget)) {
+            closeDropdown();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !dropdown.hidden) closeDropdown(true);
+    });
+
+    list.addEventListener('click', async (event) => {
+        const readButton = event.target.closest('[data-notification-read]');
+        const notificationLink = event.target.closest('[data-notification-link]');
+
+        if (readButton) {
+            readButton.disabled = true;
+            try {
+                const data = await markAsRead(readButton.dataset.notificationRead);
+                updateUnreadCount(data.unread_count);
+                await loadNotifications();
+            } catch (error) {
+                console.error('Failed to mark notification as read.', error);
+                showError('This notification could not be marked as read.');
+            } finally {
+                readButton.disabled = false;
+            }
+            return;
+        }
+
+        if (!notificationLink || notificationLink.getAttribute('aria-disabled') === 'true') return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            markAsRead(notificationLink.dataset.notificationLink)
+                .then((data) => updateUnreadCount(data.unread_count))
+                .catch((error) => {
+                    console.error('Failed to mark notification as read.', error);
+                    showError('The incident notification could not be marked as read.', true);
+                });
+            return;
+        }
+        event.preventDefault();
+        const destination = notificationLink.href;
+        notificationLink.setAttribute('aria-disabled', 'true');
+        try {
+            const data = await markAsRead(notificationLink.dataset.notificationLink);
+            updateUnreadCount(data.unread_count);
+            window.location.assign(destination);
+        } catch (error) {
+            notificationLink.removeAttribute('aria-disabled');
+            console.error('Failed to mark notification as read.', error);
+            showError('The incident could not be opened because its notification was not marked as read.');
+        }
+    });
+
+    markAllButton.addEventListener('click', async () => {
+        markAllButton.disabled = true;
+        try {
+            const data = await requestJson(widget.dataset.markAllUrl, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': csrfToken },
+            });
+            updateUnreadCount(data.unread_count);
+            await loadNotifications();
+        } catch (error) {
+            console.error('Failed to mark all notifications as read.', error);
+            showError('Notifications could not be marked as read.');
+        } finally {
+            markAllButton.disabled = false;
+        }
+    });
+
+    function animateBell() {
+        bell.classList.remove('has-new-notification');
+        void bell.offsetWidth;
+        bell.classList.add('has-new-notification');
+        window.setTimeout(() => bell.classList.remove('has-new-notification'), 1500);
+    }
+
     function showToast(alert) {
-        const isHighOrCritical = ['High', 'Critical'].includes(alert.data.severity);
+        const data = alert.data || {};
+        const isHighOrCritical = ['High', 'Critical'].includes(data.severity);
         const toast = document.createElement('div');
+        toast.className = 'notification-toast';
         toast.style.cssText = `
             pointer-events: auto;
-            background: #ffffff;
+            background: var(--surface);
+            border: 1px solid ${isHighOrCritical ? 'var(--maximum-red)' : 'var(--border)'};
+            border-left: 6px solid ${isHighOrCritical ? 'var(--maximum-red)' : 'var(--philippine-orange)'};
             border-radius: 8px;
-            box-shadow: 0 10px 28px rgba(90, 0, 6, 0.22);
-            border: 1px solid ${isHighOrCritical ? 'var(--maximum-red, #D92200)' : 'var(--border)'};
-            border-left: 6px solid ${isHighOrCritical ? 'var(--maximum-red, #D92200)' : 'var(--philippine-orange, #F37100)'};
-            padding: 12px 14px;
+            box-shadow: var(--shadow-md);
             cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 12px 14px;
             transform: translateX(360px);
+            transition: transform .3s ease, opacity .3s ease;
         `;
-
         toast.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+            <div class="notification-toast-heading">
                 <div>
-                    <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: ${isHighOrCritical ? 'var(--maximum-red)' : 'var(--tangelo)'}; letter-spacing: 0.05em;">
-                        🚨 NEW EMERGENCY REPORT
-                    </div>
-                    <strong style="font-size: 14px; color: var(--rosewood); display: block; margin: 2px 0;">
-                        ${escapeHtml(alert.data.identifier)}: ${escapeHtml(alert.data.category)} (${escapeHtml(alert.data.severity)})
-                    </strong>
-                    <div style="font-size: 12px; color: var(--text-label);">
-                        Barangay: <strong>${escapeHtml(alert.data.barangay)}</strong>
-                    </div>
-                    <small style="color: var(--text-muted); font-size: 11px;">By ${escapeHtml(alert.data.reporter_name || 'Volunteer')}</small>
+                    <div class="notification-toast-label">New emergency report</div>
+                    <strong>${escapeHtml(data.identifier || 'Incident')}: ${escapeHtml(data.category || 'Incident')} (${escapeHtml(data.severity || 'Unrated')})</strong>
+                    <div>Barangay: <strong>${escapeHtml(data.barangay || 'Not provided')}</strong></div>
                 </div>
-                <button type="button" style="background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted); line-height: 1;">&times;</button>
-            </div>
-        `;
-
-        toast.addEventListener('click', (e) => {
-            if (e.target.tagName !== 'BUTTON') {
-                window.location.href = alert.data.detail_url;
-            } else {
+                <button type="button" class="notification-toast-dismiss" aria-label="Dismiss notification">&times;</button>
+            </div>`;
+        toast.addEventListener('click', async (event) => {
+            if (event.target.closest('.notification-toast-dismiss')) {
                 toast.remove();
+                return;
+            }
+            try {
+                const result = await markAsRead(alert.id);
+                updateUnreadCount(result.unread_count);
+                window.location.assign(data.detail_url);
+            } catch (error) {
+                console.error('Failed to open incident from notification.', error);
+                showError('The incident could not be opened because its notification was not marked as read.', true);
             }
         });
-
         toastContainer.appendChild(toast);
-        setTimeout(() => toast.style.transform = 'translateX(0)', 20);
-
-        setTimeout(() => {
+        window.setTimeout(() => { toast.style.transform = 'translateX(0)'; }, 20);
+        window.setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(360px)';
-            setTimeout(() => toast.remove(), 300);
+            window.setTimeout(() => toast.remove(), 300);
         }, 8000);
     }
 
-    markAllBtn.addEventListener('click', async () => {
+    async function pollNotifications() {
         try {
-            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const res = await fetch('/dispatcher/notifications/mark-all-read', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
-                    'Accept': 'application/json',
-                }
-            });
-            if (res.ok) {
-                updateBadge(0);
-                list.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 12px;">All notifications marked as read.</div>';
-            }
-        } catch (e) {
-            console.error('Failed to mark all as read', e);
-        }
-    });
-
-    async function poll() {
-        try {
-            const res = await fetch(`/dispatcher/notifications/poll?since=${encodeURIComponent(lastTimestamp)}`, {
-                headers: { 'Accept': 'application/json' }
-            });
-            if (!res.ok) return;
-            const data = await res.json();
+            const url = `${widget.dataset.pollUrl}?since=${encodeURIComponent(lastTimestamp)}`;
+            const data = await requestJson(url);
             lastTimestamp = data.timestamp;
+            updateUnreadCount(data.unread_count);
 
-            if (data.new_alerts && data.new_alerts.length > 0) {
-                let hasHighOrCritical = false;
-                data.new_alerts.forEach(alert => {
-                    if (['High', 'Critical'].includes(alert.data.severity)) hasHighOrCritical = true;
-                    showToast(alert);
-                });
-                playAlertSound(hasHighOrCritical);
-                loadNotifications();
-            } else {
-                updateBadge(data.unread_count);
+            if (Array.isArray(data.new_alerts) && data.new_alerts.length > 0) {
+                data.new_alerts.forEach(showToast);
+                animateBell();
+                if (!dropdown.hidden) await loadNotifications();
             }
-        } catch (e) {
-            // Silently retry on next interval
+        } catch (error) {
+            console.error('Failed to check for new dispatcher notifications.', error);
         }
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+        })[character]);
     }
 
-    // Initial load & poll loop every 11 seconds
     loadNotifications();
-    setInterval(poll, 11000);
+    window.setInterval(pollNotifications, 11000);
 });
