@@ -19,6 +19,7 @@
     min-height: 38px;
     padding: 0 var(--space-3);
     text-decoration: none;
+    transition: background .15s, border-color .15s;
 }
 
 .status-filter-chip:hover {
@@ -30,7 +31,7 @@
 .status-filter-chip.active {
     background: var(--accent-light);
     border-color: var(--tangelo);
-    box-shadow: inset 0 0 0 1px rgba(243, 80, 10, .14);
+    box-shadow: inset 0 0 0 1px var(--tangelo);
     color: var(--rosewood);
 }
 
