@@ -68,10 +68,8 @@ responsive behavior for incident tables and detail layouts on small screens.
 	toast alerts, and an optional local sound toggle.
 - Dispatchers can edit only their own profile and password. User administration
 	stays restricted to Admin routes.
-- Dispatcher reports use `incident_histories.changed_by` to identify handled
-	incidents and compute Reported→Received, Received→Dispatched,
-	Dispatched→Completed, and total resolution durations. Filtered summary data is
-	downloadable as PDF and XLSX.
+- Dispatchers can manage their own profile and password from My Account.
+	Dispatcher-specific reports have been removed; Admin reports remain available.
 - Optional responder photos are stored on Laravel's private local disk and
 	served through authenticated Dispatcher/Admin photo routes.
 - Admin-created accounts and Admin password resets set `must_change_password`;
