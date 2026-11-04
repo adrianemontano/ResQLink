@@ -158,7 +158,14 @@
                 <h2 style="margin-top: 0">Incident Location</h2>
                 @if ($incident->latitude !== null && $incident->longitude !== null)
                     <div class="map-wrap">
-                        <x-incident-map map-id="incident-mini-map" :focus-lat="$incident->latitude" :focus-lng="$incident->longitude" :focus-incident-id="$incident->id" />
+                        <x-incident-map
+                            map-id="incident-mini-map"
+                            :focus-lat="$incident->latitude"
+                            :focus-lng="$incident->longitude"
+                            :focus-incident-id="$incident->id"
+                            :incident-status="$incident->status"
+                            :show-search="false"
+                        />
                     </div>
                 @else
                     <p style="color: var(--gray-500); font-size: 13px; padding: var(--space-4); text-align: center;">No location data available.</p>
