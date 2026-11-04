@@ -163,10 +163,10 @@
 }
 
 .status-confirm-button {
-    background: var(--sangria, #920004);
-    border: 1px solid var(--sangria, #920004);
+    background: var(--dispatcher-primary, var(--sangria));
+    border: 1px solid var(--dispatcher-primary, var(--sangria));
     border-radius: var(--radius-sm, 6px);
-    color: #ffffff;
+    color: var(--dispatcher-primary-text, var(--text-primary));
     cursor: pointer;
     font: inherit;
     font-weight: 600;
@@ -174,8 +174,9 @@
 }
 
 .status-confirm-button:hover {
-    background: var(--rosewood, #5A0006);
-    border-color: var(--rosewood, #5A0006);
+    background: var(--dispatcher-primary-hover, var(--rosewood));
+    border-color: var(--dispatcher-primary-hover, var(--rosewood));
+    color: var(--surface);
 }
 
 .status-confirm-button:disabled {
