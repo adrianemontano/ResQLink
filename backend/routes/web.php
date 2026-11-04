@@ -5,13 +5,12 @@ use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VolunteerDocumentController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordChangeController;
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\Dispatcher\DashboardController as DispatcherDashboardController;
 use App\Http\Controllers\Dispatcher\IncidentController as DispatcherIncidentController;
-use App\Http\Controllers\Dispatcher\DispatcherAccountController;
-use App\Http\Controllers\Dispatcher\DispatcherReportController;
 use App\Http\Controllers\Dispatcher\IncidentPhotoController;
 use App\Http\Controllers\Dispatcher\NotificationController;
 use App\Http\Controllers\Volunteer\DashboardController as VolunteerDashboardController;
@@ -53,6 +52,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/incidents', [AdminIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidents/{incident}', [AdminIncidentController::class, 'show'])->name('incidents.show');
         Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
+        Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
+        Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+        Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password');
     });
 
 Route::middleware(['auth', 'role:admin'])
@@ -79,11 +81,9 @@ Route::middleware(['auth', 'role:dispatcher'])
         Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
         Route::get('/incidents/{incident}/photos/{photo}', [IncidentPhotoController::class, 'show'])->name('incidents.photo.show');
         Route::get('/incidents/{incident}/photos/{photo}/download', [IncidentPhotoController::class, 'download'])->name('incidents.photo.download');
-        Route::get('/account', [DispatcherAccountController::class, 'edit'])->name('account.edit');
-        Route::put('/account', [DispatcherAccountController::class, 'update'])->name('account.update');
-        Route::put('/account/password', [DispatcherAccountController::class, 'updatePassword'])->name('account.password');
-        Route::get('/reports', [DispatcherReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/export/{format}', [DispatcherReportController::class, 'export'])->whereIn('format', ['pdf', 'xlsx'])->name('reports.export');
+        Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
+        Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+        Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password');
     });
 
 Route::middleware(['auth', 'role:volunteer'])
@@ -93,4 +93,7 @@ Route::middleware(['auth', 'role:volunteer'])
         Route::get('/dashboard', VolunteerDashboardController::class)->name('dashboard');
         Route::get('/incidents/create', [VolunteerIncidentController::class, 'create'])->name('incidents.create');
         Route::post('/incidents', [VolunteerIncidentController::class, 'store'])->name('incidents.store');
+        Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
+        Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+        Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password');
     });
