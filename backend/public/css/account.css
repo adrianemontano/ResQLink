@@ -1,0 +1,12 @@
+.account-card {
+    margin-bottom: var(--space-4);
+}
+
+.account-card .form-grid {
+    max-width: 860px;
+}
+
+.account-card input:not([type="checkbox"]):not([type="radio"]) {
+    height: 38px;
+    padding: 6px 10px;
+}
