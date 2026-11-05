@@ -1,47 +1,53 @@
 @extends('layouts.dashboard', ['title' => 'Incidents | ResQLink'])
 
+@php
+    $categoryOptions = ['' => 'All categories'] + collect($categories)
+        ->mapWithKeys(fn ($category) => [$category => $category])
+        ->all();
+    $statusOptions = ['' => 'All statuses'] + collect($statuses)
+        ->mapWithKeys(fn ($status) => [$status => $status])
+        ->all();
+    $barangayOptions = collect($barangays)
+        ->mapWithKeys(fn ($barangay) => [$barangay => $barangay])
+        ->all();
+@endphp
+
 @section('content')
     <div class="header-row">
         <div>
             <h1>Incident Management</h1>
-            <p>Live queue of emergencies reported by volunteers.</p>
+            <p>Live queue of emergencies reported by Barangay Responders.</p>
         </div>
     </div>
 
     <form class="card filter-row" method="GET" action="{{ route('dispatcher.incidents.index') }}">
         <label>Category
-            <select name="category">
-                <option value="">All categories</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
-                @endforeach
-            </select>
+            <x-dropdown
+                name="category"
+                :options="$categoryOptions"
+                :value="request('category', '')"
+                placeholder="All categories"
+            />
         </label>
         <label>Status
-            <select name="status">
-                <option value="">All statuses</option>
-                @foreach ($statuses as $status)
-                    <option value="{{ $status }}" @selected(request('status') === $status)>{{ $status }}</option>
-                @endforeach
-            </select>
+            <x-dropdown
+                name="status"
+                :options="$statusOptions"
+                :value="request('status', '')"
+                placeholder="All statuses"
+            />
         </label>
         <label>Barangay
-            <input
-                type="search"
+            <x-dropdown
                 name="barangay"
-                value="{{ request('barangay') }}"
+                :options="$barangayOptions"
+                :value="request('barangay', '')"
                 placeholder="Search or select barangay"
-                list="dispatcher-barangay-options"
-                autocomplete="off"
-            >
-            <datalist id="dispatcher-barangay-options">
-                @foreach ($barangays as $barangay)
-                    <option value="{{ $barangay }}"></option>
-                @endforeach
-            </datalist>
+                :searchable="true"
+            />
         </label>
-        <button type="submit">Filter</button>
-        <a href="{{ route('dispatcher.incidents.index') }}">Clear</a>
+        <button class="button secondary dispatcher-view-button" type="submit">Filter</button>
+        <a class="button secondary dispatcher-view-button" href="{{ route('dispatcher.incidents.index') }}">Clear</a>
     </form>
 
     <section class="card incident-results" data-incident-results aria-live="polite">

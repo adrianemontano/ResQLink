@@ -12,6 +12,13 @@ use Illuminate\View\View;
 
 class IncidentController extends Controller
 {
+    private const ALLOWED_TRANSITIONS = [
+        'Reported' => ['Received'],
+        'Received' => ['Dispatched'],
+        'Dispatched' => ['Completed'],
+        'Completed' => [],
+    ];
+
     public function index(): View
     {
         $baseQuery = Incident::query()
@@ -20,7 +27,7 @@ class IncidentController extends Controller
             ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangay', $barangay));
 
         $incidents = (clone $baseQuery)
-            ->with('reporter')
+            ->with(['reporter.volunteerProfile', 'photos'])
             ->orderByRaw("CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END")
             ->orderByRaw("CASE status WHEN 'Reported' THEN 1 WHEN 'Received' THEN 2 WHEN 'Dispatched' THEN 3 WHEN 'Completed' THEN 4 ELSE 5 END")
             ->orderByDesc('reported_at')
@@ -43,7 +50,7 @@ class IncidentController extends Controller
 
     public function show(Incident $incident): View
     {
-        $incident->load(['reporter', 'history.dispatcher', 'history.status']);
+        $incident->load(['reporter.volunteerProfile', 'photos', 'history.dispatcher', 'history.status']);
 
         return view('dispatcher.incidents.show', compact('incident'));
     }
@@ -51,31 +58,65 @@ class IncidentController extends Controller
     public function updateStatus(
         UpdateIncidentStatusRequest $request,
         Incident $incident,
-    ): RedirectResponse {
+    ): JsonResponse|RedirectResponse {
         $data = $request->validated();
         $status = $data['status'];
 
-        abort_unless($this->isValidTransition($incident->status, $status), 422, 'Invalid incident status transition.');
+        $change = DB::transaction(function () use ($incident, $data, $request, $status): ?array {
+            $lockedIncident = Incident::query()->lockForUpdate()->findOrFail($incident->id);
 
-        DB::transaction(function () use ($incident, $data, $request, $status): void {
+            if (! $this->isValidTransition($lockedIncident->status, $status)) {
+                return null;
+            }
+
             $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
-            $incident->update([
+            $changedAt = now();
+            $lockedIncident->update([
                 'status' => $status,
                 'status_id' => $statusId,
-                'dispatched_at' => $status === 'Dispatched' ? now() : $incident->dispatched_at,
-                'completed_at' => $status === 'Completed' ? now() : $incident->completed_at,
+                'dispatched_at' => $status === 'Dispatched' ? $changedAt : $lockedIncident->dispatched_at,
+                'completed_at' => $status === 'Completed' ? $changedAt : $lockedIncident->completed_at,
             ]);
 
-            $incident->history()->create([
+            $lockedIncident->history()->create([
                 'status_id' => $statusId,
                 'changed_by' => $request->user()->id,
-                'notes' => $data['notes'] ?? null,
-                'changed_at' => now(),
+                'notes' => $data['notes'],
+                'changed_at' => $changedAt,
             ]);
+
+            return [
+                'dispatcher' => $request->user()->name,
+                'changed_at' => $changedAt->timezone('Asia/Manila')->format('M d, Y, h:i A'),
+            ];
         });
 
+        if ($change === null) {
+            $message = $this->invalidTransitionMessage($incident->fresh()->status);
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 422);
+            }
+
+            return redirect()->route('dispatcher.incidents.show', $incident)
+                ->withErrors(['status' => $message])
+                ->withInput();
+        }
+
+        $message = 'Incident status updated successfully.';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $message,
+                'status' => $status,
+                'dispatcher' => $change['dispatcher'],
+                'changed_at' => $change['changed_at'],
+                'notes' => $data['notes'],
+            ]);
+        }
+
         return redirect()->route('dispatcher.incidents.show', $incident)
-            ->with('status', 'Incident status updated successfully.');
+            ->with('incident_status_success', $message);
     }
 
     public function map(): View
@@ -135,14 +176,17 @@ class IncidentController extends Controller
 
     private function isValidTransition(?string $currentStatus, string $nextStatus): bool
     {
-        $allowed = [
-            'Reported' => ['Reported', 'Received'],
-            'Received' => ['Received', 'Dispatched'],
-            'Dispatched' => ['Dispatched', 'Completed'],
-            'Completed' => ['Completed'],
-        ];
+        return in_array($nextStatus, self::ALLOWED_TRANSITIONS[$currentStatus] ?? [], true);
+    }
 
-        return in_array($nextStatus, $allowed[$currentStatus] ?? [], true);
+    private function invalidTransitionMessage(?string $currentStatus): string
+    {
+        $label = $currentStatus ?? 'This';
+        $next = array_values(array_diff(self::ALLOWED_TRANSITIONS[$currentStatus] ?? [], [$currentStatus]));
+
+        return $next === []
+            ? "{$label} incidents can no longer change status."
+            : "{$label} incidents can only move to {$next[0]} next.";
     }
 
 }

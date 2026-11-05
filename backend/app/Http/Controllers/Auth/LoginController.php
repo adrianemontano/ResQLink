@@ -54,6 +54,10 @@ class LoginController extends Controller
         Auth::login($user, (bool) ($credentials['remember'] ?? false));
         $request->session()->regenerate();
 
+        if ($user->must_change_password) {
+            return redirect()->route('password.change');
+        }
+
         return redirect($this->redirectPathFor($user));
     }
 

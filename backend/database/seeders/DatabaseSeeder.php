@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             DispatcherSeeder::class,
             VolunteerSeeder::class,
-            SampleIncidentSeeder::class,
+            MockDefenseResponderSeeder::class,
+            MockDefenseIncidentSeeder::class,
         ]);
     }
 }

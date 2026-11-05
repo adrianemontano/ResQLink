@@ -3,9 +3,21 @@ import {
     loadGeoJson, loadLocalMapDatasets, maplibregl, radiusPolygon,
 } from './map/local-map';
 
+// Marker colours come from the shared --status-* CSS tokens so the map,
+// badges, legends, and charts always agree; fallbacks match those tokens.
 const STATUS_COLORS = {
-    Reported: '#D92200', Received: '#F37100', Dispatched: '#16A34A', Completed: '#64748B',
+    Reported: cssToken('--status-reported', '#C81E1E'),
+    Received: cssToken('--status-received', '#FFB366'),
+    Dispatched: cssToken('--status-dispatched', '#0F766E'),
+    Completed: cssToken('--dispatcher-status-completed', '#1D4ED8'),
 };
+
+function cssToken(name, fallback) {
+    const scope = document.querySelector('.dispatcher-ui .dashboard-main') || document.documentElement;
+    const value = getComputedStyle(scope).getPropertyValue(name).trim();
+
+    return value || fallback;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-resqlink-map]').forEach(initializeMap);
@@ -17,14 +29,19 @@ async function initializeMap(wrapper) {
     addLocalMapControls(map, 'bottom-right');
     map.on('error', () => showMessage(message, 'The local map background is unavailable. Check the local tile server.', true));
 
-    const datasetsPromise = loadLocalMapDatasets((name) => {
-        showMessage(message, `${formatName(name)} map data is unavailable.`, true);
-    });
+    const isFocusedIncidentMap = Boolean(wrapper.dataset.focusIncidentId);
+    const datasetsPromise = isFocusedIncidentMap
+        ? Promise.resolve({})
+        : loadLocalMapDatasets((name) => {
+            showMessage(message, `${formatName(name)} map data is unavailable.`, true);
+        });
 
     map.on('load', async () => {
         const datasets = await datasetsPromise;
-        addReferenceLayers(map, datasets);
-        bindSearch(map, wrapper, datasets);
+        if (!isFocusedIncidentMap) {
+            addReferenceLayers(map, datasets);
+            bindSearch(map, wrapper, datasets);
+        }
 
         const incidents = await loadIncidents(wrapper, message);
         const visibleIncidents = selectIncidentFeatures(incidents, wrapper.dataset.focusIncidentId);
@@ -32,7 +49,7 @@ async function initializeMap(wrapper) {
         bindIncidentPopups(map);
         bindStatusFilters(map, wrapper);
         setInitialView(map, wrapper, visibleIncidents, datasets.barangays);
-        bindMapInspection(map);
+        if (!isFocusedIncidentMap) bindMapInspection(map);
     });
 }
 
@@ -50,11 +67,11 @@ function addReferenceLayers(map, datasets) {
         'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2.5, 1],
     }, true);
     addGeoJsonLayer(map, 'dispatcher-landmarks', datasets.landmarks, 'circle', {
-        'circle-radius': 3, 'circle-color': '#F6C453', 'circle-opacity': 0.88,
+        'circle-radius': 2.5, 'circle-color': '#F6C453', 'circle-opacity': 0.88,
         'circle-stroke-color': '#765000', 'circle-stroke-width': 0.9,
     });
     addGeoJsonLayer(map, 'dispatcher-facilities', datasets.facilities, 'circle', {
-        'circle-radius': 8, 'circle-color': '#2563EB', 'circle-opacity': 0.96,
+        'circle-radius': 6, 'circle-color': cssToken('--dispatcher-primary', '#F37100'), 'circle-opacity': 0.96,
         'circle-stroke-color': '#fff', 'circle-stroke-width': 2,
     });
     bindBarangayHover(map);

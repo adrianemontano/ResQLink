@@ -2,10 +2,13 @@
 
 @push('scripts')
     <script src="{{ asset('js/sidebar-toggle.js') }}"></script>
+    @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
+        <script src="{{ asset('js/dispatcher-notifications.js') }}"></script>
+    @endif
 @endpush
 
 @section('body')
-    <div class="dashboard-shell">
+    <div class="dashboard-shell{{ auth()->user()->hasRole('dispatcher') ? ' dispatcher-ui' : '' }}">
         <aside class="sidebar">
             <div class="sidebar-logo">
                 <div class="sidebar-logo-row">
@@ -20,16 +23,19 @@
                     </button>
                 </div>
                 <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @else Volunteer Incident Reporting @endif
+                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @endif
                 </div>
             </div>
 
             @include('layouts.partials.sidebar-nav')
 
             <div class="sidebar-footer">
-                <div class="sidebar-user sidebar-label">
-                    Logged in as
-                    <strong>{{ auth()->user()->name }}</strong>
+                <div class="sidebar-user">
+                    <span class="sidebar-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                    <span class="sidebar-label">
+                        Logged in as
+                        <strong>{{ auth()->user()->hasRole('dispatcher') ? (auth()->user()->username ?: auth()->user()->name) : auth()->user()->name }}</strong>
+                    </span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -42,6 +48,15 @@
         </aside>
 
         <main class="dashboard-main">
+            @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
+                <div class="dashboard-topbar" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border);">
+                    <div style="font-size: 13px; color: var(--text-muted); margin-right: auto; display: flex; align-items: center; gap: 6px;">
+                        <strong>Dispatcher Live Center</strong> &bull; Cebu City Emergency Grid
+                    </div>
+                    @include('layouts.partials.notifications')
+                </div>
+            @endif
+
             @if (session('status'))
                 <div class="alert success">{{ session('status') }}</div>
             @endif

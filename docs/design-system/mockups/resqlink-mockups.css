@@ -5,7 +5,7 @@
     --white: #fff; --border: #E8DCD0; --muted: #6B5B55; --success: #476B45;
     --shadow: 0 8px 24px rgba(90, 0, 6, .10);
 }
-body { margin: 0; background: var(--cream); color: var(--rosewood); font: 15px/1.5 Inter, "Segoe UI", Arial, sans-serif; }
+body { margin: 0; background: var(--cream); color: var(--rosewood); font: 15px/1.5 Poppins, "Segoe UI", Arial, sans-serif; }
 h1,h2,h3,p { margin: 0; }
 h1 { font-size: 28px; line-height: 1.15; }
 h2 { font-size: 20px; }
@@ -15,6 +15,8 @@ a { color: var(--rosewood); text-decoration: underline; text-decoration-color: v
 button,.button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; border: 1px solid var(--rosewood); border-radius: 9px; padding: 0 16px; background: var(--philippine-orange); color: var(--rosewood); font: inherit; font-weight: 750; }
 button.secondary,.button.secondary { border-color: var(--border); background: var(--white); color: var(--rosewood); }
 button.danger { background: var(--maximum-red); border-color: var(--maximum-red); color: var(--white); }
+.m-received-action { background: #FFB366; border-color: #E69543; color: var(--rosewood); }
+.m-received-action:hover { background: #FFA447; border-color: #E68A2E; color: var(--rosewood); }
 input,select,textarea { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--white); color: var(--rosewood); font: inherit; }
 label { display: grid; gap: 6px; font-size: 13px; font-weight: 700; }
 .m-page { max-width: 1440px; margin: auto; padding: 28px; }
@@ -38,7 +40,8 @@ label { display: grid; gap: 6px; font-size: 13px; font-weight: 700; }
 .m-stat { border-top: 3px solid var(--tangelo); }
 .m-stat b { display: block; margin-top: 6px; color: var(--tangelo); font-size: 34px; line-height: 1; }
 .m-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-.m-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.m-table-wrap { overflow-x: auto; }
+.m-table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 12px; }
 .m-table th { padding: 11px 10px; background: var(--rosewood); color: white; font-size: 10px; text-align: left; text-transform: uppercase; letter-spacing: .04em; }
 .m-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
 .m-table tr:nth-child(even) td { background: #FBF7F2; }

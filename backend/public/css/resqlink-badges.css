@@ -1,0 +1,193 @@
+/* ResQLink badges: account, document, workflow status (outlined), and severity (filled). */
+
+.badge {
+    align-items: center;
+    background: var(--gray-100);
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    color: var(--rosewood);
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 2px;
+    height: 20px;
+    letter-spacing: .04em;
+    line-height: 1;
+    padding: 0 var(--space-2);
+    text-transform: uppercase;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.badge.active {
+    background: var(--green-light);
+    color: #345333;
+}
+
+.badge.inactive {
+    background: var(--red-light);
+    color: var(--red-dark);
+}
+
+.badge.status-pending,
+.badge.status-rejected {
+    background: var(--red-light);
+    color: var(--red-dark);
+}
+
+.badge.status-approved,
+.badge.status-verified {
+    background: var(--green-light);
+    color: #345333;
+}
+
+/* Status: white outlined pills in the shared status colours. */
+.badge.status-reported,
+.badge.status-received,
+.badge.status-dispatched,
+.badge.status-completed {
+    background: #ffffff;
+    border-color: currentColor;
+}
+
+.badge.status-reported { color: var(--status-reported); }
+.badge.status-received {
+    background: var(--status-received) !important;
+    color: var(--status-received-text) !important;
+    border-color: var(--status-received-border) !important;
+    font-weight: 600;
+}
+.badge.status-dispatched { color: var(--status-dispatched); }
+.badge.status-completed { color: var(--status-completed); }
+
+.badge.status-reported::before { content: "■ "; }
+.badge.status-received::before { content: "■ "; }
+.badge.status-dispatched::before { content: "■ "; }
+.badge.status-completed::before { content: "■ "; }
+
+/* Severity: filled badges that escalate in weight; Critical is the strongest. */
+.badge.severity-low {
+    background: var(--severity-low);
+    color: var(--severity-low-text);
+}
+
+.badge.severity-low::before { content: "■ "; }
+
+.badge.severity-moderate {
+    background: var(--severity-moderate-bg);
+    color: var(--severity-moderate-text);
+}
+
+.badge.severity-moderate::before { content: "■ "; }
+
+.badge.severity-high {
+    background: var(--severity-high);
+    color: #ffffff;
+}
+
+.badge.severity-high::before { content: "■ "; }
+
+.badge.severity-critical {
+    background: var(--severity-critical);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.badge.severity-critical::before { content: "■ "; }
+
+.badge.severity-unrated {
+    background: #ffffff;
+    border-color: var(--gray-300);
+    color: var(--gray-700);
+}
+
+.badge.status-reported,
+.badge.status-received,
+.badge.status-dispatched,
+.badge.status-completed,
+.badge.severity-low,
+.badge.severity-moderate,
+.badge.severity-high,
+.badge.severity-critical,
+.badge.severity-unrated {
+    min-width: 96px;
+    justify-content: center;
+}
+
+/* Interactive Status Buttons (Reported, Received, Dispatched, Completed) */
+.btn-status-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm, 6px);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+    text-decoration: none;
+    line-height: 1.2;
+}
+
+.btn-status-received {
+    background: var(--status-received, #FFB366);
+    color: var(--status-received-text, #5A0006);
+    border-color: var(--status-received-border, #E69543);
+}
+
+.btn-status-received:hover {
+    background: var(--status-received-hover, #FFA447);
+    color: var(--status-received-text, #5A0006);
+    border-color: var(--status-received-active, #E68A2E);
+}
+
+.btn-status-received:active {
+    background: var(--status-received-active, #E68A2E);
+    color: var(--status-received-text, #5A0006);
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(90, 0, 6, 0.2);
+}
+
+.btn-status-received:focus-visible {
+    outline: 2px solid var(--rosewood, #5A0006);
+    outline-offset: 2px;
+}
+
+.btn-status-received:disabled,
+.btn-status-received.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: #FFE0BA;
+    color: #8C5356;
+    border-color: #D9B596;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-status-reported {
+    background: #FEE2E2;
+    color: var(--status-reported, #C81E1E);
+    border-color: #F87171;
+}
+.btn-status-reported:hover { background: #FECACA; }
+.btn-status-reported:active { background: #FCA5A5; transform: translateY(1px); }
+.btn-status-reported:focus-visible { outline: 2px solid var(--status-reported); outline-offset: 2px; }
+
+.btn-status-dispatched {
+    background: #DCFCE7;
+    color: #166534;
+    border-color: #86EFAC;
+}
+.btn-status-dispatched:hover { background: #BBF7D0; }
+.btn-status-dispatched:active { background: #86EFAC; transform: translateY(1px); }
+.btn-status-dispatched:focus-visible { outline: 2px solid var(--status-dispatched); outline-offset: 2px; }
+
+.btn-status-completed {
+    background: #F3F4F6;
+    color: var(--status-completed, #4B5563);
+    border-color: #D1D5DB;
+}
+.btn-status-completed:hover { background: #E5E7EB; }
+.btn-status-completed:active { background: #D1D5DB; transform: translateY(1px); }
+.btn-status-completed:focus-visible { outline: 2px solid var(--status-completed); outline-offset: 2px; }

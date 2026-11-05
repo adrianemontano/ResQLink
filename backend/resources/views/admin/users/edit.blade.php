@@ -31,7 +31,7 @@
                 @method('PATCH')
 
                 <div class="field">
-                    <label for="password">New Password</label>
+                    <label for="password">Temporary Password (user must change on next sign in)</label>
                     <input id="password" name="password" type="password" autocomplete="new-password">
                     @error('password')
                         <div class="error-text">{{ $message }}</div>

@@ -1,0 +1,246 @@
+/*
+ * ResQLink formal presentation layer for CCDRRMO use: Poppins typography,
+ * neutral ink text, solid controls, quiet cards, and tables. Shell and sign-in
+ * live in resqlink-refresh-shell.css. Uses only tokens from resqlink-tokens.css.
+ * Presentation only, no behaviour changes. No gradients, glows, or hover motion:
+ * colour is reserved for meaning (severity, status, errors) and primary actions.
+ */
+
+/* Typography: near-black ink for reading, Rosewood for titles and links. */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--text-primary);
+}
+
+h1 {
+    color: var(--rosewood);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+h2,
+h3,
+.chart-title {
+    color: var(--rosewood);
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+label {
+    color: var(--text-label);
+    font-weight: 500;
+}
+
+p,
+.header-row > div > p {
+    color: var(--text-muted);
+}
+
+/* Page title: separated from content by a hairline rule, like a report header. */
+.dashboard-main > .header-row {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-4);
+}
+
+.dashboard-main > .header-row > div > p {
+    font-size: 14px;
+    margin-top: var(--space-1);
+}
+
+/* Cards: flat white panels with a hairline border and minimal elevation. */
+.card,
+.panel,
+.report-stat,
+.chart-card,
+.map-legend {
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.card > .header-row h2,
+.card > h2 {
+    font-size: 16px;
+}
+
+/* Stat cards: Rosewood figure, muted label, and a thin full-height left rule
+ * in the card's accent colour. */
+.grid .card,
+.report-stat {
+    padding: var(--space-5);
+}
+
+.grid .card {
+    border-left: 3px solid var(--stat-accent, var(--rosewood));
+}
+
+.grid .card.stat-red { --stat-accent: var(--sangria); }
+.grid .card.stat-amber { --stat-accent: var(--philippine-orange); }
+.grid .card.stat-blue { --stat-accent: var(--rosewood); }
+.grid .card.stat-green { --stat-accent: var(--success); }
+
+.grid .card > h2,
+.report-stat-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.metric,
+.report-stat-val {
+    color: var(--rosewood);
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+/* Buttons: solid Sangria with white text, flat Rosewood on hover; secondary is
+ * white with a neutral outline. No gradients, shadows, or press motion. */
+.button,
+button {
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+    font-weight: 500;
+    letter-spacing: .01em;
+}
+
+.button.secondary,
+button.secondary {
+    border-color: var(--control-border);
+    color: var(--text-primary);
+}
+
+.button.secondary:hover,
+button.secondary:hover {
+    background: var(--surface-alt);
+    border-color: var(--rosewood);
+    color: var(--rosewood);
+}
+
+/* Keyboard focus: white gap plus a neutral ring, visible on any background. */
+.button:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+/* Inputs: a darker neutral outline and soft neutral halo on focus, so focus never
+ * reads as an error (red stays for invalid fields). !important beats the base
+ * rule in theme.css; the map search keeps its own style (higher specificity). */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+select:focus,
+textarea:focus {
+    background: #ffffff;
+    border-color: var(--focus) !important;
+    box-shadow: 0 0 0 3px rgba(90, 74, 69, .12) !important;
+}
+
+input[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus,
+.is-invalid:focus {
+    border-color: var(--maximum-red) !important;
+    box-shadow: 0 0 0 3px rgba(217, 34, 0, .14) !important;
+}
+
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+input,
+select,
+textarea {
+    color: var(--text-primary);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background: var(--surface-sunken);
+}
+
+/* Tables: formal register look with a ruled header and quiet zebra rows. */
+th {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--gray-300);
+    color: var(--text-label);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .05em;
+}
+
+th,
+td {
+    padding: 12px var(--space-4);
+}
+
+td {
+    color: var(--text-primary);
+}
+
+.card > table tbody tr:nth-child(even) { background: #FCFAF8; }
+.card > table tbody tr:hover { background: var(--surface-alt); }
+
+.card > table a,
+.header-row a:not(.button) {
+    color: var(--sangria);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: rgba(146, 0, 4, .35);
+}
+
+.card > table a:hover,
+.header-row a:not(.button):hover {
+    color: var(--rosewood);
+    text-decoration-color: currentColor;
+}
+
+/* Badges: squared labels instead of pills for a document-like feel. */
+.badge {
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: .04em;
+}
+
+.badge.severity-critical {
+    font-weight: 600;
+}
+
+/* Alerts, tabs, charts. */
+.alert {
+    border-radius: var(--radius-sm);
+}
+
+.record-scope-item {
+    font-weight: 500;
+}
+
+.record-scope-item.active {
+    border-bottom-color: var(--sangria);
+    font-weight: 600;
+}
+
+.bar-track,
+.bar-fill {
+    border-radius: 0 6px 6px 0;
+}
+
+.eyebrow {
+    color: var(--sangria);
+    font-weight: 600;
+}
+
+.incident-intro .button {
+    margin-top: var(--space-4);
+}
+
+@media (max-width: 760px) {
+    h1 { font-size: 20px; }
+    .metric, .report-stat-val { font-size: 24px; }
+}

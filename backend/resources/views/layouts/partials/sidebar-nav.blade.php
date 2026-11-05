@@ -27,12 +27,19 @@
                 <span class="sidebar-label">Reports</span>
             </a>
         </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label sidebar-label">Account</div>
+            <a class="sidebar-item {{ request()->routeIs('admin.account.*') ? 'active' : '' }}" href="{{ route('admin.account.edit') }}">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                <span class="sidebar-label">My Account</span>
+            </a>
+        </div>
     @elseif (auth()->user()->hasRole('dispatcher'))
         <div class="sidebar-section">
             <div class="sidebar-section-label sidebar-label">Main</div>
             <a class="sidebar-item {{ request()->routeIs('dispatcher.dashboard') ? 'active' : '' }}" href="{{ route('dispatcher.dashboard') }}">
                 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                <span class="sidebar-label">Overview</span>
+                <span class="sidebar-label">Dashboard</span>
             </a>
         </div>
 
@@ -45,6 +52,14 @@
             <a class="sidebar-item {{ request()->routeIs('dispatcher.map') ? 'active' : '' }}" href="{{ route('dispatcher.map') }}">
                 <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
                 <span class="sidebar-label">Map View</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label sidebar-label">Account</div>
+            <a class="sidebar-item {{ request()->routeIs('dispatcher.account.*') ? 'active' : '' }}" href="{{ route('dispatcher.account.edit') }}">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                <span class="sidebar-label">My Account</span>
             </a>
         </div>
     @elseif (auth()->user()->hasRole('volunteer'))
@@ -60,6 +75,13 @@
             <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.*') ? 'active' : '' }}" href="{{ route('volunteer.incidents.create') }}">
                 <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                 <span class="sidebar-label">Submit Incident</span>
+            </a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label sidebar-label">Account</div>
+            <a class="sidebar-item {{ request()->routeIs('volunteer.account.*') ? 'active' : '' }}" href="{{ route('volunteer.account.edit') }}">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                <span class="sidebar-label">My Account</span>
             </a>
         </div>
     @endif

@@ -8,6 +8,9 @@ runbook](development-setup.md).
 Design system: [ResQLink visual tokens, contrast guidance, component rules,
 and screen mockups](design-system/resqlink-visual-system.md).
 
+Dispatcher and volunteer enhancements: [implementation decisions, migration
+notes, and manual acceptance checklist](implementation/dispatcher-enhancements-nov-2026.md).
+
 Mobile development: [Android Studio first configuration and implementation
 guide](mobile/android-studio-setup-and-implementation-guide.md).
 

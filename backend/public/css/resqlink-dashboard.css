@@ -29,7 +29,7 @@
 .brand-name {
     color: #ffffff;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -.3px;
 }
 
@@ -45,17 +45,15 @@
 
 .sidebar {
     background: var(--rosewood);
-    border-top-right-radius: var(--radius-xl);
-    border-bottom-right-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    margin-right: 16px;
-    min-height: 100vh;
+    height: 100vh;
     overflow: hidden;
+    position: sticky;
+    top: 0;
     transition: width .2s ease;
-    width: 216px;
+    width: 232px;
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar {
@@ -95,7 +93,7 @@
     color: #ffffff;
     display: flex;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 600;
     gap: 8px;
     min-width: 0;
 }
@@ -154,26 +152,26 @@
 }
 
 .sidebar-logo-sub {
-    color: rgba(255, 255, 255, .5);
+    color: var(--text-on-dark-muted);
     font-size: 11px;
-    margin-top: 6px;
+    margin-top: var(--space-2);
 }
 
 .sidebar-nav {
     flex: 1;
-    padding: 8px 0;
+    padding: var(--space-2) 0;
 }
 
 .sidebar-section + .sidebar-section {
-    margin-top: 6px;
+    margin-top: var(--space-2);
 }
 
 .sidebar-section-label {
-    color: rgba(255, 255, 255, .4);
-    font-size: 10px;
-    font-weight: 700;
+    color: var(--text-on-dark-subtle);
+    font-size: var(--text-sm);
+    font-weight: 600;
     letter-spacing: .08em;
-    padding: 12px 18px 6px;
+    padding: var(--space-3) var(--space-4) var(--space-2);
     text-transform: uppercase;
 }
 
@@ -181,33 +179,46 @@
     align-items: center;
     background: transparent;
     border: none;
-    border-left: 3px solid transparent;
-    color: rgba(255, 255, 255, .65);
+    border-radius: var(--radius-sm);
+    color: var(--text-on-dark-muted);
     cursor: pointer;
     display: flex;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
-    gap: 12px;
-    padding: 11px 18px;
+    gap: var(--space-3);
+    height: 40px;
+    margin: 2px var(--space-3);
+    padding: 0 var(--space-3);
+    position: relative;
     transition: background .15s, color .15s;
-    width: 100%;
+    width: calc(100% - 2 * var(--space-3));
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar-item {
     justify-content: center;
-    padding: 12px 0;
-    pointer-events: none;
+    padding: 0;
 }
 
 .sidebar-item:hover {
-    background: var(--sangria);
+    background: rgba(255, 255, 255, .08);
     color: #ffffff;
 }
 
 .sidebar-item.active {
-    background: var(--sangria);
-    border-left-color: var(--philippine-orange);
+    background: rgba(255, 255, 255, .14);
     color: #ffffff;
+    font-weight: 600;
+}
+
+.sidebar-item.active::before {
+    background: var(--philippine-orange);
+    border-radius: 2px;
+    bottom: 10px;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: 10px;
+    width: 3px;
 }
 
 .sidebar-item svg {
@@ -223,13 +234,13 @@
 
 .sidebar-footer {
     border-top: 1px solid rgba(255, 255, 255, .1);
-    padding: 16px 20px;
+    padding: var(--space-4);
 }
 
 .sidebar-user {
-    color: rgba(255, 255, 255, .7);
+    color: var(--text-on-dark-muted);
     font-size: 12px;
-    margin-bottom: 10px;
+    margin-bottom: var(--space-3);
 }
 
 .sidebar-user strong {
@@ -240,10 +251,12 @@
 
 .sidebar-footer form button,
 .sidebar-footer form .button {
-    background: rgba(255, 255, 255, .1);
-    border: none;
-    color: rgba(255, 255, 255, .7);
-    font-size: 12px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, .22);
+    color: var(--text-on-dark);
+    font-size: 13px;
+    font-weight: 500;
+    height: 36px;
     width: 100%;
 }
 
@@ -267,7 +280,21 @@
 .dashboard-main {
     flex: 1;
     min-width: 0;
-    padding: 28px;
+    padding: var(--space-6);
+}
+
+/* Page rhythm: one consistent gap between every top-level page section. */
+.dashboard-main > * {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.dashboard-main > * + * {
+    margin-top: var(--space-5);
+}
+
+.dashboard-main > .header-row + * {
+    margin-top: var(--space-6);
 }
 
 .incident-intro {
@@ -282,23 +309,23 @@
 .eyebrow {
     color: var(--red);
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
 
 .form-grid {
     display: grid;
-    gap: 18px;
+    gap: var(--space-5) var(--space-4);
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: 8px;
     max-width: 900px;
 }
 
 .form-grid label {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
+    margin-bottom: 0;
 }
 
 .form-grid input,
@@ -307,12 +334,12 @@
     border: 1px solid var(--control-border);
     border-radius: var(--radius-sm);
     font: inherit;
-    padding: 10px 12px;
+    padding: var(--space-2) var(--space-3);
     width: 100%;
 }
 
 .form-grid small {
-    color: var(--red);
+    color: var(--maximum-red);
 }
 
 .form-section-title,
@@ -322,10 +349,11 @@
 
 .form-section-title {
     border-bottom: 1px solid var(--border);
-    color: var(--navy);
+    color: var(--rosewood);
     font-size: 14px;
-    font-weight: 700;
-    padding-bottom: 8px;
+    font-weight: 600;
+    margin-top: var(--space-2);
+    padding-bottom: var(--space-2);
 }
 
 .form-actions {
@@ -339,12 +367,17 @@
     }
 
     .sidebar {
-        min-height: auto;
+        height: auto;
+        position: static;
         width: 100%;
     }
 
     .dashboard-main {
-        padding: 20px;
+        padding: var(--space-5) var(--space-4);
+    }
+
+    .dashboard-main > .header-row + * {
+        margin-top: var(--space-5);
     }
 
     .form-grid {
@@ -363,6 +396,6 @@
     .sidebar-item { justify-content: center; padding-inline: 0; }
     .sidebar-item svg { height: 20px; width: 20px; }
     .sidebar-section-label { font-size: 0; padding-inline: 8px; }
-    .sidebar-section-label::first-letter { font-size: 10px; }
+    .sidebar-section-label::first-letter { font-size: var(--text-sm); }
     .sidebar-footer { padding: 14px 10px; }
 }
