@@ -1,6 +1,6 @@
 # ResQLink Mobile Technology Stack
 
-**Status:** Backend Sanctum implemented; Expo application not started
+**Status:** Expo foundation and backend Sanctum implemented; device proof pending
 **Target:** Android-first volunteer application
 
 ## Approved stack
@@ -21,6 +21,25 @@
 | Database | Existing MySQL | Server-side persistence only |
 | Web dashboard | Existing Laravel Blade + Bootstrap | Dispatcher and admin workflows |
 | Map service | Existing TileServer GL Light | Approved local/self-hosted map data |
+
+## Selected foundation versions
+
+| Package | Version |
+| --- | --- |
+| Expo | `58.0.23` |
+| React Native | `0.88.1` |
+| React | `19.3.0` |
+| TypeScript | `6.0.3` |
+| Expo Router | `58.0.30` |
+| Expo Dev Client | `58.0.18` |
+| Expo Location | `58.0.20` |
+| Expo SecureStore | `58.0.2` |
+| MapLibre React Native | `11.5.1` |
+
+React Native 0.88.1 satisfies MapLibre v11's documented React Native 0.80+
+requirement and uses the New Architecture. Expo SDK 58 rejects the obsolete
+`newArchEnabled` app-config field, so the project does not set it explicitly. A
+physical Android build must still prove the complete native combination.
 
 Flutter and Dart are retired from the intended stack. Firebase, Supabase,
 Google Maps, Mapbox-hosted APIs, and direct MySQL access are not approved.

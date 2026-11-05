@@ -20,7 +20,7 @@ Current development phase:
 
 * Laravel backend
 * Web application for Admin and Dispatcher roles
-* Volunteer mobile Sanctum API implemented; Expo client not yet generated
+* Volunteer mobile Sanctum API and Expo foundation implemented
 
 ## Technology Stack
 
@@ -41,7 +41,7 @@ Detected project technologies:
 | Testing | PHPUnit | `12.5.30` from `composer.lock` |
 | Code Style | Laravel Pint | `v1.29.3` from `composer.lock` |
 | Mobile authentication | Laravel Sanctum | `v4.3.3`; personal access tokens for verified volunteers |
-| Planned Volunteer Mobile | Expo + React Native + TypeScript | Android-first; source not yet generated |
+| Volunteer Mobile | Expo SDK 58 + React Native 0.88.1 + TypeScript | Android-first foundation generated |
 | Planned Mobile Map | `@maplibre/maplibre-react-native` | Requires an Expo Development Build; Expo Go is insufficient |
 
 Not currently installed:

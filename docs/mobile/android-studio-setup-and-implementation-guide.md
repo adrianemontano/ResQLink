@@ -1,7 +1,7 @@
 # ResQLink Android Studio Setup and Mobile Implementation Guide
 
 **Platform:** Expo React Native for Android on Windows
-**Status:** Setup plan; the Expo application has not been generated
+**Status:** Expo SDK 58 foundation generated; Android development build pending
 
 ## Required tools
 
@@ -13,8 +13,9 @@
 - A physical Android device for the MapLibre proof of concept.
 - Optional EAS CLI/account when cloud development builds are used.
 
-Do not pin versions until the implementation compatibility gate is completed.
-Record exact versions in this guide when the project is generated.
+Selected foundation versions are Expo `58.0.23`, React Native `0.88.1`, React
+`19.3.0`, TypeScript `6.0.3`, and MapLibre React Native `11.5.1`. The physical
+Android build remains the compatibility gate before feature implementation.
 
 ## Physical device setup
 

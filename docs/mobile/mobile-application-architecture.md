@@ -1,6 +1,6 @@
 # ResQLink Mobile Application Architecture
 
-**Status:** Approved target architecture; Expo source not yet generated
+**Status:** Expo foundation generated; device proof and feature UI pending
 **Style:** Feature-oriented Expo React Native client with Laravel REST API
 
 ## System context
@@ -51,11 +51,11 @@ data. It is reachable by Laravel only; Expo never receives database credentials.
 
 ## Recommended source layout
 
-Create this only during Stage 1 of implementation:
+The Stage 1 foundation uses this Expo SDK 58 layout:
 
 ```text
 mobile/
-|-- app/
+|-- src/app/
 |   |-- _layout.tsx
 |   |-- index.tsx
 |   `-- (auth)/
@@ -75,7 +75,7 @@ mobile/
 `-- tsconfig.json
 ```
 
-Expo Router owns route files under `app/`. Feature behavior belongs under
+Expo Router owns route files under `src/app/`. Feature behavior belongs under
 `src/features`; shared API configuration belongs under `src/services/api`.
 This is a starting recommendation and may evolve without mixing domain logic
 into route components.

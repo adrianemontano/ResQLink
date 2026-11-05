@@ -1,6 +1,6 @@
 # ResQLink Mobile Application Implementation Guide
 
-**Status:** Backend Sanctum stage implemented; Expo stages remain
+**Status:** Stage 1 and backend Sanctum implemented; Stage 2 is next
 **Platform:** Expo + React Native + TypeScript, Android first
 
 ## Before implementation
@@ -17,6 +17,11 @@ requirements using official documentation. Do not copy old component names or
 pin a speculative combination.
 
 ## Stage 1 — Expo foundation
+
+Implemented with Expo `58.0.23`, React Native `0.88.1`, TypeScript `6.0.3`,
+MapLibre React Native `11.5.1`, Expo Router, Axios, SecureStore, Location, and
+Expo Dev Client. The Android package is `com.resqlink.volunteer`; public local
+URLs are declared through `mobile/.env.example`.
 
 1. Create a task-scoped branch and generate a fresh Expo TypeScript application
    at repository-root `mobile/`.

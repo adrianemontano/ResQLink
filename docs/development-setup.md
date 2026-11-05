@@ -8,8 +8,9 @@ changes from a remote branch. Run application commands from `backend/`.
 For future mobile work, also install a Node version supported by the selected
 Expo SDK, Android Studio and its compatible Android SDK/JDK tooling, and Android
 platform tools. Exact versions must be selected and recorded during the
-Expo/React Native/MapLibre compatibility proof of concept; the Expo application
-has not yet been generated.
+Expo/React Native/MapLibre compatibility proof of concept. The Expo SDK 58
+foundation is generated under `mobile/`; its physical-device MapLibre proof is
+still pending.
 
 The Laravel Sanctum mobile API is implemented. Contributors updating an
 existing database must also follow

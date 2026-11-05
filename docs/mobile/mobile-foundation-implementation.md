@@ -1,22 +1,21 @@
 # TASK1-TASK2 Mobile Foundation Migration Status
 
-**Status:** Sanctum backend implemented; Expo foundation not yet implemented
+**Status:** Sanctum backend and Expo SDK 58 foundation implemented
 **Decision date:** October 29, 2026
 
 ## Current repository state
 
-The previous Flutter/Dart application and its generated Android, build, IDE,
-test, and dependency files were intentionally removed. No source was migrated
-because the approved Expo application will start fresh. The repository-root
-`mobile/` path is reserved for the future Expo + React Native + TypeScript app.
+The previous Flutter/Dart application was removed. A fresh Expo SDK 58,
+React Native 0.88.1, and TypeScript foundation now lives under repository-root
+`mobile/`; no Flutter source was migrated.
 
 ## Approved next milestone
 
 TASK1 (Jassy) and TASK2 (Adriane) should begin only after the MapLibre/Expo
 compatibility gate is recorded. Work follows this order:
 
-1. Create the Expo TypeScript foundation and configure Expo Router.
-2. Prove MapLibre on a physical Android development build.
+1. Create the Expo TypeScript foundation and configure Expo Router. **Done.**
+2. Prove MapLibre 11.5.1 on a physical Android development build. **Next.**
 3. Integrate the implemented TASK1 Sanctum endpoints into the Expo client.
 4. Implement TASK2 incident reporting against the approved API contract.
 5. Verify Laravel authority over identity, severity, timestamps, and status.

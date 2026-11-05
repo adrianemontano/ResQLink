@@ -1,7 +1,7 @@
 # ResQLink Mobile Application Scope
 
 **Platform:** Expo + React Native + TypeScript, Android first
-**Status:** Backend Sanctum contract implemented; Expo client not yet generated
+**Status:** Backend contract and Expo foundation implemented; features pending
 
 ## Purpose
 
