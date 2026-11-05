@@ -1,6 +1,6 @@
 # ResQLink Mobile Technology Stack
 
-**Status:** Approved architecture; implementation not started
+**Status:** Backend Sanctum implemented; Expo application not started
 **Target:** Android-first volunteer application
 
 ## Approved stack

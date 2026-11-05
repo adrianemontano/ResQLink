@@ -1,10 +1,17 @@
 # ResQLink Mobile Verification and Handoff Guide
 
-**Status:** Planned verification for the future Expo implementation
+**Status:** Backend implementation awaiting approved verification; Expo planned
 
 Do not run repository lint, test, or build commands without explicit user
 approval. Record the command, environment, result, and unresolved failures when
 verification is authorized.
+
+Current backend verification on November 5, 2026 applied both Sanctum cleanup
+migrations and passed Pint and route registration checks. PHPUnit was blocked
+initially because the active PHP configuration did not enable `pdo_sqlite`.
+Running PHPUnit directly with the available Windows SQLite DLLs confirmed all
+four focused mobile authentication tests pass. Unrelated admin report and
+dispatcher tests still require separate follow-up.
 
 ## Development-build evidence
 
@@ -20,6 +27,8 @@ verification is authorized.
 ## Authentication
 
 - [ ] Implemented endpoint paths match Laravel routes and API documentation.
+- [ ] Temporary-password users can access current-user, password-change, and
+  logout operations but cannot submit incidents.
 - [ ] Invalid credentials, inactive accounts, wrong roles, and unverified
   volunteers are rejected by Laravel.
 - [ ] Sanctum token is stored only in SecureStore.
@@ -68,7 +77,7 @@ Include:
 - physical device/Android version and USB-debugging steps;
 - local or EAS build procedure;
 - API base URL and actual TileServer style URL format;
-- implemented versus planned Laravel endpoints;
+- implemented Laravel endpoints and remaining Expo work;
 - environment-variable names without secret values;
 - verification results and approved commands run;
 - known limitations and remaining TASK1/TASK2/TASK3 work; and

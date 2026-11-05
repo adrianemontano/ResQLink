@@ -83,7 +83,7 @@ into route components.
 ## Authentication flow
 
 1. Volunteer enters credentials.
-2. Expo sends them to the planned mobile login endpoint with Axios.
+2. Expo sends them to `POST /api/mobile/login` with Axios.
 3. Laravel validates credentials, active account, volunteer role, and verified
    volunteer status.
 4. Laravel issues a Sanctum personal access token.
@@ -92,10 +92,9 @@ into route components.
 7. Laravel authenticates and authorizes each protected request.
 8. Logout asks Laravel to revoke the current token, then clears the local token.
 
-Current repository status: mobile token login/logout endpoints are not yet
-implemented. `POST /api/incidents` exists, but its current `auth` middleware is
-not yet the documented Sanctum mobile contract. Web session login/logout must
-remain separate.
+Current repository status: login, current-user, logout, password-change, and
+incident-submission endpoints use Sanctum bearer tokens. Web session login and
+logout remain separate. The Expo client still needs to consume this contract.
 
 ## Incident submission contract
 

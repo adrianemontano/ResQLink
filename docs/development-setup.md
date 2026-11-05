@@ -11,6 +11,10 @@ platform tools. Exact versions must be selected and recorded during the
 Expo/React Native/MapLibre compatibility proof of concept; the Expo application
 has not yet been generated.
 
+The Laravel Sanctum mobile API is implemented. Contributors updating an
+existing database must also follow
+[`mobile/sanctum-migration-guide.md`](mobile/sanctum-migration-guide.md).
+
 ## Planned Expo Android workflow
 
 MapLibre React Native cannot run in Expo Go. After the fresh `mobile/` project

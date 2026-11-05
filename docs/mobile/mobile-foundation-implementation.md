@@ -1,6 +1,6 @@
 # TASK1-TASK2 Mobile Foundation Migration Status
 
-**Status:** Flutter foundation removed; Expo foundation not yet implemented
+**Status:** Sanctum backend implemented; Expo foundation not yet implemented
 **Decision date:** October 29, 2026
 
 ## Current repository state
@@ -17,16 +17,17 @@ compatibility gate is recorded. Work follows this order:
 
 1. Create the Expo TypeScript foundation and configure Expo Router.
 2. Prove MapLibre on a physical Android development build.
-3. Implement TASK1 Sanctum token endpoints and mobile authentication.
+3. Integrate the implemented TASK1 Sanctum endpoints into the Expo client.
 4. Implement TASK2 incident reporting against the approved API contract.
 5. Verify Laravel authority over identity, severity, timestamps, and status.
 
-## Known backend gap
+## Implemented backend contract
 
-`POST /api/incidents` exists, but the current repository does not yet implement
-the planned mobile token login, current-user, or logout endpoints. The incident
-route also requires alignment with Sanctum bearer-token middleware and a stable
-mobile JSON contract. Existing web sessions must remain unchanged.
+The repository implements `POST /api/mobile/login`, `GET /api/mobile/user`,
+`POST /api/mobile/logout`, `PUT /api/mobile/password`, and the protected
+`POST /api/incidents` operation with Sanctum bearer tokens. Existing web
+sessions remain separate. The Expo client and physical-device verification are
+the remaining foundation work.
 
 ## References
 
@@ -35,3 +36,4 @@ mobile JSON contract. Existing web sessions must remain unchanged.
 - [Mobile technology stack](mobile-technology-stack.md)
 - [Implementation guide](mobile-implementation-guide.md)
 - [Verification and handoff](mobile-verification-and-handoff-guide.md)
+- [Sanctum migration guide](sanctum-migration-guide.md)

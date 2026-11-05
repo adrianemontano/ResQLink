@@ -1,7 +1,7 @@
 # ResQLink Mobile Application Scope
 
 **Platform:** Expo + React Native + TypeScript, Android first
-**Status:** Approved scope; fresh implementation planned
+**Status:** Backend Sanctum contract implemented; Expo client not yet generated
 
 ## Purpose
 
@@ -37,18 +37,20 @@ notes—not in routes, database names, or TypeScript/PHP domain names.
 Laravel remains authoritative for reporter identity, validation, severity,
 timestamps, initial status, and authorization.
 
-## Planned API dependency
+## Implemented API dependency
 
 | Method | Endpoint | Status | Purpose |
 | --- | --- | --- | --- |
-| POST | `/api/mobile/login` | Planned | Issue volunteer Sanctum token |
-| GET | `/api/mobile/user` | Planned | Restore authenticated volunteer |
-| POST | `/api/mobile/logout` | Planned | Revoke current token |
-| POST | `/api/incidents` | Partly implemented | Submit incident; mobile Sanctum middleware/JSON contract still required |
+| POST | `/api/mobile/login` | Implemented | Issue volunteer Sanctum token |
+| GET | `/api/mobile/user` | Implemented | Restore authenticated volunteer |
+| POST | `/api/mobile/logout` | Implemented | Revoke current token |
+| PUT | `/api/mobile/password` | Implemented | Replace a temporary volunteer password |
+| POST | `/api/incidents` | Implemented | Submit an authenticated volunteer incident |
 
-Endpoint paths for planned operations remain proposals until TASK1 implements
-and documents them. Existing web session routes are implemented and must not be
-presented as mobile token endpoints.
+The mobile endpoints use Sanctum bearer tokens and remain separate from the
+existing web session routes. Volunteers with temporary passwords may restore
+their session, change the password, or log out, but cannot submit an incident
+until the password is changed.
 
 ## Map behavior
 

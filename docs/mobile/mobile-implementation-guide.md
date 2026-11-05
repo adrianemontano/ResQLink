@@ -1,6 +1,6 @@
 # ResQLink Mobile Application Implementation Guide
 
-**Status:** Plan only; do not generate Expo source as part of the migration
+**Status:** Backend Sanctum stage implemented; Expo stages remain
 **Platform:** Expo + React Native + TypeScript, Android first
 
 ## Before implementation
@@ -59,18 +59,19 @@ changes. Use Metro reload for TS/JS-only edits.
 
 ### Backend contract
 
-TASK1 must implement and document JSON token operations before mobile login is
-called complete. Proposed paths are:
+TASK1 has implemented these JSON token operations:
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | POST | `/api/mobile/login` | Validate volunteer and issue token |
 | GET | `/api/mobile/user` | Return current volunteer |
 | POST | `/api/mobile/logout` | Revoke current token |
+| PUT | `/api/mobile/password` | Replace a temporary password |
 
-These endpoints do not currently exist. Keep existing web session login and
-logout unchanged. Require active status, volunteer role, and verified volunteer
-profile before issuing a token.
+These endpoints use Sanctum personal access tokens. Existing web session login
+and logout remain unchanged. Laravel requires an active account, volunteer
+role, and verified volunteer profile before issuing a token. A temporary
+password blocks incident submission until `PUT /api/mobile/password` succeeds.
 
 ### Client work
 
@@ -98,8 +99,8 @@ profile before issuing a token.
 8. Show confirmation based on Laravel's response.
 
 Expo must not send trusted reporter identity, severity, timestamps, or initial
-status. Laravel derives them. The current incident route exists but still needs
-alignment to the mobile Sanctum/JSON contract.
+status. Laravel derives them. The incident route now uses the mobile Sanctum
+contract and requires the `incidents:create` token ability.
 
 ## Stage 5 — Testing and verification
 
