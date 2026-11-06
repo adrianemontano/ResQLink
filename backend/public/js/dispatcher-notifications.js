@@ -140,6 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.key === 'Escape' && !dropdown.hidden) closeDropdown(true);
     });
 
+    window.addEventListener('resqlink:incident-status-updated', loadNotifications);
+
     list.addEventListener('click', async (event) => {
         const readButton = event.target.closest('[data-notification-read]');
         const notificationLink = event.target.closest('[data-notification-link]');
@@ -262,11 +264,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await requestJson(url);
             lastTimestamp = data.timestamp;
             updateUnreadCount(data.unread_count);
+            if (!dropdown.hidden) await loadNotifications();
 
             if (Array.isArray(data.new_alerts) && data.new_alerts.length > 0) {
                 data.new_alerts.forEach(showToast);
                 animateBell();
-                if (!dropdown.hidden) await loadNotifications();
             }
         } catch (error) {
             console.error('Failed to check for new dispatcher notifications.', error);
