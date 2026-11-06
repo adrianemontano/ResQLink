@@ -11,7 +11,6 @@
 
 .dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger),
 .dispatcher-ui .dashboard-main button:not([class]):not([style]),
-.dispatcher-ui .dashboard-main .status-confirm-button,
 .dispatcher-ui .dashboard-main .btn-primary,
 .dispatcher-ui .dashboard-main .btn-info,
 .dispatcher-ui .dashboard-main .btn-outline-info {
@@ -22,7 +21,6 @@
 
 .dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):hover,
 .dispatcher-ui .dashboard-main button:not([class]):not([style]):hover,
-.dispatcher-ui .dashboard-main .status-confirm-button:hover,
 .dispatcher-ui .dashboard-main .btn-primary:hover,
 .dispatcher-ui .dashboard-main .btn-info:hover {
     background: var(--dispatcher-primary-hover);
@@ -32,7 +30,6 @@
 
 .dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):active,
 .dispatcher-ui .dashboard-main button:not([class]):not([style]):active,
-.dispatcher-ui .dashboard-main .status-confirm-button:active,
 .dispatcher-ui .dashboard-main .btn-primary:active,
 .dispatcher-ui .dashboard-main .btn-info:active {
     background: var(--dispatcher-primary-active);
@@ -42,7 +39,6 @@
 
 .dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):focus-visible,
 .dispatcher-ui .dashboard-main button:not([class]):not([style]):focus-visible,
-.dispatcher-ui .dashboard-main .status-confirm-button:focus-visible,
 .dispatcher-ui .dashboard-main .btn-primary:focus-visible,
 .dispatcher-ui .dashboard-main .btn-info:focus-visible,
 .dispatcher-ui .dashboard-main .btn-outline-info:focus-visible,
@@ -53,7 +49,6 @@
 
 .dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):disabled,
 .dispatcher-ui .dashboard-main button:not([class]):not([style]):disabled,
-.dispatcher-ui .dashboard-main .status-confirm-button:disabled,
 .dispatcher-ui .dashboard-main .btn-primary:disabled,
 .dispatcher-ui .dashboard-main .btn-info:disabled,
 .dispatcher-ui .dashboard-main .btn-outline-info:disabled,
@@ -69,15 +64,15 @@
     opacity: 1;
 }
 
-.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip) {
+.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):not(.rql-page-btn) {
     color: var(--dispatcher-link);
     text-decoration: underline;
     text-decoration-color: var(--tangelo);
     text-underline-offset: 3px;
 }
 
-.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):hover,
-.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):visited {
+.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):not(.rql-page-btn):hover,
+.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):not(.rql-page-btn):visited {
     color: var(--dispatcher-link-hover);
 }
 
@@ -212,6 +207,95 @@
 
 .dispatcher-ui .dashboard-main .map-status-legend .status-dot.completed {
     background: var(--dispatcher-status-completed);
+}
+
+.dispatcher-ui .dashboard-main .dispatcher-pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: space-between;
+    margin-top: var(--space-4);
+}
+
+.dispatcher-ui .dashboard-main .rql-pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.dispatcher-ui .dashboard-main .rql-page-btn {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--rosewood);
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    justify-content: center;
+    min-width: 40px;
+    padding: 0 10px;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+
+.dispatcher-ui .dashboard-main a.rql-page-btn:hover {
+    background: var(--accent-light);
+    border-color: var(--tangelo);
+    color: var(--rosewood);
+}
+
+.dispatcher-ui .dashboard-main .rql-page-current {
+    background: var(--surface);
+    border-color: var(--tangelo);
+    color: var(--rosewood);
+    font-weight: 600;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-btn:focus-visible,
+.dispatcher-ui .dashboard-main .dispatcher-pagination-size .dispatcher-dropdown-trigger:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-disabled {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: .65;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-nav {
+    padding: 0;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-nav svg {
+    height: 18px !important;
+    width: 18px !important;
+}
+
+.dispatcher-ui .dashboard-main .dispatcher-pagination-size {
+    margin: 0;
+    width: 126px;
+}
+
+.dispatcher-ui .dashboard-main #dispatcher-pagination-per-page .dispatcher-dropdown-trigger {
+    font-size: 13px;
+    height: 40px;
+}
+
+@media (max-width: 520px) {
+    .dispatcher-ui .dashboard-main .dispatcher-pagination {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dispatcher-ui .dashboard-main .dispatcher-pagination-size {
+        align-self: flex-end;
+    }
 }
 
 .dispatcher-ui .dashboard-main .button:not(.disabled):hover,
