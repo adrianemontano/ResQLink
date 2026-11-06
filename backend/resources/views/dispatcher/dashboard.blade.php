@@ -22,13 +22,13 @@
     <section class="card">
         <div class="header-row">
             <h2>Active Incident Queue</h2>
-            <a class="button" href="{{ route('dispatcher.incidents.index') }}">View all incidents</a>
+            <a class="button secondary dispatcher-view-button" href="{{ route('dispatcher.incidents.index') }}">View all incidents</a>
         </div>
         <nav class="status-filter-chips" aria-label="Filter incidents by status">
             @foreach ($statusFilters as $filter)
                 <a
                     class="status-filter-chip status-filter-chip-{{ $filter['slug'] }}{{ $selectedStatus === $filter['slug'] ? ' active' : '' }}"
-                    href="{{ route('dispatcher.dashboard', ['status' => $filter['slug']]) }}"
+                    href="{{ route('dispatcher.dashboard', ['status' => $filter['slug'], 'per_page' => $perPage]) }}"
                     @if ($selectedStatus === $filter['slug']) aria-current="page" @endif
                 >
                     {{ $filter['label'] }}
@@ -62,8 +62,6 @@
                 @endforelse
             </tbody>
         </table>
-        @if ($incidents->hasPages())
-            <div class="status-filter-pagination">{{ $incidents->links() }}</div>
-        @endif
+        <x-dispatcher-pagination :paginator="$incidents" :per-page="$perPage" />
     </section>
 @endsection
