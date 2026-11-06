@@ -25,7 +25,7 @@
 
             {{-- Current Password --}}
             <div style="margin-bottom: var(--space-3);">
-                <label for="current_password" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Current Temporary Password</label>
+                <label for="current_password" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Current Temporary Password <span class="required-asterisk" aria-hidden="true">*</span></label>
                 <div style="position: relative;">
                     <input id="current_password" type="password" name="current_password" required autofocus
                            style="width: 100%; padding-right: 40px;" placeholder="Enter temporary password">
@@ -41,7 +41,7 @@
 
             {{-- New Password --}}
             <div style="margin-bottom: var(--space-3);">
-                <label for="password" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">New Password</label>
+                <label for="password" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">New Password <span class="required-asterisk" aria-hidden="true">*</span></label>
                 <div style="position: relative;">
                     <input id="password" type="password" name="password" required minlength="8"
                            style="width: 100%; padding-right: 40px;" placeholder="Minimum 8 characters">
@@ -69,7 +69,7 @@
 
             {{-- Confirm New Password --}}
             <div style="margin-bottom: var(--space-4);">
-                <label for="password_confirmation" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Confirm New Password</label>
+                <label for="password_confirmation" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Confirm New Password <span class="required-asterisk" aria-hidden="true">*</span></label>
                 <div style="position: relative;">
                     <input id="password_confirmation" type="password" name="password_confirmation" required minlength="8"
                            style="width: 100%; padding-right: 40px;" placeholder="Re-enter new password">
