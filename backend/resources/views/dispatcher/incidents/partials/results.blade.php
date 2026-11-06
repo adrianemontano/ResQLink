@@ -38,6 +38,4 @@
     </tbody>
 </table>
 
-<div class="incident-pagination">
-    {{ $incidents->links() }}
-</div>
+<x-dispatcher-pagination :paginator="$incidents" :per-page="$perPage" />
