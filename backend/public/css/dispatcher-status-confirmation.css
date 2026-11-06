@@ -55,14 +55,159 @@
     margin-bottom: var(--space-5);
 }
 
-.incident-status-actions .btn-status-action {
-    border-width: 2px;
-    box-shadow: 0 2px 5px rgba(43, 29, 27, .12);
-    font-size: 16px;
+.status-actions-row {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+}
+
+.status-actions-row .btn-status-action {
+    flex: 1;
+    border-width: 1px;
+    box-shadow: none;
+    font-size: 14px;
+    font-weight: 600;
+    height: var(--control-height, 40px);
+    min-height: var(--control-height, 40px);
+    padding: 0 var(--space-4, 16px);
+    border-radius: var(--radius-sm, 6px);
+}
+
+.btn-add-update {
+    background: var(--surface, #FFFFFF);
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--rosewood, #5A0006);
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    height: var(--control-height, 40px);
+    min-height: var(--control-height, 40px);
+    padding: 0 var(--space-4, 16px);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-add-update:hover {
+    background: var(--surface-alt, #F5F0EB);
+    border-color: var(--rosewood, #5A0006);
+}
+
+.btn-add-update:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+/* Status Stepper */
+.status-stepper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3) 0;
+}
+
+.stepper-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.stepper-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--border, #EDE2D8);
+    border: 2px solid var(--border, #EDE2D8);
+}
+
+.stepper-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted, #6B5B55);
+}
+
+.stepper-current .stepper-dot {
+    background: var(--dispatcher-primary, var(--sangria));
+    border-color: var(--dispatcher-primary, var(--sangria));
+}
+
+.stepper-current .stepper-label {
+    color: var(--rosewood, #5A0006);
     font-weight: 700;
-    min-height: 56px;
-    padding: 14px 20px;
+}
+
+.stepper-past .stepper-dot {
+    background: var(--success, #476B45);
+    border-color: var(--success, #476B45);
+}
+
+.stepper-past .stepper-label {
+    color: var(--text-muted, #6B5B55);
+    font-weight: 500;
+}
+
+.stepper-connector {
+    flex: 1;
+    height: 2px;
+    background: var(--border, #EDE2D8);
+    min-width: 20px;
+}
+
+.stepper-connector-past {
+    background: var(--success, #476B45);
+}
+
+/* Update Category Select Dropdown */
+.status-modal-dialog select,
+.status-modal-select {
+    background: var(--surface, #FFFFFF);
+    border: 1px solid var(--control-border, #8A766A);
+    border-radius: var(--radius-sm, 6px);
+    box-sizing: border-box;
+    color: var(--text-primary, #2B1D1B);
+    display: block;
+    font: inherit;
+    font-size: 14px;
+    height: var(--control-height, 40px);
+    padding: 0 var(--space-3, .75rem);
     width: 100%;
+    margin-bottom: var(--space-3, .75rem);
+}
+
+.status-modal-dialog select:focus,
+.status-modal-select:focus {
+    border-color: var(--focus, #5A4A45);
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.required-asterisk {
+    color: var(--danger, #D92200);
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+/* Update Tag in History */
+.update-tag {
+    background: var(--surface-alt, #F5F0EB);
+    border: 1px solid var(--border, #EDE2D8);
+    color: var(--text-primary, #2B1D1B);
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: var(--space-2);
+    padding: 2px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.update-category {
+    font-size: 12px;
+    color: var(--text-muted, #6B5B55);
+    margin-left: var(--space-2);
 }
 
 .status-modal {
@@ -108,13 +253,9 @@
 }
 
 .status-final-warning {
-    background: var(--red-light, #FCE8E3);
-    border: 1px solid var(--sangria, #920004);
-    border-radius: var(--radius-sm, 6px);
-    color: var(--rosewood, #5A0006);
+    color: var(--danger, #D92200);
     font-weight: 600;
     margin: 0 0 1rem;
-    padding: .65rem .75rem;
 }
 
 .status-modal-dialog label {
@@ -162,26 +303,52 @@
     margin-top: 1.25rem;
 }
 
+.status-modal-actions button,
+.status-modal-actions .button,
 .status-confirm-button {
-    background: var(--dispatcher-primary, var(--sangria));
-    border: 1px solid var(--dispatcher-primary, var(--sangria));
-    border-radius: var(--radius-sm, 6px);
-    color: var(--dispatcher-primary-text, var(--text-primary));
+    align-items: center;
+    background: #ffffff !important;
+    border: 1px solid var(--control-border, #8A766A) !important;
+    border-radius: var(--radius-sm, 6px) !important;
+    box-sizing: border-box;
+    color: var(--rosewood, #5A0006) !important;
     cursor: pointer;
+    display: inline-flex;
     font: inherit;
+    font-size: 14px;
     font-weight: 600;
-    padding: .55rem 1rem;
+    height: var(--control-height, 40px);
+    justify-content: center;
+    line-height: 1;
+    min-height: var(--control-height, 40px);
+    min-width: 80px;
+    padding: 0 var(--space-4, 16px);
+    text-decoration: none;
+    transition: background .15s, border-color .15s, color .15s;
 }
 
+.status-modal-actions button:hover,
+.status-modal-actions .button:hover,
 .status-confirm-button:hover {
-    background: var(--dispatcher-primary-hover, var(--rosewood));
-    border-color: var(--dispatcher-primary-hover, var(--rosewood));
-    color: var(--surface);
+    background: var(--surface-alt, #F5F0EB) !important;
+    border-color: var(--rosewood, #5A0006) !important;
+    color: var(--rosewood, #5A0006) !important;
 }
 
+.status-modal-actions button:active,
+.status-modal-actions .button:active,
+.status-confirm-button:active {
+    background: var(--border, #EDE2D8) !important;
+    border-color: var(--rosewood, #5A0006) !important;
+    color: var(--rosewood, #5A0006) !important;
+    transform: translateY(1px);
+}
+
+.status-modal-actions button:disabled,
+.status-modal-actions .button:disabled,
 .status-confirm-button:disabled {
-    cursor: wait;
-    opacity: .7;
+    cursor: not-allowed;
+    opacity: .58;
 }
 
 .status-complete-message {
@@ -218,5 +385,27 @@ body.status-modal-open {
 
     #incident-current-status {
         min-width: 120px;
+    }
+
+    .status-actions-row {
+        flex-direction: column;
+    }
+
+    .status-actions-row .btn-status-action,
+    .btn-add-update {
+        width: 100%;
+    }
+
+    .status-stepper {
+        flex-wrap: wrap;
+        gap: var(--space-1);
+    }
+
+    .stepper-label {
+        font-size: 11px;
+    }
+
+    .stepper-connector {
+        min-width: 10px;
     }
 }
