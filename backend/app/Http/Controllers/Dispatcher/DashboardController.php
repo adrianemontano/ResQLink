@@ -10,6 +10,10 @@ class DashboardController extends Controller
 {
     public function __invoke(): View
     {
+        $requestedPerPage = request()->query('per_page');
+        $perPage = in_array($requestedPerPage, ['10', '25', '50'], true)
+            ? (int) $requestedPerPage
+            : 10;
         $statusOptions = [
             'all' => 'All',
             'reported' => 'Reported',
@@ -41,7 +45,7 @@ class DashboardController extends Controller
             ->orderByRaw("CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END")
             ->orderByRaw("CASE status WHEN 'Reported' THEN 1 WHEN 'Received' THEN 2 WHEN 'Dispatched' THEN 3 ELSE 4 END")
             ->orderByDesc('reported_at')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return view('dispatcher.dashboard', [
@@ -50,6 +54,7 @@ class DashboardController extends Controller
             'incidents' => $incidents,
             'statusFilters' => $statusFilters,
             'selectedStatus' => $selectedStatus,
+            'perPage' => $perPage,
         ]);
     }
 }
