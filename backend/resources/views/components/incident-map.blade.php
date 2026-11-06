@@ -25,7 +25,7 @@
 
         <div class="map-status-legend" aria-label="Incident status legend">
             @if ($incidentStatus)
-                <button type="button" class="map-status-pill active" data-map-filter="{{ $incidentStatus }}" aria-pressed="true">
+                <button type="button" id="map-status-pill" class="map-status-pill active" data-map-filter="{{ $incidentStatus }}" aria-pressed="true">
                     <span>{{ $incidentStatus }}</span>
                 </button>
             @else
