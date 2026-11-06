@@ -31,16 +31,16 @@
                 @method('PATCH')
 
                 <div class="field">
-                    <label for="password">Temporary Password (user must change on next sign in)</label>
-                    <input id="password" name="password" type="password" autocomplete="new-password">
+                    <label for="password">Temporary Password (user must change on next sign in) <span class="required-asterisk" aria-hidden="true">*</span></label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required>
                     @error('password')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="field">
-                    <label for="password_confirmation">Confirm New Password</label>
-                    <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password">
+                    <label for="password_confirmation">Confirm New Password <span class="required-asterisk" aria-hidden="true">*</span></label>
+                    <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required>
                 </div>
 
                 <div class="actions">
