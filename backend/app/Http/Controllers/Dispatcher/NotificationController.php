@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dispatcher;
 
 use App\Http\Controllers\Controller;
+use App\Models\Incident;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -16,10 +17,19 @@ class NotificationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $notifications = $user->notifications()->latest()->take(10)->get();
+        $reportedIncidentIds = Incident::query()
+            ->where('status', Incident::STATUS_REPORTED)
+            ->pluck('id');
+        $notifications = $user->notifications()
+            ->whereIn('data->incident_id', $reportedIncidentIds)
+            ->latest()
+            ->take(10)
+            ->get();
 
         return response()->json([
-            'unread_count' => $user->unreadNotifications()->count(),
+            'unread_count' => $user->unreadNotifications()
+                ->whereIn('data->incident_id', $reportedIncidentIds)
+                ->count(),
             'notifications' => $notifications->map(fn ($n) => [
                 'id' => $n->id,
                 'data' => $n->data,
@@ -36,8 +46,12 @@ class NotificationController extends Controller
     {
         $user = $request->user();
         $since = $request->query('since');
+        $reportedIncidentIds = Incident::query()
+            ->where('status', Incident::STATUS_REPORTED)
+            ->pluck('id');
 
-        $query = $user->unreadNotifications();
+        $query = $user->unreadNotifications()
+            ->whereIn('data->incident_id', $reportedIncidentIds);
         if ($since) {
             try {
                 $since = Carbon::parse($since)->timezone(config('app.timezone'))->format('Y-m-d H:i:s');
@@ -50,7 +64,9 @@ class NotificationController extends Controller
         $newAlerts = $query->latest()->take(5)->get();
 
         return response()->json([
-            'unread_count' => $user->unreadNotifications()->count(),
+            'unread_count' => $user->unreadNotifications()
+                ->whereIn('data->incident_id', $reportedIncidentIds)
+                ->count(),
             'new_alerts' => $newAlerts->map(fn ($n) => [
                 'id' => $n->id,
                 'data' => $n->data,
@@ -69,10 +85,15 @@ class NotificationController extends Controller
         if ($record) {
             $record->markAsRead();
         }
+        $reportedIncidentIds = Incident::query()
+            ->where('status', Incident::STATUS_REPORTED)
+            ->pluck('id');
 
         return response()->json([
             'success' => true,
-            'unread_count' => $request->user()->unreadNotifications()->count(),
+            'unread_count' => $request->user()->unreadNotifications()
+                ->whereIn('data->incident_id', $reportedIncidentIds)
+                ->count(),
         ]);
     }
 
