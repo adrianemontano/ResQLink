@@ -25,7 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initializeMap(wrapper) {
     const message = wrapper.querySelector('[data-map-message]');
-    const map = createLocalMap(wrapper.querySelector('.resqlink-map'));
+    const mapContainer = wrapper.querySelector('.resqlink-map');
+    const map = createLocalMap(mapContainer);
+    // Store map instance on the container for later access
+    mapContainer.mapInstance = map;
     addLocalMapControls(map, 'bottom-right');
     map.on('error', () => showMessage(message, 'The local map background is unavailable. Check the local tile server.', true));
 
@@ -146,6 +149,9 @@ function addIncidentLayers(map, incidents) {
             'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2.5,
         },
     });
+
+    // Store incidents data for status updates
+    map.dispatcherIncidentsData = incidents;
 }
 
 function statusColorExpression() {
@@ -260,3 +266,31 @@ function showMessage(element, text, isError) {
 function formatName(value) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
+
+// Update incident marker status on the map
+function updateIncidentMapStatus(incidentId, newStatus) {
+    document.querySelectorAll('[data-resqlink-map]').forEach((wrapper) => {
+        const mapElement = wrapper.querySelector('.resqlink-map');
+        if (!mapElement || !mapElement.mapInstance) return;
+
+        const map = mapElement.mapInstance;
+        if (!map.dispatcherIncidentsData) return;
+
+        // Update the incident status in the stored data
+        const incident = map.dispatcherIncidentsData.features.find(
+            (feature) => String(feature.properties?.id) === String(incidentId)
+        );
+
+        if (incident) {
+            incident.properties.status = newStatus;
+            // Update the map source with the new data
+            const source = map.getSource('dispatcher-incidents');
+            if (source) {
+                source.setData(map.dispatcherIncidentsData);
+            }
+        }
+    });
+}
+
+// Expose function globally for status confirmation script
+window.updateIncidentMapStatus = updateIncidentMapStatus;
