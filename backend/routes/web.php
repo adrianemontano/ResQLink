@@ -73,6 +73,7 @@ Route::middleware(['auth', 'role:dispatcher'])
         Route::get('/incidents', [DispatcherIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidents/{incident}', [DispatcherIncidentController::class, 'show'])->name('incidents.show');
         Route::patch('/incidents/{incident}/status', [DispatcherIncidentController::class, 'updateStatus'])->name('incidents.status');
+        Route::post('/incidents/{incident}/updates', [DispatcherIncidentController::class, 'addUpdate'])->name('incidents.updates.store');
         Route::get('/map', [DispatcherIncidentController::class, 'map'])->name('map');
         Route::get('/map/incidents', [DispatcherIncidentController::class, 'mapIncidents'])->name('map.incidents');
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
