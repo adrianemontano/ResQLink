@@ -6,6 +6,12 @@
     max-width: 860px;
 }
 
+.account-card .form-grid label > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
 .account-card input:not([type="checkbox"]):not([type="radio"]) {
     height: 38px;
     padding: 6px 10px;
