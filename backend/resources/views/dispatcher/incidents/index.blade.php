@@ -21,6 +21,7 @@
     </div>
 
     <form class="card filter-row" method="GET" action="{{ route('dispatcher.incidents.index') }}">
+        <input type="hidden" name="per_page" value="{{ $perPage }}">
         <label>Category
             <x-dropdown
                 name="category"
@@ -69,7 +70,15 @@
                         headers: { 'X-Requested-With': 'XMLHttpRequest' },
                     });
                     if (!response.ok) throw new Error('Unable to load incidents.');
-                    results.innerHTML = await response.text();
+                    const updatedResults = document.createElement('div');
+                    updatedResults.innerHTML = await response.text();
+                    const currentPageSize = results.querySelector('#dispatcher-pagination-per-page');
+                    const updatedPageSize = updatedResults.querySelector('#dispatcher-pagination-per-page');
+                    if (currentPageSize && updatedPageSize) {
+                        // Keep the initialized dropdown while replacing its surrounding results.
+                        updatedPageSize.replaceWith(currentPageSize);
+                    }
+                    results.replaceChildren(...updatedResults.childNodes);
                     window.history.pushState({}, '', url);
                 } catch (error) {
                     results.insertAdjacentHTML('afterbegin', '<p class="alert error">Unable to update incidents. Please try again.</p>');
