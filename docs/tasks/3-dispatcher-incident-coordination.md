@@ -70,7 +70,8 @@ map, and recording status changes through completion.
 
 - `TASK3-001` A dispatcher can view incidents in a queue and filter by All,
   Reported, Received, Dispatched, or Completed, with each filter showing its
-  incident count.
+  incident count. The Incidents page sorts newest reports first, and both
+  dispatcher lists use consistent pagination with 10, 25, or 50 rows per page.
 - `TASK3-002` The queue organizes incidents according to preliminary severity
   within the selected status filter and displays the current workflow status.
 - `TASK3-003` A dispatcher can open an incident summary containing category,
@@ -88,7 +89,9 @@ map, and recording status changes through completion.
 - `TASK3-008` Unauthorized users cannot access dispatcher operations.
 - `TASK3-009` Dispatchers can review recent incident notifications from the top
   bar, see the unread count, open an incident while marking its notification
-  read, and mark all notifications as read.
+  read, and mark all notifications as read. Notifications only appear and count
+  while their incident is in Reported status; they disappear after the status
+  advances.
 - `TASK3-010` Dispatcher select controls use one inline dropdown component with
   consistent styling, viewport-aware menus, and keyboard navigation.
 - `TASK3-011` The dispatcher account forms use the available content width, and
@@ -182,8 +185,8 @@ The split below defines the concrete interface and server responsibilities for
 each requirement; no requirements are added.
 
 - **`TASK3-001`** Dispatchers can view incoming incidents in an incident queue.
-  - Frontend: Show counted status filter chips, incident summaries, and filter-preserving pagination. Match dashboard chip hover states to the map filters; show the map's All filter without a dot.
-  - Backend: Provide dispatcher-authorized, server-side queue filters and counts.
+  - Frontend: Show counted status filter chips, incident summaries, and consistent 10/25/50-row pagination. The Incidents page lists newest reports first. Match dashboard chip hover states to the map filters; show the map's All filter without a dot.
+  - Backend: Provide dispatcher-authorized, server-side queue filters and counts; preserve filters and page size across pagination.
 - **`TASK3-002`** The queue is ordered by preliminary severity and shows workflow status.
   - Frontend: Display severity ordering and current status in each filtered queue.
   - Backend: Preserve severity ordering within each status query.
@@ -209,7 +212,7 @@ each requirement; no requirements are added.
   - Backend: Enforce authorization for all dispatcher operations.
 - **`TASK3-009`** Dispatchers can review recent incident notifications and manage read state.
   - Frontend: Provide a bell, unread badge, accessible inline dropdown, and reduced-motion-aware new-notification cue.
-  - Backend: Return recent notifications and unread count; allow authorized dispatchers to mark one or all as read.
+  - Backend: Return recent notifications and unread count only for incidents still in Reported status; allow authorized dispatchers to mark one or all as read.
 - **`TASK3-010`** Dispatcher filter dropdowns share one inline, keyboard-accessible control.
   - Frontend: Use consistent sizing, Tangelo keyboard focus, neutral open/selected styling, searchable barangay options, and viewport-bounded menus.
   - Backend: Preserve existing filter field names and values.
