@@ -9,35 +9,42 @@ use Illuminate\Support\Facades\Schema;
 
 class VolunteerSeeder extends Seeder
 {
-    /**
-     * Seed the default volunteer account and verified development profile.
-     */
+    private const DEFAULT_USERNAME = 'volunteer';
+    private const DEFAULT_PASSWORD = 'Volunteer@12345';
+    private const DEFAULT_EMAIL = 'volunteer@resqlink.local';
+    private const DEFAULT_NAME = 'Barangay Responder';
+    private const DEFAULT_FIRST_NAME = 'Community';
+    private const DEFAULT_LAST_NAME = 'Volunteer';
+    private const DEFAULT_BARANGAY = 'Lahug';
+
     public function run(): void
     {
         $volunteerRole = Role::query()->where('name', 'volunteer')->firstOrFail();
-        $attributes = [
-            'username' => env('DEFAULT_VOLUNTEER_USERNAME', 'volunteer'),
-            'password' => env('DEFAULT_VOLUNTEER_PASSWORD', 'Volunteer@12345'),
+
+        $userAttributes = [
+            'username' => env('DEFAULT_VOLUNTEER_USERNAME', self::DEFAULT_USERNAME),
+            'password' => bcrypt(env('DEFAULT_VOLUNTEER_PASSWORD', self::DEFAULT_PASSWORD)),
+            'email' => env('DEFAULT_VOLUNTEER_EMAIL', self::DEFAULT_EMAIL),
             'role_id' => $volunteerRole->id,
             'is_active' => true,
         ];
 
         if (Schema::hasColumn('users', 'name')) {
-            $attributes['name'] = env('DEFAULT_VOLUNTEER_NAME', 'Barangay Responder');
+            $userAttributes['name'] = env('DEFAULT_VOLUNTEER_NAME', self::DEFAULT_NAME);
         } else {
-            $attributes['first_name'] = env('DEFAULT_VOLUNTEER_FIRST_NAME', 'Community');
-            $attributes['last_name'] = env('DEFAULT_VOLUNTEER_LAST_NAME', 'Volunteer');
+            $userAttributes['first_name'] = env('DEFAULT_VOLUNTEER_FIRST_NAME', self::DEFAULT_FIRST_NAME);
+            $userAttributes['last_name'] = env('DEFAULT_VOLUNTEER_LAST_NAME', self::DEFAULT_LAST_NAME);
         }
 
         $volunteer = User::query()->updateOrCreate(
-            ['email' => env('DEFAULT_VOLUNTEER_EMAIL', 'volunteer@resqlink.local')],
-            $attributes,
+            ['email' => $userAttributes['email']],
+            $userAttributes,
         );
 
         $volunteer->volunteerProfile()->updateOrCreate(
             ['user_id' => $volunteer->id],
             [
-                'barangay' => env('DEFAULT_VOLUNTEER_BARANGAY', 'Lahug'),
+                'barangay' => env('DEFAULT_VOLUNTEER_BARANGAY', self::DEFAULT_BARANGAY),
                 'verification_status' => 'verified',
                 'verified_at' => now(),
             ],
