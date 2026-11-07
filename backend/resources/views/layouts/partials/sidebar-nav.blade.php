@@ -57,7 +57,11 @@
         </div>
         <div class="sidebar-section">
             <div class="sidebar-section-label sidebar-label">Incidents</div>
-            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.*') ? 'active' : '' }}" href="{{ route('volunteer.incidents.create') }}">
+            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.index') ? 'active' : '' }}" href="{{ route('volunteer.incidents.index') }}">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span class="sidebar-label">View Incidents</span>
+            </a>
+            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.create') ? 'active' : '' }}" href="{{ route('volunteer.incidents.create') }}">
                 <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                 <span class="sidebar-label">Submit Incident</span>
             </a>
