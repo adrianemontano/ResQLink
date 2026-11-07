@@ -6,22 +6,40 @@
 
 @section('body')
     <div class="dashboard-shell">
+        <!-- Mobile top bar: brand + burger menu button (phones only). -->
+        <header class="mobile-header">
+            <button type="button" class="mobile-menu-toggle" data-mobile-menu-toggle aria-expanded="false" aria-label="Open menu">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            </button>
+            <div class="mobile-header-brand">
+                <span class="sidebar-logo-mark">
+                    <svg viewBox="0 0 28 28"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
+                </span>
+                <span class="mobile-header-title">ResQLink</span>
+            </div>
+        </header>
+
         <aside class="sidebar">
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-row">
-                    <div class="sidebar-logo-text">
-                        <span class="sidebar-logo-mark">
-                            <svg viewBox="0 0 28 28"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
-                        </span>
-                        <span class="sidebar-label">ResQLink</span>
+            <div class="sidebar-head">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-row">
+                        <div class="sidebar-logo-text">
+                            <span class="sidebar-logo-mark">
+                                <svg viewBox="0 0 28 28"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
+                            </span>
+                            <span class="sidebar-label">ResQLink</span>
+                        </div>
+                        <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
+                            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
                     </div>
-                    <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
-                        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-                    </button>
+                    <div class="sidebar-logo-sub sidebar-label">
+                        @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @endif
+                    </div>
                 </div>
-                <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @endif
-                </div>
+                <button type="button" class="sidebar-close" data-sidebar-close aria-label="Close menu">
+                    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
             </div>
 
             @include('layouts.partials.sidebar-nav')
@@ -31,7 +49,7 @@
                     <span class="sidebar-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
                     <span class="sidebar-label">
                         Logged in as
-                        <strong>@if (auth()->user()->hasRole('dispatcher')) Dispatcher @else {{ auth()->user()->name }} @endif</strong>
+                        <strong>{{ auth()->user()->name }}</strong>
                     </span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
@@ -43,6 +61,9 @@
                 </form>
             </div>
         </aside>
+
+        <!-- Backdrop that closes the mobile dropdown when tapped. -->
+        <div class="sidebar-overlay" data-sidebar-overlay aria-hidden="true"></div>
 
         <main class="dashboard-main">
             @if (session('status'))
