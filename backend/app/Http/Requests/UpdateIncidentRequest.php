@@ -20,7 +20,12 @@ class UpdateIncidentRequest extends FormRequest
             'nearest_landmark' => ['sometimes', 'string', 'max:255'],
             'affected_population' => ['sometimes', 'integer', 'min:0', 'max:1000000'],
             'impact_radius' => ['sometimes', 'numeric', 'gt:0', 'max:100000'],
-            'notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
+            'notes' => ['sometimes', 'nullable', 'string', 'max:5000', function ($attribute, $value, $fail) {
+                $words = str_word_count(strip_tags($value));
+                if ($words > 300) {
+                    $fail('The notes field must not exceed 300 words.');
+                }
+            }],
         ];
     }
 }
