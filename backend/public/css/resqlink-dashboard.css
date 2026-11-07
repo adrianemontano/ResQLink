@@ -193,7 +193,7 @@
     border: none;
     color: rgba(255, 255, 255, .75);
     cursor: pointer;
-    display: flex;
+    display: none;
     height: 40px;
     justify-content: center;
     padding: 0;
@@ -437,6 +437,7 @@
     }
     .sidebar-logo { padding: 0; border-bottom: 0; }
     .sidebar-head .sidebar-logo-row { gap: var(--space-3); }
+    .sidebar-close { display: flex; }
     .sidebar-nav { padding: var(--space-3) 0; }
     .sidebar-item { height: 44px; } /* larger touch target on phones */
     .dashboard-main {
