@@ -1,4 +1,3 @@
-
 /* ResQLink dashboard shell: brand header, sidebar navigation, page layout. */
 .brand-header {
     align-items: center;
@@ -130,7 +129,6 @@
 .dashboard-shell.sidebar-collapsed .sidebar-toggle svg {
     transform: rotate(180deg);
 }
-
 /* Mobile top bar: brand + burger menu button (phones only). Hidden on desktop. */
 .mobile-header {
     align-items: center;
@@ -181,7 +179,6 @@
     stroke-width: 2;
     width: 20px;
 }
-
 /* Sidebar header area on the mobile drawer: logo + close button. */
 .sidebar-head {
     align-items: center;
@@ -216,7 +213,6 @@
     stroke-width: 2;
     width: 20px;
 }
-
 /* Backdrop shown behind the open mobile drawer. */
 .sidebar-overlay {
     backdrop-filter: blur(2px);
@@ -317,8 +313,7 @@
     display: block;
     font-size: 13px;
 }
-.sidebar-footer form button,
-.sidebar-footer form .button {
+.sidebar-footer form button, .sidebar-footer form .button {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, .22);
     color: var(--text-on-dark);
@@ -327,8 +322,7 @@
     height: 36px;
     width: 100%;
 }
-.sidebar-footer form button:hover,
-.sidebar-footer form .button:hover {
+.sidebar-footer form button:hover, .sidebar-footer form .button:hover {
     background: rgba(255, 255, 255, .18);
     color: #ffffff;
 }
@@ -347,7 +341,6 @@
     min-width: 0;
     padding: var(--space-6);
 }
-
 /* Page rhythm: one consistent gap between every top-level page section. */
 .dashboard-main > * {
     margin-bottom: 0;
@@ -385,9 +378,7 @@
     gap: var(--space-2);
     margin-bottom: 0;
 }
-.form-grid input,
-.form-grid select,
-.form-grid textarea {
+.form-grid input, .form-grid select, .form-grid textarea {
     border: 1px solid var(--control-border);
     border-radius: var(--radius-sm);
     font: inherit;
@@ -397,8 +388,7 @@
 .form-grid small {
     color: var(--maximum-red);
 }
-.form-section-title,
-.full-width {
+.form-section-title, .full-width {
     grid-column: 1 / -1;
 }
 .form-section-title {
@@ -413,22 +403,17 @@
     display: flex;
     justify-content: flex-end;
 }
-
 @media (max-width: 760px) {
-
     /* Mobile top bar replaces the hidden desktop sidebar toggle. */
     .mobile-header { display: flex; }
     .mobile-menu-toggle { display: flex; }
-
     /* Desktop collapse toggle is not used on phones. */
     .sidebar-toggle { display: none; }
     .dashboard-shell {
         flex-direction: column;
     }
-
     /* Stop the page scrolling behind the open sidebar. */
     body.menu-locked { overflow: hidden; }
-
     /* Sidebar slides in from the left, covering most of the screen. */
     .sidebar {
         height: 100vh;
@@ -463,12 +448,10 @@
     .form-grid {
         grid-template-columns: 1fr;
     }
-    .form-section-title,
-    .full-width {
+.form-section-title, .full-width {
         grid-column: auto;
     }
 }
-
 @media (min-width: 761px) and (max-width: 1024px) {
     .sidebar { width: 76px; }
     .sidebar .sidebar-label { display: none; }
@@ -477,4 +460,35 @@
     .sidebar-section-label { font-size: 0; padding-inline: 8px; }
     .sidebar-section-label::first-letter { font-size: var(--text-sm); }
     .sidebar-footer { padding: 14px 10px; }
+}
+/* Status & severity badges: faded background, colored border, dot indicator.
+   Applied to all dashboard main content areas (admin, dispatcher, volunteer)
+   so the indicator design is consistent across roles. */
+.dashboard-main .badge.status-reported, .dashboard-main .badge.status-received, .dashboard-main .badge.status-dispatched, .dashboard-main .badge.status-completed, .dashboard-main .badge.severity-low, .dashboard-main .badge.severity-moderate, .dashboard-main .badge.severity-high, .dashboard-main .badge.severity-critical, .dashboard-main .badge.severity-unrated {
+    background: var(--badge-bg) !important;
+    border: 1px solid var(--badge-border) !important;
+    border-radius: 999px;
+    color: var(--badge-text) !important;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 6px;
+    height: 24px;
+    justify-content: center;
+    letter-spacing: .025em;
+    min-width: 0;
+    padding: 0 10px;
+}
+.dashboard-main .badge.status-reported, .dashboard-main .badge.severity-high { --badge-bg: #FEF2F2; --badge-border: #FECACA; --badge-text: #991B1B; }
+.dashboard-main .badge.status-received, .dashboard-main .badge.severity-moderate { --badge-bg: #FFF4E5; --badge-border: #F5D29A; --badge-text: #713F12; }
+.dashboard-main .badge.status-dispatched { --badge-bg: #ECFDF3; --badge-border: #A7E4BD; --badge-text: #166534; }
+.dashboard-main .badge.status-completed { --badge-bg: #EFF6FF; --badge-border: #BFDBFE; --badge-text: #1E40AF; }
+.dashboard-main .badge.severity-low { --badge-bg: #FEFCE8; --badge-border: #FDE68A; --badge-text: #713F12; }
+.dashboard-main .badge.severity-critical { --badge-bg: #FFF1F2; --badge-border: #FDA4AF; --badge-text: #881337; }
+.dashboard-main .badge.severity-unrated { --badge-bg: var(--gray-50); --badge-border: var(--border); --badge-text: var(--text-muted); }
+.dashboard-main .badge.status-reported::before, .dashboard-main .badge.status-received::before, .dashboard-main .badge.status-dispatched::before, .dashboard-main .badge.status-completed::before, .dashboard-main .badge.severity-low::before, .dashboard-main .badge.severity-moderate::before, .dashboard-main .badge.severity-high::before, .dashboard-main .badge.severity-critical::before, .dashboard-main .badge.severity-unrated::before {
+    background: currentColor;
+    border-radius: 50%;
+    content: "";
+    flex: 0 0 6px;
+    height: 6px;
 }

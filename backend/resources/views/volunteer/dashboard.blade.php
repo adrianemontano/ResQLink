@@ -137,7 +137,7 @@
                         <strong>{{ $incident->category ?: 'Incident report' }}</strong>
                         <span>INC-{{ str_pad((string) $incident->getKey(), 4, '0', STR_PAD_LEFT) }}</span>
                     </div>
-                    <span class="volunteer-status-badge status-{{ strtolower($incident->status ?: 'reported') }}">{{ $incident->status ?: 'Reported' }}</span>
+                    <span class="badge status-{{ strtolower($incident->status ?: 'reported') }}">{{ $incident->status ?: 'Reported' }}</span>
                     <time datetime="{{ ($incident->reported_at ?? $incident->created_at)->toDateString() }}">
                         {{ ($incident->reported_at ?? $incident->created_at)->format('M j, Y') }}
                     </time>
