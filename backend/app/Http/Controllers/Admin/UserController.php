@@ -70,6 +70,8 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
+        $data['must_change_password'] = true;
+        $data['password_changed_at'] = null;
         $this->normalizeNameFields($data);
 
         $role = Role::query()->findOrFail($data['role_id']);
@@ -145,7 +147,10 @@ class UserController extends Controller
 
         $user->update([
             'password' => $request->validated('password'),
+            'must_change_password' => true,
+            'password_changed_at' => null,
         ]);
+        $user->mobileAccessTokens()->delete();
 
         return redirect()->route('admin.users.edit', $user)->with('status', 'Password reset.');
     }

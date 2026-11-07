@@ -8,7 +8,8 @@
 
 Use a deliberately small Flutter stack:
 
-> Flutter and Material 3, Provider, the Dart `http` package, Laravel Sanctum,
+> Flutter and Material 3, Provider, the Dart `http` package, a hashed Laravel
+> bearer token,
 > secure token storage, Geolocator, and MapLibre, backed by the existing Laravel
 > and MySQL application.
 
@@ -23,7 +24,7 @@ infrastructure and complex application frameworks.
 | User interface | Material 3 | Forms, navigation, dialogs, and visual theme |
 | State management | Provider | Authentication and form workflow state |
 | HTTP client | Dart `http` package | JSON communication with Laravel |
-| Authentication | Laravel Sanctum | Device tokens and protected API routes |
+| Authentication | Laravel API login and hashed bearer-token table | Device tokens and protected API routes |
 | Token storage | `flutter_secure_storage` | Secure local storage of API tokens |
 | Maps | `maplibre_gl` | Map display, pin placement, and radius rendering |
 | Device location | `geolocator` | Permission-aware GPS coordinates |
@@ -98,19 +99,20 @@ client should handle:
 Screens should call feature services, not construct URLs and headers directly.
 This keeps networking consistent and easier to test.
 
-## Authentication: Laravel Sanctum
+## Authentication: Laravel bearer tokens
 
-Use Laravel Sanctum personal access tokens for mobile authentication. The mobile
+The current implementation uses opaque random bearer tokens. The mobile
 application exchanges valid credentials and a device name for a token. It then
-sends the token as a bearer token on protected requests.
+sends the token as a bearer token on protected requests; Laravel stores only
+the token's SHA-256 hash in `mobile_access_tokens`.
 
-Sanctum is preferred here because:
+This lightweight first-party token approach is used because:
 
-- It is designed for simple Laravel API and mobile token authentication.
-- It works alongside the existing browser session authentication.
-- A token can be revoked during logout.
-- Tokens can be separated by device.
-- OAuth infrastructure is unnecessary for the current project.
+- Random tokens are unguessable and never stored in plaintext by Laravel.
+- It works alongside browser session authentication.
+- A token can be revoked during logout or an Admin password reset.
+- Tokens have a device label and 30-day expiry.
+- OAuth infrastructure and downloaded Composer packages are unnecessary.
 
 The browser login and mobile login should remain separate entry points while
 sharing consistent credential, activation, role, and verification rules.

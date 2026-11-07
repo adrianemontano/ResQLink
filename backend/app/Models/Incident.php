@@ -85,6 +85,14 @@ class Incident extends Model
         return $this->hasMany(IncidentHistory::class)->latest('changed_at');
     }
 
+    /**
+     * @return HasMany<IncidentPhoto, $this>
+     */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(IncidentPhoto::class);
+    }
+
     protected static function booted(): void
     {
         static::creating(function (self $incident): void {

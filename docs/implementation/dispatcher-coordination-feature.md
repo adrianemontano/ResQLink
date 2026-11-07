@@ -59,6 +59,26 @@ Shared theme and widget styles now provide distinct Reported and Completed statu
 badges, consistent queue and detail-page action links, clearer filter spacing, and
 responsive behavior for incident tables and detail layouts on small screens.
 
+## November 2026 dispatcher enhancements
+
+- Dispatcher queue/dashboard rows show the reporting volunteer and Asia/Manila
+	report timestamp; details retain actor and timestamp for each status history row.
+- Active dispatchers receive database notifications for new incidents. The web
+	notification bell polls every 11 seconds, supports per-item/all read actions,
+	toast alerts, and an optional local sound toggle.
+- Dispatchers can edit only their own profile and password. User administration
+	stays restricted to Admin routes.
+- Dispatchers can manage their own profile and password from My Account.
+	Dispatcher-specific reports have been removed; Admin reports remain available.
+- Optional responder photos are stored on Laravel's private local disk and
+	served through authenticated Dispatcher/Admin photo routes.
+- Admin-created accounts and Admin password resets set `must_change_password`;
+	the web middleware and mobile API gate access until the password is changed.
+- Flutter uses expiring random bearer tokens stored as SHA-256 hashes in
+	`mobile_access_tokens`. This first-party token implementation was used because
+	Composer package downloads required an unavailable GitHub credential; review
+	it before production use.
+
 ## Verification setup
 
 Run `php artisan migrate --seed` in `backend/` before testing. Create a
@@ -87,9 +107,7 @@ Recommended next enhancements:
 
 1. Add dispatcher assignment and presence indicators so the response owner is
 	visible separately from the dispatcher who changed status.
-2. Add polling or event-based refresh for active incidents when live
-	integration is approved.
-3. Add conflict handling for concurrent status updates.
-4. Add admin archive/report integration so archived records have an explicit
+2. Add conflict handling for concurrent status updates.
+3. Add admin archive/report integration so archived records have an explicit
 	lifecycle state instead of relying only on Completed.
-5. Add audit logging for failed authorization and invalid transition attempts.
+4. Add audit logging for failed authorization and invalid transition attempts.

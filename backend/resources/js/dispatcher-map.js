@@ -7,13 +7,14 @@ import {
 // badges, legends, and charts always agree; fallbacks match those tokens.
 const STATUS_COLORS = {
     Reported: cssToken('--status-reported', '#C81E1E'),
-    Received: cssToken('--status-received', '#B45309'),
+    Received: cssToken('--status-received', '#FFB366'),
     Dispatched: cssToken('--status-dispatched', '#0F766E'),
-    Completed: cssToken('--status-completed', '#4B5563'),
+    Completed: cssToken('--dispatcher-status-completed', '#1D4ED8'),
 };
 
 function cssToken(name, fallback) {
-    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const scope = document.querySelector('.dispatcher-ui .dashboard-main') || document.documentElement;
+    const value = getComputedStyle(scope).getPropertyValue(name).trim();
 
     return value || fallback;
 }
@@ -24,18 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initializeMap(wrapper) {
     const message = wrapper.querySelector('[data-map-message]');
-    const map = createLocalMap(wrapper.querySelector('.resqlink-map'));
+    const mapContainer = wrapper.querySelector('.resqlink-map');
+    const map = createLocalMap(mapContainer);
+    // Store map instance on the container for later access
+    mapContainer.mapInstance = map;
     addLocalMapControls(map, 'bottom-right');
     map.on('error', () => showMessage(message, 'The local map background is unavailable. Check the local tile server.', true));
 
-    const datasetsPromise = loadLocalMapDatasets((name) => {
-        showMessage(message, `${formatName(name)} map data is unavailable.`, true);
-    });
+    const isFocusedIncidentMap = Boolean(wrapper.dataset.focusIncidentId);
+    const datasetsPromise = isFocusedIncidentMap
+        ? Promise.resolve({})
+        : loadLocalMapDatasets((name) => {
+            showMessage(message, `${formatName(name)} map data is unavailable.`, true);
+        });
 
     map.on('load', async () => {
         const datasets = await datasetsPromise;
-        addReferenceLayers(map, datasets);
-        bindSearch(map, wrapper, datasets);
+        if (!isFocusedIncidentMap) {
+            addReferenceLayers(map, datasets);
+            bindSearch(map, wrapper, datasets);
+        }
 
         const incidents = await loadIncidents(wrapper, message);
         const visibleIncidents = selectIncidentFeatures(incidents, wrapper.dataset.focusIncidentId);
@@ -43,7 +52,7 @@ async function initializeMap(wrapper) {
         bindIncidentPopups(map);
         bindStatusFilters(map, wrapper);
         setInitialView(map, wrapper, visibleIncidents, datasets.barangays);
-        bindMapInspection(map);
+        if (!isFocusedIncidentMap) bindMapInspection(map);
     });
 }
 
@@ -65,7 +74,7 @@ function addReferenceLayers(map, datasets) {
         'circle-stroke-color': '#765000', 'circle-stroke-width': 0.9,
     });
     addGeoJsonLayer(map, 'dispatcher-facilities', datasets.facilities, 'circle', {
-        'circle-radius': 6, 'circle-color': '#2563EB', 'circle-opacity': 0.96,
+        'circle-radius': 6, 'circle-color': cssToken('--dispatcher-primary', '#F37100'), 'circle-opacity': 0.96,
         'circle-stroke-color': '#fff', 'circle-stroke-width': 2,
     });
     bindBarangayHover(map);
@@ -140,6 +149,9 @@ function addIncidentLayers(map, incidents) {
             'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2.5,
         },
     });
+
+    // Store incidents data for status updates
+    map.dispatcherIncidentsData = incidents;
 }
 
 function statusColorExpression() {
@@ -254,3 +266,31 @@ function showMessage(element, text, isError) {
 function formatName(value) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
+
+// Update incident marker status on the map
+function updateIncidentMapStatus(incidentId, newStatus) {
+    document.querySelectorAll('[data-resqlink-map]').forEach((wrapper) => {
+        const mapElement = wrapper.querySelector('.resqlink-map');
+        if (!mapElement || !mapElement.mapInstance) return;
+
+        const map = mapElement.mapInstance;
+        if (!map.dispatcherIncidentsData) return;
+
+        // Update the incident status in the stored data
+        const incident = map.dispatcherIncidentsData.features.find(
+            (feature) => String(feature.properties?.id) === String(incidentId)
+        );
+
+        if (incident) {
+            incident.properties.status = newStatus;
+            // Update the map source with the new data
+            const source = map.getSource('dispatcher-incidents');
+            if (source) {
+                source.setData(map.dispatcherIncidentsData);
+            }
+        }
+    });
+}
+
+// Expose function globally for status confirmation script
+window.updateIncidentMapStatus = updateIncidentMapStatus;

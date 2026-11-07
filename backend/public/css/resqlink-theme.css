@@ -221,6 +221,12 @@ label {
     margin-bottom: var(--space-2);
 }
 
+.required-asterisk {
+    color: var(--danger, #D92200);
+    font-weight: 700;
+    margin-left: 2px;
+}
+
 input,
 select,
 textarea {

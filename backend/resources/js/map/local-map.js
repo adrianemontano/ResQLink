@@ -23,6 +23,7 @@ export function createLocalMap(container, options = {}) {
 export function addLocalMapControls(map, navigationPosition = 'top-right') {
     map.addControl(new maplibregl.NavigationControl(), navigationPosition);
     map.addControl(new maplibregl.AttributionControl({
+        compact: true,
         customAttribution: window.RESQLINK_LOCAL_MAP_ATTRIBUTION || '© OpenStreetMap contributors © OpenMapTiles',
     }), 'bottom-right');
 }

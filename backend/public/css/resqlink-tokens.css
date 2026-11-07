@@ -25,16 +25,35 @@
     --primary-hover: var(--rosewood);
     --accent: var(--tangelo);
     --accent-light: #FFF0DF;
+    --dispatcher-primary: var(--philippine-orange);
+    --dispatcher-primary-rgb: 243, 113, 0;
+    --dispatcher-primary-hover: var(--sangria);
+    --dispatcher-primary-active: var(--rosewood);
+    --dispatcher-primary-text: var(--text-primary);
+    --dispatcher-link: #A63700;
+    --dispatcher-link-hover: var(--rosewood);
+    --dispatcher-disabled-bg: var(--gray-100);
+    --dispatcher-disabled-text: var(--text-label);
+    --dispatcher-disabled-border: var(--control-border);
+    --dispatcher-status-completed: #1D4ED8;
+    --dispatcher-status-completed-hover: #1E40AF;
+    --dispatcher-status-completed-active: #1E3A8A;
+    --dispatcher-status-completed-disabled: #DBEAFE;
+    --dispatcher-status-completed-disabled-text: #1E3A8A;
+    --dispatcher-status-completed-disabled-border: #93C5FD;
     --danger: var(--maximum-red);
     --success: #476B45;
     --focus: #5A4A45;
 
     /* Incident workflow status: outlined pills, map markers, legends, charts. */
     --status-reported: #C81E1E;
-    --status-received: #B45309;
-    --status-dispatched: #0F766E;
+    --status-received: #FFB366;
+    --status-received-text: #5A0006;
+    --status-received-hover: #FFA447;
+    --status-received-active: #E68A2E;
+    --status-received-border: #E69543;
+    --status-dispatched: #16A34A;
     --status-completed: #4B5563;
-    --status-all: #2563EB;
 
     /* Preliminary severity: filled badges, escalating from low to critical. */
     --severity-low: #FDC500;
