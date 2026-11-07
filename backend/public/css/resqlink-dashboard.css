@@ -51,6 +51,12 @@
 .dashboard-shell.sidebar-collapsed .sidebar {
     width: 72px;
 }
+.dashboard-shell.sidebar-collapsed .sidebar:hover {
+    width: 232px;
+}
+.dashboard-shell.sidebar-collapsed .sidebar:hover .sidebar-label {
+    display: block;
+}
 .sidebar-label {
     white-space: nowrap;
 }
@@ -64,7 +70,8 @@
 .sidebar-logo-row {
     align-items: center;
     display: flex;
-    justify-content: space-between;
+    gap: var(--space-3);
+    justify-content: flex-start;
 }
 .dashboard-shell.sidebar-collapsed .sidebar-logo-row {
     flex-direction: column;
@@ -120,7 +127,6 @@
     fill: none;
     height: 14px;
     stroke: currentColor;
-    stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 2.5;
     transition: transform .2s ease;
@@ -174,7 +180,6 @@
     fill: none;
     height: 20px;
     stroke: currentColor;
-    stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 2;
     width: 20px;
@@ -208,7 +213,6 @@
     fill: none;
     height: 20px;
     stroke: currentColor;
-    stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 2;
     width: 20px;
@@ -294,7 +298,6 @@
     fill: none;
     height: 18px;
     stroke: currentColor;
-    stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 2;
     width: 18px;
@@ -331,7 +334,6 @@
     flex-shrink: 0;
     height: 15px;
     stroke: currentColor;
-    stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 2;
     width: 15px;

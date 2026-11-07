@@ -44,9 +44,9 @@
         }
 
         navLinks.forEach(function (link) {
-            link.addEventListener('click', function (event) {
-                if (shell.classList.contains('sidebar-collapsed')) {
-                    event.preventDefault();
+            link.addEventListener('click', function () {
+                if (shell.classList.contains('sidebar-open')) {
+                    setOpen(false);
                 }
             });
         });
