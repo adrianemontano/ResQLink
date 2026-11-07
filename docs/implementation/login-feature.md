@@ -70,6 +70,21 @@ verified volunteer profile.
 
 Logout: `/logout` signs out the user, invalidates the session, regenerates the CSRF token, and redirects to `/login`.
 
+## Mobile authentication
+
+The planned Expo client uses Laravel Sanctum bearer tokens rather than web
+sessions. Active, verified volunteers can use:
+
+* `POST /api/mobile/login`
+* `GET /api/mobile/user`
+* `POST /api/mobile/logout`
+* `PUT /api/mobile/password`
+
+Tokens expire after 30 days and carry only the profile, password-update, and
+incident-creation abilities required by the mobile workflow. An administrator
+password reset revokes the user's existing tokens. The mobile and web
+authentication flows remain separate.
+
 ## Roles
 
 Admin

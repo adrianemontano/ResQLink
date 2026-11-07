@@ -183,6 +183,14 @@ are stored through Laravel's non-public default disk. Automated coverage is
 defined in backend/tests/Feature/WebAuthenticationTest.php and the admin
 records/report feature test file.
 
+TASK1 also provides Sanctum personal-access-token operations for the planned
+Expo client at `/api/mobile/login`, `/api/mobile/user`,
+`/api/mobile/logout`, and `/api/mobile/password`. Only active, verified
+volunteers receive tokens. Password resets revoke existing Sanctum tokens, and
+temporary-password users cannot submit incidents until changing the password.
+Focused coverage is defined in
+`backend/tests/Feature/MobileAuthenticationTest.php`.
+
 Before marking TASK1 complete, Jassy should:
 
 1. Confirm the `roles`, `users`, volunteer profile, and volunteer-document

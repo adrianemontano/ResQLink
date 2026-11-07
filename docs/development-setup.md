@@ -5,6 +5,34 @@ changes from a remote branch. Run application commands from `backend/`.
 
 ## Prerequisites
 
+For future mobile work, also install a Node version supported by the selected
+Expo SDK, Android Studio and its compatible Android SDK/JDK tooling, and Android
+platform tools. Exact versions must be selected and recorded during the
+Expo/React Native/MapLibre compatibility proof of concept. The Expo SDK 58
+foundation is generated under `mobile/`; its physical-device MapLibre proof is
+still pending.
+
+The Laravel Sanctum mobile API is implemented. Contributors updating an
+existing database must also follow
+[`mobile/sanctum-migration-guide.md`](mobile/sanctum-migration-guide.md).
+
+## Planned Expo Android workflow
+
+MapLibre React Native cannot run in Expo Go. After the fresh `mobile/` project
+is created and its native dependencies and config plugin are installed, create
+a local development build with `npx expo run:android` or use an EAS development
+build. Start Metro for the installed client with
+`npx expo start --dev-client`. Rebuild after native dependency, config-plugin,
+Expo/React Native runtime, or native configuration changes.
+
+A physical phone must use the laptop LAN IP, for example
+`http://<LAPTOP_LAN_IP>:8000/api` and
+`http://<LAPTOP_LAN_IP>:8080/styles/<STYLE_ID>/style.json`; phone `localhost`
+does not reach the laptop. Keep devices on the same network, bind services to
+reachable interfaces, allow firewall ports, and use only debug-scoped cleartext
+HTTP allowances. Production endpoints require HTTPS. An Expo tunnel does not
+automatically expose Laravel or TileServer.
+
 - PHP 8.3 or newer with the extensions listed in the root `README.md`
 - PHP `zip` extension for Dispatcher XLSX report downloads
 - Composer 2

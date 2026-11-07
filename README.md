@@ -1,24 +1,26 @@
 # ResQLink - Volunteer-Based Emergency Alert and Dispatch Coordination Support System
 
-ResQLink is a capstone project for supporting emergency incident reporting and dispatch coordination. The implementation includes a Laravel backend and web application for administrators/dispatchers plus an initial Flutter volunteer app.
+ResQLink is a capstone project for supporting emergency incident reporting and dispatch coordination. The current implementation focuses on the Laravel backend and web application used by administrators and dispatchers.
 
 ## Project Overview
 
 ResQLink is designed to help emergency operations teams receive, organize, and act on structured incident information from verified volunteers. The system addresses the problem of scattered or incomplete emergency reports by moving toward a centralized workflow for account management, incident coordination, and role-based access.
 
-Current users and clients:
+Current users:
 
 * Administrators
 * Dispatchers
-* Verified volunteers through the web incident-reporting workflow and initial
-	Flutter authentication/report/photo flows
+* Verified volunteers through the web incident-reporting workflow
+
+Planned users:
+
+* Barangay volunteers through a future mobile application
 
 Current development phase:
 
 * Laravel backend
 * Web application for Admin and Dispatcher roles
-* Flutter foundation: bearer login, forced password change, incident submission,
-  and optional compressed photo upload; map picker and offline sync remain future work
+* Volunteer mobile Sanctum API and Expo foundation implemented
 
 ## Technology Stack
 
@@ -38,16 +40,18 @@ Detected project technologies:
 | JavaScript | JavaScript / ES modules | `resources/js/app.js`, Vite config |
 | Testing | PHPUnit | `12.5.30` from `composer.lock` |
 | Code Style | Laravel Pint | `v1.29.3` from `composer.lock` |
+| Mobile authentication | Laravel Sanctum | `v4.3.3`; personal access tokens for verified volunteers |
+| Volunteer Mobile | Expo SDK 58 + React Native 0.88.1 + TypeScript | Android-first foundation generated |
+| Planned Mobile Map | `@maplibre/maplibre-react-native` | Requires an Expo Development Build; Expo Go is insufficient |
 
 Not currently installed:
 
 * Laravel Breeze
-* Laravel Sanctum
 * Spatie Laravel Permission
 * Pest
 * Bootstrap package
 * Leaflet package (the current maps use MapLibre instead)
-* Advanced Flutter map picker, offline synchronization, and mobile push notifications
+* Expo mobile application code (the old Flutter implementation was removed)
 
 ## Prerequisites
 
@@ -96,6 +100,7 @@ Required PHP extensions for the installed Laravel/PHPUnit stack include:
 * `openssl`
 * `pdo`
 * `pdo_mysql`
+* `pdo_sqlite` and `sqlite3` for the PHPUnit in-memory test database
 * `session`
 * `tokenizer`
 * `xml`
@@ -363,6 +368,10 @@ Available web areas:
 
 Available API operations:
 
+* `POST /api/mobile/login` — issue a Sanctum token to an active, verified volunteer
+* `GET /api/mobile/user` — restore the authenticated volunteer session
+* `POST /api/mobile/logout` — revoke the current Sanctum token
+* `PUT /api/mobile/password` — replace a volunteer's temporary password
 * `POST /api/incidents` — submit an incident as an authenticated, verified volunteer
 * `GET /api/dispatch-points` — retrieve authorized dispatcher map points
 
@@ -428,10 +437,10 @@ Current development order:
 2. Web application for administrators and dispatchers
 3. Mobile application for volunteers
 
-The repository has an authenticated incident-submission API, but it does not yet
-provide mobile-token authentication or the complete API surface needed by a
-Flutter client. Keep session-based web authentication separate from future
-mobile authentication.
+The repository provides Sanctum mobile login, session restoration, logout,
+temporary-password replacement, and authenticated incident submission. The
+Expo client still needs to consume this JSON contract. Session-based web
+authentication remains separate from mobile bearer-token authentication.
 
 Recommended contributor workflow:
 
@@ -453,6 +462,8 @@ Recommended contributor workflow:
 * Role records for Admin, Dispatcher, and Volunteer
 * Admin and Dispatcher web access
 * Verified volunteer web access and incident submission
+* Verified volunteer Sanctum login, session restoration, logout, and password change
+* Sanctum-protected mobile incident-submission contract
 * Role middleware for protected routes
 * Default administrator seeder
 * Admin dashboard metrics backed by current user and incident records
@@ -476,8 +487,8 @@ Recommended contributor workflow:
 ### Remaining work
 
 * Volunteer mobile application
-* Mobile/API authentication for Flutter clients
-* Flutter-to-Laravel integration
+* Expo React Native-to-Laravel integration through Axios
+* Physical-device MapLibre proof of concept using an Expo Development Build
 * Notification system
 * Admin user-list search
 * Complete volunteer-document review and protected file-download workflow

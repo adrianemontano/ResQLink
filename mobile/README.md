@@ -1,26 +1,31 @@
-# ResQLink Volunteer Mobile App
+# ResQLink Volunteer Mobile Application
 
-Initial Flutter implementation for verified volunteer login, mandatory
-password change, incident submission, and optional compressed JPG/PNG photo
-upload. Laravel remains the source of truth for authentication, validation,
-severity, timestamps, and persistence.
+Android-first Expo React Native client for verified ResQLink volunteers.
 
 ## Local setup
 
-From this directory, install Flutter packages and run the app:
+1. Install dependencies:
 
-```powershell
-flutter pub get
-flutter run --dart-define=RESQLINK_API_URL=http://10.0.2.2:8000/api
-```
+   ```powershell
+   npm.cmd install
+   ```
 
-`10.0.2.2` is the Android emulator bridge to the host machine. For another
-emulator or physical device, provide a reachable API base URL with
-`--dart-define=RESQLINK_API_URL=...`. Use HTTPS outside local development.
-Android network security allows cleartext only to local emulator hosts.
+2. Copy `.env.example` to `.env.local` and replace `<LAPTOP_LAN_IP>` with the
+   laptop address reachable from the Android device. Public Expo values must not
+   contain passwords, bearer tokens, database credentials, or Laravel secrets.
 
-The app stores bearer tokens and the forced-password flag in
-`flutter_secure_storage`. Photos are resized and JPEG-compressed before upload;
-Laravel validates the image again and stores it on the private disk. The
-advanced local map picker, offline synchronization, and mobile push
-notifications are not implemented yet.
+3. After explicit repository-owner approval, create the development build:
+
+   ```powershell
+   npx.cmd expo run:android --device
+   ```
+
+4. For TypeScript-only development after installation, start Metro with:
+
+   ```powershell
+   npx.cmd expo start --dev-client
+   ```
+
+MapLibre contains native code, so Expo Go cannot run this application. Route
+files live in `src/app/`; feature behavior belongs in `src/features/` and shared
+API code belongs in `src/services/api/`.

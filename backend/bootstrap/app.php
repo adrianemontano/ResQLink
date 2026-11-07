@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Middleware\EnsureMobilePasswordIsChanged;
 use App\Http\Middleware\EnsurePasswordIsChanged;
-use App\Http\Middleware\AuthenticateMobileToken;
 use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,7 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
             'password.changed' => EnsurePasswordIsChanged::class,
-            'api.token' => AuthenticateMobileToken::class,
+            'abilities' => CheckAbilities::class,
+            'ability' => CheckForAnyAbility::class,
+            'mobile.password.changed' => EnsureMobilePasswordIsChanged::class,
         ]);
         $middleware->appendToGroup('web', [
             EnsurePasswordIsChanged::class,

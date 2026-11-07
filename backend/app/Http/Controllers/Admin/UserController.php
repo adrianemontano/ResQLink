@@ -150,7 +150,7 @@ class UserController extends Controller
             'must_change_password' => true,
             'password_changed_at' => null,
         ]);
-        $user->mobileAccessTokens()->delete();
+        $user->tokens()->delete();
 
         return redirect()->route('admin.users.edit', $user)->with('status', 'Password reset.');
     }
@@ -178,6 +178,7 @@ class UserController extends Controller
             'verification_status' => $verified ? 'verified' : 'pending',
             'verified_at' => $verified ? now() : null,
         ]);
+
         return back()->with('status', 'Barangay Responder verification updated.');
     }
 

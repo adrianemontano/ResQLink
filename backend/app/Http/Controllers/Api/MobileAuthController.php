@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\MobileAccessToken;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class MobileAuthController extends Controller
 {
@@ -29,25 +28,24 @@ class MobileAuthController extends Controller
         }
         abort_unless($user->hasRole('volunteer'), 403, 'The mobile app is for Barangay Responders.');
 
-        $user->mobileAccessTokens()->whereNotNull('expires_at')->where('expires_at', '<=', now())->delete();
-        $plainToken = bin2hex(random_bytes(32));
-        MobileAccessToken::query()->create([
-            'user_id' => $user->id,
-            'name' => $data['device_name'] ?? 'volunteer-mobile',
-            'token_hash' => hash('sha256', $plainToken),
-            'expires_at' => now()->addDays(30),
-        ]);
+        $token = $user->createToken(
+            $data['device_name'] ?? 'volunteer-mobile',
+            ['profile:read', 'password:update', 'incidents:create'],
+            now()->addDays(30),
+        );
 
         return response()->json([
-            'token' => $plainToken,
-            'must_change_password' => (bool) $user->must_change_password,
-            'user' => ['id' => $user->id, 'name' => $user->name, 'role' => $user->role?->name],
+            'data' => [
+                'token' => $token->plainTextToken,
+                'must_change_password' => (bool) $user->must_change_password,
+                'user' => ['id' => $user->id, 'name' => $user->name, 'role' => $user->role?->name],
+            ],
         ]);
     }
 
     public function logout(Request $request): JsonResponse
     {
-        $this->currentToken($request)?->delete();
+        $request->user()->currentAccessToken()?->delete();
 
         return response()->json(['message' => 'Signed out.']);
     }
@@ -57,7 +55,7 @@ class MobileAuthController extends Controller
         $user = $request->user();
 
         return response()->json([
-            'user' => [
+            'data' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
@@ -87,10 +85,5 @@ class MobileAuthController extends Controller
         ]);
 
         return response()->json(['message' => 'Password changed successfully.', 'must_change_password' => false]);
-    }
-
-    private function currentToken(Request $request): ?MobileAccessToken
-    {
-        return MobileAccessToken::query()->where('token_hash', hash('sha256', (string) $request->bearerToken()))->first();
     }
 }

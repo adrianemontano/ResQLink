@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'first_name', 'last_name', 'contact_number', 'username', 'email', 'password', 'role_id', 'is_active', 'must_change_password', 'password_changed_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     public function getNameAttribute(?string $value): string
     {
@@ -59,12 +59,6 @@ class User extends Authenticatable
     public function volunteerProfile(): HasOne
     {
         return $this->hasOne(VolunteerProfile::class);
-    }
-
-    /** @return HasMany<MobileAccessToken, $this> */
-    public function mobileAccessTokens(): HasMany
-    {
-        return $this->hasMany(MobileAccessToken::class);
     }
 
     public function hasRole(string|array $roles): bool

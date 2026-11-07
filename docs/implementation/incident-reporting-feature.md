@@ -12,6 +12,11 @@ outside this feature.
 
 `POST /api/incidents`
 
+The API endpoint requires a Sanctum bearer token with the
+`incidents:create` ability. The authenticated account must be an active,
+verified volunteer and must have replaced any temporary password. Web incident
+submission continues to use the existing Laravel session flow.
+
 ## Volunteer web flow
 
 Verified active volunteers can also sign in through the web application. After
