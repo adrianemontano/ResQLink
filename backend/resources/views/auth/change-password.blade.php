@@ -4,11 +4,8 @@
 <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--surface-alt); padding: var(--space-4);">
     <div class="card" style="width: 100%; max-width: 440px; box-shadow: 0 10px 30px rgba(90, 0, 6, 0.12); border: 1px solid var(--border); border-top: 5px solid var(--rosewood);">
         <div style="text-align: center; margin-bottom: var(--space-4);">
-            <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span class="sidebar-logo-mark" style="background: var(--rosewood); color: #fff; width: 32px; height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;">
-                    <svg viewBox="0 0 28 28" style="width: 20px; height: 20px; fill: currentColor;"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
-                </span>
-                <strong style="font-size: 20px; color: var(--rosewood);">ResQLink</strong>
+            <div style="display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                <img src="{{ asset('images/resqlink-logo.png') }}" alt="ResQLink" style="height: 38px; width: auto; display: block;">
             </div>
             <h1 style="font-size: 18px; margin: 0 0 6px 0; color: var(--text-primary);">Security Action Required</h1>
             <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
@@ -94,6 +91,9 @@
             </form>
         </div>
     </div>
+    </div>
+
+    <x-footer />
 </div>
 
 <script>

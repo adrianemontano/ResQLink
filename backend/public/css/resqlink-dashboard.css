@@ -70,22 +70,75 @@
 
 .sidebar-logo {
     border-bottom: 1px solid rgba(255, 255, 255, .1);
-    padding: 16px 18px 14px;
+    padding: 14px 14px 12px;
 }
 
 .sidebar-logo-row {
     align-items: center;
     display: flex;
     justify-content: space-between;
+    gap: 8px;
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar-logo-row {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar-logo {
-    padding: 16px 8px;
+    padding: 14px 8px 12px;
+}
+
+.sidebar-brand-badge,
+.sidebar-brand-link {
+    align-items: center;
+    cursor: default;
+    display: inline-flex;
+    flex: 1;
+    justify-content: center;
+    max-width: 156px;
+    min-width: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.sidebar-brand-full {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.sidebar-logo-img {
+    display: block;
+    height: auto;
+    max-height: 26px;
+    max-width: 100%;
+    object-fit: contain;
+    width: auto;
+}
+
+.sidebar-brand-mark {
+    display: none;
+}
+
+.sidebar-mark-img {
+    display: block;
+    height: 30px;
+    object-fit: contain;
+    width: 30px;
+}
+
+.dashboard-shell.sidebar-collapsed .sidebar-brand-mark {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+}
+
+.dashboard-shell.sidebar-collapsed .sidebar-brand-full {
+    display: none !important;
 }
 
 .sidebar-logo-text {
@@ -278,6 +331,8 @@
 }
 
 .dashboard-main {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     min-width: 0;
     padding: var(--space-6);

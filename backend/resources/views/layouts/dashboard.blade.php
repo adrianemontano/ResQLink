@@ -12,18 +12,20 @@
         <aside class="sidebar">
             <div class="sidebar-logo">
                 <div class="sidebar-logo-row">
-                    <div class="sidebar-logo-text">
-                        <span class="sidebar-logo-mark">
-                            <svg viewBox="0 0 28 28"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
+                    <div class="sidebar-brand-badge" aria-label="ResQLink">
+                        <span class="sidebar-brand-mark" aria-hidden="true">
+                            <img src="{{ asset('images/resqlink-mark.png') }}" alt="" class="sidebar-mark-img">
                         </span>
-                        <span class="sidebar-label">ResQLink</span>
+                        <span class="sidebar-brand-full sidebar-label">
+                            <img src="{{ asset('images/resqlink-logo.png') }}" alt="ResQLink" class="sidebar-logo-img">
+                        </span>
                     </div>
                     <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
                         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
                     </button>
                 </div>
                 <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @endif
+                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @elseif (auth()->user()->hasRole('volunteer')) Volunteer Portal @endif
                 </div>
             </div>
 
@@ -66,6 +68,8 @@
             @endif
 
             @yield('content')
+
+            <x-footer />
         </main>
     </div>
 @endsection

@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-footer.css') }}">
     @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
         <link rel="stylesheet" href="{{ asset('css/dispatcher-theme.css') }}">
         <link rel="stylesheet" href="{{ asset('css/dispatcher-notifications.css') }}">

@@ -36,6 +36,12 @@ clear text labels. Laravel remains authoritative for severity and status.
   states in both web and mobile designs.
 - Validate mobile layouts at 360–412px widths and with larger text settings.
 
+## Brand Identity and Sidebar Assets
+
+- **Official Brand Logo (public/images/resqlink-logo.png)**: Full horizontal brand logo with Rosewood pin and Philippine Orange text, displayed in a high-contrast white card on the Rosewood sidebar when open across all user roles (Admin, Dispatcher, Volunteer).
+- **Brand Pin Mark (public/images/resqlink-mark.png)**: Standalone pin icon and radar rings, centered in a 42x42px white badge when the sidebar is collapsed (72px).
+- **Login and Auth Screens**: Standardized to use the official brand logo.
+
 ## Expo React Native handoff
 
 When the Expo application is implemented, define small typed TypeScript theme

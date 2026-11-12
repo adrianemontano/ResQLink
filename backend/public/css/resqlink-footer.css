@@ -1,0 +1,42 @@
+/* Standard ResQLink footer: Poppins 13px, centered, WCAG AA on light surfaces. */
+.app-footer {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+    color: #6F5F5A;
+    padding: 16px 12px;
+    margin-top: auto;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+.app-footer-sep {
+    color: #BFA99E;
+    margin: 0 6px;
+}
+
+/* Variant for dark backgrounds (e.g. rosewood panels). */
+.app-footer--on-dark {
+    color: #E0C4B8;
+}
+
+.app-footer--on-dark .app-footer-sep {
+    color: rgba(224, 196, 184, 0.55);
+}
+
+/* Below 576px the notice wraps to two centered lines. */
+@media (max-width: 575.98px) {
+    .app-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 14px 12px;
+    }
+
+    .app-footer-sep {
+        display: none;
+    }
+}
