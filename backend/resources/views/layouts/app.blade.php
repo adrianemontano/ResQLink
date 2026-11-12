@@ -31,6 +31,7 @@
     <script src="{{ asset('js/responsive-tables.js') }}" defer></script>
 </head>
 <body>
+    <x-toast />
     @yield('body')
     @stack('scripts')
 </body>

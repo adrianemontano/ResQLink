@@ -14,10 +14,10 @@
                 <div class="sidebar-logo-row">
                     <div class="sidebar-brand-badge" aria-label="ResQLink">
                         <span class="sidebar-brand-mark" aria-hidden="true">
-                            <img src="{{ asset('images/resqlink-mark.png') }}" alt="" class="sidebar-mark-img">
+                            <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img">
                         </span>
                         <span class="sidebar-brand-full sidebar-label">
-                            <img src="{{ asset('images/resqlink-logo.png') }}" alt="ResQLink" class="sidebar-logo-img">
+                            <img src="{{ asset('images/resqlink-logo-white.png') }}" alt="ResQLink" class="sidebar-logo-img">
                         </span>
                     </div>
                     <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">

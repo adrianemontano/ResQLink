@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -34,21 +33,21 @@ class LoginController extends Controller
             ->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'login' => 'These credentials do not match our records.',
-            ]);
+            return back()
+                ->withInput($request->only('login'))
+                ->with('error', 'Incorrect username or password.');
         }
 
         if (! $user->is_active) {
-            throw ValidationException::withMessages([
-                'login' => 'This account is inactive. Please contact an administrator.',
-            ]);
+            return back()
+                ->withInput($request->only('login'))
+                ->with('error', 'Your account has been deactivated. Please contact your administrator.');
         }
 
         if (! $user->canAccessWeb()) {
-            throw ValidationException::withMessages([
-                'login' => 'This account is not authorized for web access.',
-            ]);
+            return back()
+                ->withInput($request->only('login'))
+                ->with('error', 'This account is not authorized for web access.');
         }
 
         Auth::login($user, (bool) ($credentials['remember'] ?? false));

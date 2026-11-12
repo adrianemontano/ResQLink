@@ -1,5 +1,7 @@
 # Login Feature
 
+TASK1 / Jassy owns web login, logout, and the login-page brand treatment.
+
 ## Overview
 
 Implemented session-based web authentication for ResQLink. The application
@@ -68,7 +70,31 @@ Authorization: Role middleware protects Admin, Dispatcher, and Volunteer route
 groups. Inactive accounts are denied. Volunteer routes additionally require a
 verified volunteer profile.
 
-Logout: `/logout` signs out the user, invalidates the session, regenerates the CSRF token, and redirects to `/login`.
+Logout: `/logout` signs out the user, invalidates the session, regenerates the CSRF token, and redirects to `/login` with a signed-out status flash.
+
+## Web login UI and toasts
+
+The login page uses a rosewood brand panel with `resqlink-logo-white.png` and a
+cream form card. The authenticated sidebar uses the same white assets on
+rosewood: the full wordmark when expanded (`resqlink-logo-white.png`, tagline
+cropped) and `resqlink-mark-white.png` when collapsed. There is no white badge
+behind the logo.
+
+Invalid login states are shown as toasts, not native HTML5 “Please fill out
+this field” bubbles and not inline field error text:
+
+* The login form uses `novalidate`. Empty username/email or password is caught
+  in `public/js/login.js`, which calls `showToast` and marks the empty fields.
+* Wrong credentials, inactive accounts, and accounts without web access return
+  `back()->with('error', ...)` from `LoginController` and render through
+  `x-toast`.
+* `LoginRequest` remains the server-side backup when JavaScript is off;
+  validation messages also map into `x-toast`.
+* Error toasts stay until the user dismisses them. Success and info toasts
+  auto-dismiss.
+
+`x-toast` is included on the standalone login page and in `layouts/app.blade.php`
+so logout status and other authenticated flashes use the same component.
 
 ## Mobile authentication
 
@@ -175,8 +201,10 @@ Default administrator:
 
 * [ ] Admin can log in.
 * [ ] Dispatcher can log in.
-* [ ] Invalid password is rejected.
-* [ ] Non-existent username is rejected.
+* [ ] Invalid password is rejected with an error toast.
+* [ ] Non-existent username is rejected with an error toast.
+* [ ] Empty username/email or password shows a toast instead of the browser required popup.
+* [ ] Native HTML5 “Please fill out this field” bubble does not appear on login.
 * [ ] Logged-out users cannot access protected pages.
 * [ ] Session expires correctly.
 

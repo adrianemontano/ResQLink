@@ -92,29 +92,35 @@
 .sidebar-brand-badge,
 .sidebar-brand-link {
     align-items: center;
+    background: transparent;
+    box-shadow: none;
     cursor: default;
     display: inline-flex;
     flex: 1;
-    justify-content: center;
-    max-width: 156px;
+    justify-content: flex-start;
+    max-width: none;
     min-width: 0;
+    padding: 0;
     pointer-events: none;
     user-select: none;
 }
 
 .sidebar-brand-full {
-    align-items: center;
+    align-items: flex-start;
     display: flex;
-    justify-content: center;
+    height: 38px;
+    justify-content: flex-start;
+    overflow: hidden;
     width: 100%;
 }
 
 .sidebar-logo-img {
     display: block;
-    height: auto;
-    max-height: 26px;
-    max-width: 100%;
+    height: 54px;
+    max-height: none;
+    max-width: none;
     object-fit: contain;
+    object-position: left top;
     width: auto;
 }
 
@@ -124,17 +130,30 @@
 
 .sidebar-mark-img {
     display: block;
-    height: 30px;
+    height: 32px;
     object-fit: contain;
-    width: 30px;
+    width: 32px;
+}
+
+.dashboard-shell.sidebar-collapsed .sidebar-brand-badge,
+.dashboard-shell.sidebar-collapsed .sidebar-brand-link {
+    background: transparent;
+    box-shadow: none;
+    flex: 0 0 auto;
+    height: auto;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: none;
+    padding: 0;
+    width: auto;
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar-brand-mark {
     align-items: center;
     display: flex;
-    height: 100%;
+    height: auto;
     justify-content: center;
-    width: 100%;
+    width: auto;
 }
 
 .dashboard-shell.sidebar-collapsed .sidebar-brand-full {
