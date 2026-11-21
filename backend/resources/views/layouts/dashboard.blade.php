@@ -9,24 +9,42 @@
 
 @section('body')
     <div class="dashboard-shell{{ auth()->user()->hasRole('dispatcher') ? ' dispatcher-ui' : '' }}">
+        <!-- Mobile top bar: brand + burger menu button (phones only). -->
+        <header class="mobile-header">
+            <button type="button" class="mobile-menu-toggle" data-mobile-menu-toggle aria-expanded="false" aria-label="Open menu">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            </button>
+            <div class="mobile-header-brand">
+                <span class="sidebar-brand-mark" aria-hidden="true" style="display: inline-flex;">
+                    <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img" style="height: 24px; width: 24px;">
+                </span>
+                <span class="mobile-header-title">ResQLink</span>
+            </div>
+        </header>
+
         <aside class="sidebar">
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-row">
-                    <a href="{{ route('dashboard') }}" class="sidebar-brand-badge sidebar-brand-link" aria-label="ResQLink">
-                        <span class="sidebar-brand-mark" aria-hidden="true">
-                            <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img">
-                        </span>
-                        <span class="sidebar-brand-full sidebar-label">
-                            <img src="{{ asset('images/resqlink-logo-white.png') }}" alt="ResQLink" class="sidebar-logo-img">
-                        </span>
-                    </a>
-                    <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
-                        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-                    </button>
+            <div class="sidebar-head">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-row">
+                        <a href="{{ route('dashboard') }}" class="sidebar-brand-badge sidebar-brand-link" aria-label="ResQLink">
+                            <span class="sidebar-brand-mark" aria-hidden="true">
+                                <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img">
+                            </span>
+                            <span class="sidebar-brand-full sidebar-label">
+                                <img src="{{ asset('images/resqlink-logo-white.png') }}" alt="ResQLink" class="sidebar-logo-img">
+                            </span>
+                        </a>
+                        <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
+                            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                    </div>
+                    <div class="sidebar-logo-sub sidebar-label">
+                        @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @elseif (auth()->user()->hasRole('volunteer')) Volunteer Portal @endif
+                    </div>
                 </div>
-                <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @elseif (auth()->user()->hasRole('volunteer')) Volunteer Portal @endif
-                </div>
+                <button type="button" class="sidebar-close" data-sidebar-close aria-label="Close menu">
+                    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
             </div>
 
             @include('layouts.partials.sidebar-nav')
@@ -48,6 +66,9 @@
                 </form>
             </div>
         </aside>
+
+        <!-- Backdrop that closes the mobile dropdown when tapped. -->
+        <div class="sidebar-overlay" data-sidebar-overlay aria-hidden="true"></div>
 
         <main class="dashboard-main">
             @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
