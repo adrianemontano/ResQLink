@@ -1,0 +1,106 @@
+.history-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.incident-details-card > table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 600px;
+}
+
+.incident-details-card > table thead th {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.incident-details-card > table thead th:nth-child(1) {
+    width: 120px;
+}
+
+.incident-details-card > table thead th:nth-child(2) {
+    width: 20%;
+}
+
+.incident-details-card > table thead th:nth-child(3) {
+    width: 180px;
+}
+
+.incident-details-card > table thead th:nth-child(4) {
+    width: auto;
+    text-align: right;
+}
+
+.incident-details-card > table tbody td {
+    padding: var(--space-3) var(--space-4);
+    vertical-align: middle;
+}
+
+.incident-details-card > table tbody td:nth-child(1) .badge {
+    white-space: nowrap;
+}
+
+.incident-details-card > table tbody td:nth-child(2) {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.incident-details-card > table tbody td:nth-child(3) {
+    white-space: nowrap;
+}
+
+.incident-details-card > table tbody td:nth-child(4) {
+    text-align: right;
+}
+
+.history-notes-view-btn {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--rosewood);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    text-decoration: none;
+}
+
+.history-notes-view-btn:hover {
+    background: var(--surface-alt);
+    border-color: var(--rosewood);
+}
+
+.history-notes-view-btn:focus-visible {
+    outline: 2px solid var(--rosewood);
+    outline-offset: 2px;
+}
+
+.history-notes-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.history-notes-meta span {
+    font-size: 14px;
+    color: var(--text-label);
+}
+
+.history-notes-meta .badge {
+    white-space: nowrap;
+}
+
+.history-notes-content {
+    background: var(--surface-alt);
+    border-radius: var(--radius-sm);
+    line-height: 1.6;
+    padding: var(--space-4);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    max-height: 300px;
+    overflow-y: auto;
+}

@@ -1,0 +1,420 @@
+.dispatcher-ui .dashboard-main {
+    --primary: var(--dispatcher-primary);
+    --primary-hover: var(--dispatcher-primary-hover);
+    --bs-primary: var(--dispatcher-primary);
+    --bs-primary-rgb: var(--dispatcher-primary-rgb);
+    --bs-info: var(--dispatcher-primary);
+    --bs-info-rgb: var(--dispatcher-primary-rgb);
+    --bs-link-color: var(--dispatcher-link);
+    --bs-link-hover-color: var(--dispatcher-link-hover);
+}
+
+.dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger),
+.dispatcher-ui .dashboard-main button:not([class]):not([style]),
+.dispatcher-ui .dashboard-main .btn-primary,
+.dispatcher-ui .dashboard-main .btn-info,
+.dispatcher-ui .dashboard-main .btn-outline-info {
+    background: var(--dispatcher-primary);
+    border-color: var(--dispatcher-primary);
+    color: var(--dispatcher-primary-text);
+}
+
+.dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):hover,
+.dispatcher-ui .dashboard-main button:not([class]):not([style]):hover,
+.dispatcher-ui .dashboard-main .btn-primary:hover,
+.dispatcher-ui .dashboard-main .btn-info:hover {
+    background: var(--dispatcher-primary-hover);
+    border-color: var(--dispatcher-primary-hover);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):active,
+.dispatcher-ui .dashboard-main button:not([class]):not([style]):active,
+.dispatcher-ui .dashboard-main .btn-primary:active,
+.dispatcher-ui .dashboard-main .btn-info:active {
+    background: var(--dispatcher-primary-active);
+    border-color: var(--dispatcher-primary-active);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):focus-visible,
+.dispatcher-ui .dashboard-main button:not([class]):not([style]):focus-visible,
+.dispatcher-ui .dashboard-main .btn-primary:focus-visible,
+.dispatcher-ui .dashboard-main .btn-info:focus-visible,
+.dispatcher-ui .dashboard-main .btn-outline-info:focus-visible,
+.dispatcher-ui .dashboard-main .btn:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):disabled,
+.dispatcher-ui .dashboard-main button:not([class]):not([style]):disabled,
+.dispatcher-ui .dashboard-main .btn-primary:disabled,
+.dispatcher-ui .dashboard-main .btn-info:disabled,
+.dispatcher-ui .dashboard-main .btn-outline-info:disabled,
+.dispatcher-ui .dashboard-main .btn-primary.disabled,
+.dispatcher-ui .dashboard-main .btn-info.disabled,
+.dispatcher-ui .dashboard-main .btn-outline-primary.disabled,
+.dispatcher-ui .dashboard-main .btn-outline-info.disabled,
+.dispatcher-ui .dashboard-main .btn:disabled {
+    background: var(--dispatcher-disabled-bg);
+    border-color: var(--dispatcher-disabled-border);
+    color: var(--dispatcher-disabled-text);
+    filter: none;
+    opacity: 1;
+}
+
+.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):not(.rql-page-btn) {
+    color: var(--dispatcher-link);
+    text-decoration: underline;
+    text-decoration-color: var(--tangelo);
+    text-underline-offset: 3px;
+}
+
+.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):not(.rql-page-btn):hover,
+.dispatcher-ui .dashboard-main a:not(.button):not(.status-filter-chip):not(.rql-page-btn):visited {
+    color: var(--dispatcher-link-hover);
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-info {
+    background: transparent;
+    border-color: var(--dispatcher-primary);
+    color: var(--dispatcher-link);
+}
+
+.dispatcher-ui .dashboard-main .btn-link,
+.dispatcher-ui .dashboard-main .link-primary,
+.dispatcher-ui .dashboard-main .link-info {
+    color: var(--dispatcher-link);
+}
+
+.dispatcher-ui .dashboard-main .btn-link:hover,
+.dispatcher-ui .dashboard-main .link-primary:hover,
+.dispatcher-ui .dashboard-main .link-info:hover {
+    color: var(--dispatcher-link-hover);
+}
+
+.dispatcher-ui .dashboard-main .text-primary,
+.dispatcher-ui .dashboard-main .text-info {
+    color: var(--dispatcher-link-hover) !important;
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-primary {
+    background: transparent;
+    border-color: var(--dispatcher-primary);
+    color: var(--dispatcher-link);
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-primary:hover,
+.dispatcher-ui .dashboard-main .btn-outline-primary:active,
+.dispatcher-ui .dashboard-main .btn-outline-info:hover,
+.dispatcher-ui .dashboard-main .btn-outline-info:active {
+    background: var(--dispatcher-primary-hover);
+    border-color: var(--dispatcher-primary-hover);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-primary:disabled {
+    background: var(--dispatcher-disabled-bg);
+    border-color: var(--dispatcher-disabled-border);
+    color: var(--dispatcher-disabled-text);
+}
+
+.dispatcher-ui .dashboard-main .btn-secondary {
+    background: var(--sangria);
+    border-color: var(--sangria);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .btn-secondary:hover,
+.dispatcher-ui .dashboard-main .btn-secondary:active {
+    background: var(--rosewood);
+    border-color: var(--rosewood);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-secondary {
+    background: transparent;
+    border-color: var(--sangria);
+    color: var(--sangria);
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-secondary:hover,
+.dispatcher-ui .dashboard-main .btn-outline-secondary:active {
+    background: var(--sangria);
+    border-color: var(--sangria);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-secondary:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.dispatcher-ui .dashboard-main .btn-outline-secondary:disabled,
+.dispatcher-ui .dashboard-main .btn-outline-secondary.disabled {
+    background: var(--dispatcher-disabled-bg);
+    border-color: var(--dispatcher-disabled-border);
+    color: var(--dispatcher-disabled-text);
+    opacity: 1;
+}
+
+.dispatcher-ui .dashboard-main .btn-secondary:disabled,
+.dispatcher-ui .dashboard-main .btn-secondary.disabled {
+    background: var(--dispatcher-disabled-bg);
+    border-color: var(--dispatcher-disabled-border);
+    color: var(--dispatcher-disabled-text);
+    opacity: 1;
+}
+
+.dispatcher-ui .dashboard-main .badge.status-completed {
+    color: var(--dispatcher-status-completed);
+}
+
+.dispatcher-ui .dashboard-main .btn-status-completed {
+    background: var(--dispatcher-status-completed);
+    border-color: var(--dispatcher-status-completed);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .btn-status-completed:hover {
+    background: var(--dispatcher-status-completed-hover);
+    border-color: var(--dispatcher-status-completed-hover);
+    color: var(--surface);
+}
+
+.dispatcher-ui .dashboard-main .btn-status-completed:active {
+    background: var(--dispatcher-status-completed-active);
+    border-color: var(--dispatcher-status-completed-active);
+    color: var(--surface);
+    transform: translateY(1px);
+}
+
+.dispatcher-ui .dashboard-main .btn-status-completed:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.dispatcher-ui .dashboard-main .btn-status-completed:disabled,
+.dispatcher-ui .dashboard-main .btn-status-completed.disabled {
+    background: var(--dispatcher-status-completed-disabled);
+    border-color: var(--dispatcher-status-completed-disabled-border);
+    color: var(--dispatcher-status-completed-disabled-text);
+    cursor: not-allowed;
+    opacity: 1;
+    transform: none;
+}
+
+.dispatcher-ui .dashboard-main .map-status-legend .status-dot.completed {
+    background: var(--dispatcher-status-completed);
+}
+
+.dispatcher-ui .dashboard-main .dispatcher-pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: space-between;
+    margin-top: var(--space-4);
+}
+
+.dispatcher-ui .dashboard-main .rql-pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.dispatcher-ui .dashboard-main .rql-page-btn {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--rosewood);
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    justify-content: center;
+    min-width: 40px;
+    padding: 0 10px;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+
+.dispatcher-ui .dashboard-main a.rql-page-btn:hover {
+    background: var(--accent-light);
+    border-color: var(--tangelo);
+    color: var(--rosewood);
+}
+
+.dispatcher-ui .dashboard-main .rql-page-current {
+    background: var(--surface);
+    border-color: var(--tangelo);
+    color: var(--rosewood);
+    font-weight: 600;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-btn:focus-visible,
+.dispatcher-ui .dashboard-main .dispatcher-pagination-size .dispatcher-dropdown-trigger:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-disabled {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: .65;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-nav {
+    padding: 0;
+}
+
+.dispatcher-ui .dashboard-main .rql-page-nav svg {
+    height: 18px !important;
+    width: 18px !important;
+}
+
+.dispatcher-ui .dashboard-main .dispatcher-pagination-size {
+    margin: 0;
+    width: 126px;
+}
+
+.dispatcher-ui .dashboard-main #dispatcher-pagination-per-page .dispatcher-dropdown-trigger {
+    font-size: 13px;
+    height: 40px;
+}
+
+@media (max-width: 520px) {
+    .dispatcher-ui .dashboard-main .dispatcher-pagination {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dispatcher-ui .dashboard-main .dispatcher-pagination-size {
+        align-self: flex-end;
+    }
+}
+
+.dispatcher-ui .dashboard-main .button:not(.disabled):hover,
+.dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):not(.disabled):hover,
+.dispatcher-ui .dashboard-main button:not(:disabled):not(.notification-bell-btn):not(.dispatcher-dropdown-trigger):not(.dispatcher-dropdown-option):not([class*="maplibregl-ctrl"]):hover,
+.dispatcher-ui .dashboard-main .btn:not(:disabled):not(.disabled):hover {
+    background: var(--accent-light) !important;
+    border-color: var(--tangelo) !important;
+    box-shadow: inset 0 0 0 1px var(--tangelo) !important;
+    color: var(--rosewood) !important;
+    text-decoration: none !important;
+    transform: none !important;
+}
+
+.dispatcher-ui .dashboard-main .button:active,
+.dispatcher-ui .dashboard-main .button:not(.secondary):not(.danger):not(.disabled):active,
+.dispatcher-ui .dashboard-main button:not(:disabled):not(.notification-bell-btn):not(.dispatcher-dropdown-trigger):not(.dispatcher-dropdown-option):not([class*="maplibregl-ctrl"]):active,
+.dispatcher-ui .dashboard-main .btn:not(:disabled):not(.disabled):active {
+    background: var(--accent-light) !important;
+    border-color: var(--tangelo) !important;
+    box-shadow: inset 0 0 0 1px var(--tangelo) !important;
+    color: var(--rosewood) !important;
+    transform: none !important;
+}
+
+.dispatcher-ui .dashboard-main .button:focus-visible,
+.dispatcher-ui .dashboard-main button:not(.dispatcher-dropdown-trigger):not(.dispatcher-dropdown-option):focus-visible,
+.dispatcher-ui .dashboard-main .btn:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.dispatcher-ui .dashboard-main .dispatcher-view-button {
+    display: inline-flex;
+    justify-content: center;
+    min-width: 64px;
+    padding: 6px 12px;
+    text-decoration: none;
+}
+
+.dispatcher-ui .dashboard-main .badge.status-reported,
+.dispatcher-ui .dashboard-main .badge.status-received,
+.dispatcher-ui .dashboard-main .badge.status-dispatched,
+.dispatcher-ui .dashboard-main .badge.status-completed,
+.dispatcher-ui .dashboard-main .badge.severity-low,
+.dispatcher-ui .dashboard-main .badge.severity-moderate,
+.dispatcher-ui .dashboard-main .badge.severity-high,
+.dispatcher-ui .dashboard-main .badge.severity-critical,
+.dispatcher-ui .dashboard-main .badge.severity-unrated {
+    background: var(--badge-bg) !important;
+    border: 1px solid var(--badge-border) !important;
+    border-radius: 999px;
+    color: var(--badge-text) !important;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 6px;
+    height: 24px;
+    justify-content: center;
+    letter-spacing: .025em;
+    min-width: 0;
+    padding: 0 10px;
+}
+
+.dispatcher-ui .dashboard-main .badge.status-reported,
+.dispatcher-ui .dashboard-main .badge.severity-high {
+    --badge-bg: #FEF2F2;
+    --badge-border: #FECACA;
+    --badge-text: #991B1B;
+}
+
+.dispatcher-ui .dashboard-main .badge.status-received,
+.dispatcher-ui .dashboard-main .badge.severity-moderate {
+    --badge-bg: #FFF4E5;
+    --badge-border: #F5D29A;
+    --badge-text: #713F12;
+}
+
+.dispatcher-ui .dashboard-main .badge.status-dispatched {
+    --badge-bg: #ECFDF3;
+    --badge-border: #A7E4BD;
+    --badge-text: #166534;
+}
+
+.dispatcher-ui .dashboard-main .badge.status-completed {
+    --badge-bg: #EFF6FF;
+    --badge-border: #BFDBFE;
+    --badge-text: #1E40AF;
+}
+
+.dispatcher-ui .dashboard-main .badge.severity-low {
+    --badge-bg: #FEFCE8;
+    --badge-border: #FDE68A;
+    --badge-text: #713F12;
+}
+
+.dispatcher-ui .dashboard-main .badge.severity-critical {
+    --badge-bg: #FFF1F2;
+    --badge-border: #FDA4AF;
+    --badge-text: #881337;
+}
+
+.dispatcher-ui .dashboard-main .badge.severity-unrated {
+    --badge-bg: var(--gray-50);
+    --badge-border: var(--border);
+    --badge-text: var(--text-muted);
+}
+
+.dispatcher-ui .dashboard-main .badge.status-reported::before,
+.dispatcher-ui .dashboard-main .badge.status-received::before,
+.dispatcher-ui .dashboard-main .badge.status-dispatched::before,
+.dispatcher-ui .dashboard-main .badge.status-completed::before,
+.dispatcher-ui .dashboard-main .badge.severity-low::before,
+.dispatcher-ui .dashboard-main .badge.severity-moderate::before,
+.dispatcher-ui .dashboard-main .badge.severity-high::before,
+.dispatcher-ui .dashboard-main .badge.severity-critical::before,
+.dispatcher-ui .dashboard-main .badge.severity-unrated::before {
+    background: currentColor;
+    border-radius: 50%;
+    content: "";
+    flex: 0 0 6px;
+    height: 6px;
+}

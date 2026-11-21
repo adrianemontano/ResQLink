@@ -13,11 +13,20 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-badges.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}?v=21">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-status-filters.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}">
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/account.css') }}">
+    @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
+        <link rel="stylesheet" href="{{ asset('css/dispatcher-theme.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/dispatcher-notifications.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/dispatcher-dropdowns.css') }}?v=2">
+        <script src="{{ asset('js/dispatcher-dropdowns.js') }}" defer></script>
+    @endif
     <script src="{{ asset('js/responsive-tables.js') }}" defer></script>
 </head>
 <body>

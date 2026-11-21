@@ -1,13 +1,13 @@
 <div class="field">
-    <label for="name">Name</label>
-    <input id="name" name="name" value="{{ old('name', $managedUser?->name) }}" autocomplete="name">
+    <label for="name">Name <span class="required-asterisk" aria-hidden="true">*</span></label>
+    <input id="name" name="name" value="{{ old('name', $managedUser?->name) }}" autocomplete="name" required>
     @error('name')
         <div class="error-text">{{ $message }}</div>
     @enderror
 </div>
 
 <div class="field">
-    <label for="barangay">Barangay (required for Barangay Responders)</label>
+    <label for="barangay">Barangay (required for Barangay Responders) <span class="required-asterisk" aria-hidden="true">*</span></label>
     <input id="barangay" name="barangay" value="{{ old('barangay', $managedUser?->volunteerProfile?->barangay) }}" maxlength="100">
     @error('barangay')
         <div class="error-text">{{ $message }}</div>
@@ -15,24 +15,24 @@
 </div>
 
 <div class="field">
-    <label for="username">Username</label>
-    <input id="username" name="username" value="{{ old('username', $managedUser?->username) }}" autocomplete="username">
+    <label for="username">Username <span class="required-asterisk" aria-hidden="true">*</span></label>
+    <input id="username" name="username" value="{{ old('username', $managedUser?->username) }}" autocomplete="username" required>
     @error('username')
         <div class="error-text">{{ $message }}</div>
     @enderror
 </div>
 
 <div class="field">
-    <label for="email">Email</label>
-    <input id="email" name="email" type="email" value="{{ old('email', $managedUser?->email) }}" autocomplete="email">
+    <label for="email">Email <span class="required-asterisk" aria-hidden="true">*</span></label>
+    <input id="email" name="email" type="email" value="{{ old('email', $managedUser?->email) }}" autocomplete="email" required>
     @error('email')
         <div class="error-text">{{ $message }}</div>
     @enderror
 </div>
 
 <div class="field">
-    <label for="role_id">Role</label>
-    <select id="role_id" name="role_id">
+    <label for="role_id">Role <span class="required-asterisk" aria-hidden="true">*</span></label>
+    <select id="role_id" name="role_id" required>
         @foreach ($roles as $role)
             <option value="{{ $role->id }}" @selected((int) old('role_id', $managedUser?->role_id) === $role->id)>
                 @php

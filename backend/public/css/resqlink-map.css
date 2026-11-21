@@ -195,7 +195,6 @@
     width: 12px;
 }
 
-.status-dot.all { background: var(--status-all); }
 .status-dot.reported { background: var(--status-reported); }
 .status-dot.received { background: var(--status-received); }
 .status-dot.dispatched { background: var(--status-dispatched); }

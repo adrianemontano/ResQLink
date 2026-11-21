@@ -1,6 +1,17 @@
 # ResQLink Mobile Verification and Handoff Guide
 
+<<<<<<< HEAD
 **Status:** Planned verification for the future Expo implementation
+=======
+> **Current implementation note:** Run `flutter pub get` after pulling. The
+> initial volunteer app now supports secure bearer login, forced password
+> change, and optional compressed incident photos. The interactive map picker,
+> offline queue, and push notifications remain future work. The current mobile
+> API uses Laravel-managed hashed tokens, not Sanctum.
+
+**Companion to:** [Mobile application implementation guide](mobile-implementation-guide.md)  
+**Related work:** `TASK1` and `TASK2`
+>>>>>>> origin/jassy
 
 Do not run repository lint, test, or build commands without explicit user
 approval. Record the command, environment, result, and unresolved failures when
@@ -83,5 +94,97 @@ Include:
 5. Stage 5: approved tests and verification.
 6. Stage 6: documentation and handoff.
 
+<<<<<<< HEAD
 Keep task identifiers and owners in handoff notes and commits. Do not place
 owner names or task numbers in application domain identifiers.
+=======
+- All four approved categories are accepted.
+- An unsupported category is rejected.
+- Population and radius boundaries are enforced.
+- Latitude and longitude boundaries are enforced.
+- Required barangay and landmark values are enforced.
+- Notes length is enforced.
+- The client cannot choose another reporting volunteer.
+
+## Submission checklist
+
+- A valid request receives `201`.
+- Identifier, time, status, and severity parse correctly.
+- Repeated tapping does not issue concurrent submissions.
+- Form values survive a recoverable failure.
+- Dispatcher/admin workflows display the stored report.
+
+## Location and map checklist
+
+- GPS success centers or selects the correct position.
+- Permission denial leaves manual map selection usable.
+- Permanently denied permission gives useful settings guidance.
+- Map pin and form coordinates remain synchronized.
+- Impact radius renders and submits in metres.
+- Barangay and landmark data work without prohibited external APIs.
+- The application handles map or tile-service unavailability safely.
+
+## Quality checklist
+
+- Each modified or created code file is below 500 lines.
+- Target files are preferably 300–400 lines or fewer.
+- No secrets or machine-specific production values are committed.
+- API errors do not reveal stack traces.
+- Setup and behavior documentation matches the implementation.
+- The application remains usable when GPS permission is denied.
+
+## Documentation handoff
+
+For each approved implementation milestone, update documentation in the same
+change. At minimum, keep these areas current:
+
+- Root `README.md` project structure and mobile status.
+- `docs/development-setup.md` Flutter and Android prerequisites.
+- `docs/implementation/incident-reporting-feature.md` mobile API behavior.
+- Relevant `TASK1` documentation for mobile authentication.
+- Relevant `TASK2` documentation for mobile incident reporting.
+- Files under `docs/mobile/` for scope, stack, architecture, and implementation.
+
+Document:
+
+- Supported Flutter and Dart versions.
+- Required Android SDK configuration.
+- Commands for installing packages and launching the application.
+- API and map URL configuration.
+- Android permissions.
+- Authentication request and response examples.
+- Incident request and response examples.
+- Emulator and physical-device networking.
+- Map tile availability and offline limitations.
+- Known issues and deferred features.
+
+## Recommended commit sequence
+
+Keep commits focused and include the applicable task identifier where it helps
+traceability:
+
+1. Create Flutter mobile application foundation.
+2. Verify `TASK1` mobile bearer login, profile, and logout API.
+3. Add Flutter volunteer authentication flow.
+4. Add `TASK2` mobile incident form and API submission.
+5. Add `TASK2` MapLibre location selection.
+6. Document mobile setup and approved behavior.
+
+Do not mark a task complete until both its approved implementation and related
+documentation are complete.
+
+## Recommended first-session checkpoint
+
+For the first development session, stop after this achievable checkpoint:
+
+1. Install and validate Flutter/Android tooling.
+2. Create the root `mobile/` Flutter project.
+3. Add the initial packages.
+4. Create the application theme and environment configuration.
+5. Display a basic ResQLink login screen without connecting it to Laravel.
+6. Review and agree on the authentication contract with the `TASK1` owner.
+
+The next session can implement the deferred map picker and connect it to the API. This avoids
+mixing Flutter setup, backend schema changes, authentication, and mapping into
+one difficult debugging session.
+>>>>>>> origin/jassy

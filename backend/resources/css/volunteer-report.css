@@ -4,6 +4,12 @@
     min-height: 420px;
 }
 
+.required-asterisk {
+    color: var(--maximum-red, #D92200);
+    font-weight: 700;
+    margin-left: 2px;
+}
+
 @media (max-width: 760px) {
     .volunteer-map-wrap {
         min-height: 420px;

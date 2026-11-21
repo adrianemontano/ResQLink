@@ -24,6 +24,7 @@ class StoreIncidentRequest extends FormRequest
             'longitude' => ['required', 'numeric', 'between:-180,180'],
             'impact_radius' => ['required', 'numeric', 'gt:0', 'max:100000'],
             'notes' => ['nullable', 'string', 'max:5000'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:5120'],
         ];
     }
 }

@@ -27,16 +27,16 @@
                 @csrf
 
                 <div class="field">
-                    <label for="login">Username or Email</label>
-                    <input id="login" name="login" value="{{ old('login') }}" autocomplete="username" autofocus>
+                    <label for="login">Username or Email <span class="required-asterisk" aria-hidden="true">*</span></label>
+                    <input id="login" name="login" value="{{ old('login') }}" autocomplete="username" autofocus required>
                     @error('login')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="field">
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password">
+                    <label for="password">Password <span class="required-asterisk" aria-hidden="true">*</span></label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required>
                     @error('password')
                         <div class="error-text">{{ $message }}</div>
                     @enderror

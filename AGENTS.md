@@ -4,10 +4,12 @@ Instructions for AI coding agents working in this repository.
 
 ## Project
 
-ResQLink is a Laravel-based emergency alert and dispatch coordination system. The
-current implementation is the `backend/` Laravel application (Blade views, Vite,
-MySQL) serving Admin and Dispatcher web users. A volunteer mobile app is planned
-but not yet implemented. See `README.md` and `docs/` for full context.
+ResQLink is a Laravel-based emergency alert and dispatch coordination system.
+The current implementation includes the `backend/` Laravel application (Blade
+views, Vite, MySQL) for Admin and Dispatcher users plus an initial `mobile/`
+Flutter volunteer app for bearer login, forced password change, incident
+submission, and optional photo upload. Advanced map/offline mobile features
+remain future work. See `README.md` and `docs/` for full context.
 
 ## File Size & Reusability Rule
 

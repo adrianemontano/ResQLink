@@ -1,7 +1,14 @@
 # ResQLink Android Studio Setup and Mobile Implementation Guide
 
+<<<<<<< HEAD
 **Platform:** Expo React Native for Android on Windows
 **Status:** Setup plan; the Expo application has not been generated
+=======
+**Platform:** Flutter for Android on Windows  
+**Project location:** `mobile/`  
+**Related work:** `TASK1` (Jassy) and `TASK2` (Adriane)  
+**Guide status:** Android setup reference; see current implementation note below
+>>>>>>> origin/jassy
 
 ## Required tools
 
@@ -13,10 +20,30 @@
 - A physical Android device for the MapLibre proof of concept.
 - Optional EAS CLI/account when cloud development builds are used.
 
+<<<<<<< HEAD
 Do not pin versions until the implementation compatibility gate is completed.
 Record exact versions in this guide when the project is generated.
 
 ## Physical device setup
+=======
+Current implementation includes:
+
+- Android application ID and namespace `com.resqlink.mobile`.
+- Dart SDK constraint `^3.13.5` in `mobile/pubspec.yaml`.
+- Java and Kotlin JVM target 17.
+- `provider`, `http`, `flutter_secure_storage`, and `geolocator` dependencies.
+- Flutter login, secure token persistence, forced password-change screen,
+   incident form, and optional resized/compressed photo upload.
+- Laravel `/api/login`, `/api/password/change`, `/api/logout`, and incident
+   submission endpoints protected by random hashed mobile bearer tokens.
+- The `image_picker` and `flutter_image_compress` dependencies.
+
+Older roadmap sections in this guide describe the original Sanctum proposal.
+They are superseded by the current hashed-token implementation; do not install
+Sanctum or use `auth:sanctum` unless that architecture is explicitly changed.
+The MapLibre package exists, but an interactive Flutter map picker is still
+planned.
+>>>>>>> origin/jassy
 
 1. Enable Developer Options and USB debugging.
 2. Connect the device by a data-capable USB cable.

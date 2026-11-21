@@ -62,7 +62,7 @@
 <form method="POST" action="{{ route('admin.users.documents.store', $managedUser) }}" enctype="multipart/form-data">
     @csrf
     <div class="field">
-        <label for="document_type">Document type</label>
+        <label for="document_type">Document type <span class="required-asterisk" aria-hidden="true">*</span></label>
         <select id="document_type" name="document_type" required>
             @foreach (\App\Models\VolunteerDocument::TYPES as $type => $label)
                 <option value="{{ $type }}" @selected(old('document_type') === $type) @disabled($documents->has($type))>{{ $label }}</option>
@@ -74,7 +74,7 @@
     </div>
 
     <div class="field">
-        <label for="document">File (PDF, JPG, or PNG, up to 5 MB)</label>
+        <label for="document">File (PDF, JPG, or PNG, up to 5 MB) <span class="required-asterisk" aria-hidden="true">*</span></label>
         <input id="document" type="file" name="document" accept=".pdf,.jpg,.jpeg,.png" required>
         @error('document')
             <div class="error-text">{{ $message }}</div>

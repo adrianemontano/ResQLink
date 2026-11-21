@@ -3,6 +3,8 @@
     'focusLat' => null,
     'focusLng' => null,
     'focusIncidentId' => null,
+    'incidentStatus' => null,
+    'showSearch' => true,
 ])
 
 <div
@@ -14,32 +16,39 @@
     @if($focusIncidentId !== null) data-focus-incident-id="{{ $focusIncidentId }}" @endif
 >
     <div class="map-controls">
-        <div class="map-search-box" aria-label="Map search">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M16 16l5 5"></path></svg>
-            <input type="text" placeholder="Search places, roads, or barangays" aria-label="Search map" />
-        </div>
+        @if ($showSearch)
+            <div class="map-search-box" aria-label="Map search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M16 16l5 5"></path></svg>
+                <input type="text" placeholder="Search places, roads, or barangays" aria-label="Search map" />
+            </div>
+        @endif
 
         <div class="map-status-legend" aria-label="Incident status legend">
-            <button type="button" class="map-status-pill active" data-map-filter="all" aria-pressed="true">
-                <span class="status-dot all"></span>
-                <span>All</span>
-            </button>
-            <button type="button" class="map-status-pill" data-map-filter="Reported" aria-pressed="false">
-                <span class="status-dot reported"></span>
-                <span>Reported</span>
-            </button>
-            <button type="button" class="map-status-pill" data-map-filter="Received" aria-pressed="false">
-                <span class="status-dot received"></span>
-                <span>Received</span>
-            </button>
-            <button type="button" class="map-status-pill" data-map-filter="Dispatched" aria-pressed="false">
-                <span class="status-dot dispatched"></span>
-                <span>Dispatched</span>
-            </button>
-            <button type="button" class="map-status-pill" data-map-filter="Completed" aria-pressed="false">
-                <span class="status-dot completed"></span>
-                <span>Completed</span>
-            </button>
+            @if ($incidentStatus)
+                <button type="button" id="map-status-pill" class="map-status-pill active" data-map-filter="{{ $incidentStatus }}" aria-pressed="true">
+                    <span>{{ $incidentStatus }}</span>
+                </button>
+            @else
+                <button type="button" class="map-status-pill active" data-map-filter="all" aria-pressed="true">
+                    <span>All</span>
+                </button>
+                <button type="button" class="map-status-pill" data-map-filter="Reported" aria-pressed="false">
+                    <span class="status-dot reported"></span>
+                    <span>Reported</span>
+                </button>
+                <button type="button" class="map-status-pill" data-map-filter="Received" aria-pressed="false">
+                    <span class="status-dot received"></span>
+                    <span>Received</span>
+                </button>
+                <button type="button" class="map-status-pill" data-map-filter="Dispatched" aria-pressed="false">
+                    <span class="status-dot dispatched"></span>
+                    <span>Dispatched</span>
+                </button>
+                <button type="button" class="map-status-pill" data-map-filter="Completed" aria-pressed="false">
+                    <span class="status-dot completed"></span>
+                    <span>Completed</span>
+                </button>
+            @endif
         </div>
     </div>
 

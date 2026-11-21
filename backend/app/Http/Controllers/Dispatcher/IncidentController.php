@@ -3,43 +3,50 @@
 namespace App\Http\Controllers\Dispatcher;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dispatcher\AddIncidentUpdateRequest;
 use App\Http\Requests\Dispatcher\UpdateIncidentStatusRequest;
 use App\Models\Incident;
+use App\Models\IncidentHistory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class IncidentController extends Controller
 {
     private const ALLOWED_TRANSITIONS = [
-        'Reported' => ['Reported', 'Received'],
-        'Received' => ['Received', 'Dispatched'],
-        'Dispatched' => ['Dispatched', 'Completed'],
-        'Completed' => ['Completed'],
+        'Reported' => ['Received'],
+        'Received' => ['Dispatched'],
+        'Dispatched' => ['Completed'],
+        'Completed' => [],
     ];
 
     public function index(): View
     {
+        $requestedPerPage = request()->query('per_page');
+        $perPage = in_array($requestedPerPage, ['10', '25', '50'], true)
+            ? (int) $requestedPerPage
+            : 10;
         $baseQuery = Incident::query()
             ->when(request('category'), fn ($query, $category) => $query->where('category', $category))
             ->when(request('status'), fn ($query, $status) => $query->where('status', $status))
             ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangay', $barangay));
 
         $incidents = (clone $baseQuery)
-            ->with('reporter')
-            ->orderByRaw("CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END")
-            ->orderByRaw("CASE status WHEN 'Reported' THEN 1 WHEN 'Received' THEN 2 WHEN 'Dispatched' THEN 3 WHEN 'Completed' THEN 4 ELSE 5 END")
-            ->orderByDesc('reported_at')
-            ->paginate(15)
+            ->with(['reporter.volunteerProfile', 'photos'])
+            ->orderByRaw('COALESCE(reported_at, created_at) DESC')
+            ->orderByDesc('id')
+            ->paginate($perPage)
             ->withQueryString();
 
         if (request()->ajax()) {
-            return view('dispatcher.incidents.partials.results', compact('incidents'));
+            return view('dispatcher.incidents.partials.results', compact('incidents', 'perPage'));
         }
 
         return view('dispatcher.incidents.index', [
             'incidents' => $incidents,
+            'perPage' => $perPage,
             'categories' => (clone $baseQuery)->select('category')->distinct()->orderBy('category')->pluck('category'),
             'statuses' => ['Reported', 'Received', 'Dispatched', 'Completed'],
             'barangays' => request()->hasAny(['category', 'status', 'barangay'])
@@ -50,43 +57,159 @@ class IncidentController extends Controller
 
     public function show(Incident $incident): View
     {
-        $incident->load(['reporter', 'history.dispatcher', 'history.status']);
+        $incident->load(['reporter.volunteerProfile', 'photos', 'history.dispatcher', 'history.status']);
+
+        // Mark any unread notifications for this incident as read.
+        $this->markIncidentNotificationsRead(request()->user(), $incident->id);
 
         return view('dispatcher.incidents.show', compact('incident'));
+    }
+
+    private function markIncidentNotificationsRead($user, int $incidentId): void
+    {
+        if (! $user) {
+            return;
+        }
+
+        $user->unreadNotifications()
+            ->whereJsonContains('data->incident_id', $incidentId)
+            ->update(['read_at' => now()]);
     }
 
     public function updateStatus(
         UpdateIncidentStatusRequest $request,
         Incident $incident,
-    ): RedirectResponse {
+    ): JsonResponse|RedirectResponse {
         $data = $request->validated();
         $status = $data['status'];
 
-        if (! $this->isValidTransition($incident->status, $status)) {
+        $change = DB::transaction(function () use ($incident, $data, $request, $status): ?array {
+            $lockedIncident = Incident::query()->lockForUpdate()->findOrFail($incident->id);
+
+            if (! $this->isValidTransition($lockedIncident->status, $status)) {
+                return null;
+            }
+
+            $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
+            $changedAt = now();
+            $lockedIncident->update([
+                'status' => $status,
+                'status_id' => $statusId,
+                'dispatched_at' => $status === 'Dispatched' ? $changedAt : $lockedIncident->dispatched_at,
+                'completed_at' => $status === 'Completed' ? $changedAt : $lockedIncident->completed_at,
+            ]);
+
+            $historyData = [
+                'status_id' => $statusId,
+                'changed_by' => $request->user()->id,
+                'notes' => $data['notes'],
+                'changed_at' => $changedAt,
+            ];
+            if (Schema::hasColumn('incident_histories', 'entry_type')) {
+                $historyData['entry_type'] = IncidentHistory::ENTRY_TYPE_STATUS_CHANGE;
+            }
+            $lockedIncident->history()->create($historyData);
+
+            return [
+                'dispatcher' => $request->user()->name,
+                'changed_at' => $changedAt->timezone('Asia/Manila')->format('M d, Y, h:i A'),
+            ];
+        });
+
+        if ($change === null) {
+            $message = $this->invalidTransitionMessage($incident->fresh()->status);
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 422);
+            }
+
             return redirect()->route('dispatcher.incidents.show', $incident)
-                ->withErrors(['status' => $this->invalidTransitionMessage($incident->status)])
+                ->withErrors(['status' => $message])
                 ->withInput();
         }
 
-        DB::transaction(function () use ($incident, $data, $request, $status): void {
-            $statusId = DB::table('incident_statuses')->where('name', $status)->value('id');
-            $incident->update([
-                'status' => $status,
-                'status_id' => $statusId,
-                'dispatched_at' => $status === 'Dispatched' ? now() : $incident->dispatched_at,
-                'completed_at' => $status === 'Completed' ? now() : $incident->completed_at,
-            ]);
+        $message = 'Incident status updated successfully.';
 
-            $incident->history()->create([
-                'status_id' => $statusId,
-                'changed_by' => $request->user()->id,
-                'notes' => $data['notes'] ?? null,
-                'changed_at' => now(),
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $message,
+                'incident_id' => $incident->id,
+                'status' => $status,
+                'entry_type' => IncidentHistory::ENTRY_TYPE_STATUS_CHANGE,
+                'dispatcher' => $change['dispatcher'],
+                'changed_at' => $change['changed_at'],
+                'notes' => $data['notes'],
             ]);
-        });
+        }
 
         return redirect()->route('dispatcher.incidents.show', $incident)
-            ->with('status', 'Incident status updated successfully.');
+            ->with('incident_status_success', $message);
+    }
+
+    public function addUpdate(
+        AddIncidentUpdateRequest $request,
+        Incident $incident,
+    ): JsonResponse|RedirectResponse {
+        $data = $request->validated();
+
+        $result = DB::transaction(function () use ($incident, $data, $request): ?array {
+            $lockedIncident = Incident::query()->lockForUpdate()->findOrFail($incident->id);
+
+            if ($lockedIncident->status === 'Completed') {
+                return null;
+            }
+
+            $statusId = DB::table('incident_statuses')->where('name', $lockedIncident->status)->value('id');
+            $changedAt = now();
+
+            $historyData = [
+                'status_id' => $statusId,
+                'changed_by' => $request->user()->id,
+                'notes' => $data['notes'],
+                'changed_at' => $changedAt,
+            ];
+            if (Schema::hasColumn('incident_histories', 'entry_type')) {
+                $historyData['entry_type'] = IncidentHistory::ENTRY_TYPE_UPDATE;
+                $historyData['category'] = $data['category'];
+            }
+            $lockedIncident->history()->create($historyData);
+
+            return [
+                'dispatcher' => $request->user()->name,
+                'changed_at' => $changedAt->timezone('Asia/Manila')->format('M d, Y, h:i A'),
+                'status' => $lockedIncident->status,
+            ];
+        });
+
+        if ($result === null) {
+            $message = 'This incident is complete. No further updates are available.';
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 422);
+            }
+
+            return redirect()->route('dispatcher.incidents.show', $incident)
+                ->withErrors(['update' => $message])
+                ->withInput();
+        }
+
+        $message = 'Update added successfully.';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $message,
+                'incident_id' => $incident->id,
+                'entry_type' => IncidentHistory::ENTRY_TYPE_UPDATE,
+                'category' => $data['category'],
+                'status' => $result['status'],
+                'dispatcher' => $result['dispatcher'],
+                'changed_at' => $result['changed_at'],
+                'notes' => $data['notes'],
+            ]);
+        }
+
+        return redirect()->route('dispatcher.incidents.show', $incident)
+            ->with('incident_status_success', $message);
     }
 
     public function map(): View

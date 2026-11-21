@@ -1,7 +1,19 @@
 # ResQLink Mobile Application Implementation Guide
 
+<<<<<<< HEAD
 **Status:** Plan only; do not generate Expo source as part of the migration
 **Platform:** Expo + React Native + TypeScript, Android first
+=======
+> **Implementation update:** This guide is the original feature roadmap. The
+> current app already includes login, hashed bearer-token API access, required
+> temporary-password changes, incident submission, and optional compressed
+> photo upload. Follow `mobile-application-scope.md` and the November 2026
+> dispatcher enhancements for current routes. Sanctum-specific steps below are
+> superseded; interactive MapLibre picker and offline sync remain future work.
+
+**Platform:** Flutter, with Android as the first target  
+**Related work:** `TASK1` user access and volunteer management; `TASK2` incident reporting and severity assessment
+>>>>>>> origin/jassy
 
 ## Before implementation
 
