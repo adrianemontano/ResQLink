@@ -29,7 +29,7 @@ and three defects were corrected:
 1. The records search and table read the legacy `landmark` and `persons_count`
    columns, which volunteer submissions do not populate. Search now covers
    `nearest_landmark`, and the table prefers `affected_population` and
-   `nearest_landmark` with legacy fallbacks, matching the dispatcher views.
+   `nearest_landmark` with legacy fallbacks, matching pthe dispatcher views.
 2. The records table emitted `status-Reported` badge classes while the shared
    theme defines lowercase `.badge.status-reported`, so admin status badges
    rendered without colour. The class is now lowercased like the dispatcher

@@ -9,6 +9,19 @@
 
 @section('body')
     <div class="dashboard-shell{{ auth()->user()->hasRole('dispatcher') ? ' dispatcher-ui' : '' }}">
+        <!-- Mobile top bar: brand + burger menu button (phones only). -->
+        <header class="mobile-header">
+            <button type="button" class="mobile-menu-toggle" data-mobile-menu-toggle aria-expanded="false" aria-label="Open menu">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            </button>
+            <div class="mobile-header-brand">
+                <span class="sidebar-logo-mark">
+                    <svg viewBox="0 0 28 28"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
+                </span>
+                <span class="mobile-header-title">ResQLink</span>
+            </div>
+        </header>
+
         <aside class="sidebar">
             <div class="sidebar-logo">
                 <div class="sidebar-logo-row">
@@ -27,6 +40,10 @@
                 <div class="sidebar-logo-sub sidebar-label">
                     @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @elseif (auth()->user()->hasRole('volunteer')) Volunteer Portal @endif
                 </div>
+                </div>
+                <button type="button" class="sidebar-close" data-sidebar-close aria-label="Close menu">
+                    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
             </div>
 
             @include('layouts.partials.sidebar-nav')
@@ -48,6 +65,9 @@
                 </form>
             </div>
         </aside>
+
+        <!-- Backdrop that closes the mobile dropdown when tapped. -->
+        <div class="sidebar-overlay" data-sidebar-overlay aria-hidden="true"></div>
 
         <main class="dashboard-main">
             @if (auth()->check() && auth()->user()->hasRole('dispatcher'))

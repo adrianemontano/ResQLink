@@ -92,8 +92,11 @@ Route::middleware(['auth', 'role:volunteer'])
     ->name('volunteer.')
     ->group(function (): void {
         Route::get('/dashboard', VolunteerDashboardController::class)->name('dashboard');
+        Route::get('/incidents', [VolunteerIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidents/create', [VolunteerIncidentController::class, 'create'])->name('incidents.create');
         Route::post('/incidents', [VolunteerIncidentController::class, 'store'])->name('incidents.store');
+        Route::get('/incidents/{incident}/edit', [VolunteerIncidentController::class, 'edit'])->name('incidents.edit');
+        Route::patch('/incidents/{incident}', [VolunteerIncidentController::class, 'update'])->name('incidents.update');
         Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
         Route::put('/account', [AccountController::class, 'update'])->name('account.update');
         Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password');
