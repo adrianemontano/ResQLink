@@ -61,7 +61,7 @@
             of {{ $incidents->total() }} incidents
         </p>
 
-        <table>
+        <table class="record-table">
             <thead>
                 <tr>
                     <th scope="col">Incident ID</th>

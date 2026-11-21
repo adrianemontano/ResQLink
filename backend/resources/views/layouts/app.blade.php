@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-layout-scroll.css') }}">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}">
     <link rel="stylesheet" href="{{ asset('css/resqlink-footer.css') }}">
     @if (auth()->check() && auth()->user()->hasRole('dispatcher'))

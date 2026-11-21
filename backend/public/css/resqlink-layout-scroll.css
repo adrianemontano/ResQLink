@@ -1,0 +1,58 @@
+/*
+ * ResQLink layout scroll lock (desktop/tablet):
+ * - The whole page does not scroll; the dashboard shell is one viewport.
+ * - The left sidebar stays locked at full height; only the navigation inside it
+ *   scrolls so "Logged in as ..." and "Logout" remain at the bottom.
+ * - The main content area is the scrollable region; incident table headers stay
+ *   visible while scrolling.
+ */
+@media (min-width: 761px) {
+    .dashboard-shell {
+        height: 100vh;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        overflow: hidden;
+        overscroll-behavior: contain;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .sidebar-footer {
+        flex-shrink: 0;
+    }
+
+    .dashboard-main {
+        min-height: 0;
+        height: 100vh;
+        max-height: 100vh;
+        overflow: auto;
+        overscroll-behavior: contain;
+    }
+
+    .dashboard-main .card > table.record-table,
+    .dashboard-main table.record-table {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 640px;
+    }
+
+    .dashboard-main table.record-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        background: var(--surface, #ffffff);
+        border-bottom: 1px solid var(--border);
+        box-shadow: inset 0 -1px 0 var(--border);
+    }
+}
