@@ -14,7 +14,7 @@
   if (session('error')) {
     $toasts[] = ['error', session('error')];
   }
-  if ($errors->any()) {
+  if (isset($errors) && $errors->any()) {
     foreach ($errors->all() as $message) {
       $toasts[] = ['error', $message];
     }
