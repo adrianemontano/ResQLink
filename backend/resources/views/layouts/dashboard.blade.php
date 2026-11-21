@@ -12,14 +12,14 @@
         <aside class="sidebar">
             <div class="sidebar-logo">
                 <div class="sidebar-logo-row">
-                    <div class="sidebar-brand-badge" aria-label="ResQLink">
+                    <a href="{{ route('dashboard') }}" class="sidebar-brand-badge sidebar-brand-link" aria-label="ResQLink">
                         <span class="sidebar-brand-mark" aria-hidden="true">
                             <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img">
                         </span>
                         <span class="sidebar-brand-full sidebar-label">
                             <img src="{{ asset('images/resqlink-logo-white.png') }}" alt="ResQLink" class="sidebar-logo-img">
                         </span>
-                    </div>
+                    </a>
                     <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
                         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
                     </button>

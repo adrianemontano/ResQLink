@@ -76,9 +76,9 @@ Logout: `/logout` signs out the user, invalidates the session, regenerates the C
 
 The login page uses a rosewood brand panel with `resqlink-logo-white.png` and a
 cream form card. The authenticated sidebar uses the same white assets on
-rosewood: the full wordmark when expanded (`resqlink-logo-white.png`, tagline
-cropped) and `resqlink-mark-white.png` when collapsed. There is no white badge
-behind the logo.
+rosewood: the full wordmark when expanded (`resqlink-logo-white.png` scaled proportionally
+within a 240px sidebar alongside the toggle button, linking to dashboard) and
+`resqlink-mark-white.png` when collapsed. There is no white badge behind the logo.
 
 Invalid login states are shown as toasts, not native HTML5 “Please fill out
 this field” bubbles and not inline field error text:
@@ -92,6 +92,8 @@ this field” bubbles and not inline field error text:
   validation messages also map into `x-toast`.
 * Error toasts stay until the user dismisses them. Success and info toasts
   auto-dismiss.
+* `x-toast` features top-layer stacking (`z-index: 99999`), deduplication of identical flashes,
+  mobile viewport responsiveness, and safe pause-on-hover dismiss handlers.
 
 `x-toast` is included on the standalone login page and in `layouts/app.blade.php`
 so logout status and other authenticated flashes use the same component.

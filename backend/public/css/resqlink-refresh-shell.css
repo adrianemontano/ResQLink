@@ -20,11 +20,12 @@
     align-items: center;
     background: transparent;
     box-shadow: none;
-    cursor: default;
+    cursor: pointer;
     display: inline-flex;
     justify-content: flex-start;
     padding: 0;
-    pointer-events: none;
+    pointer-events: auto;
+    text-decoration: none;
     user-select: none;
 }
 
@@ -36,13 +37,13 @@
 .dashboard-shell.sidebar-collapsed .sidebar-brand-link {
     background: transparent;
     box-shadow: none;
-    cursor: default;
+    cursor: pointer;
     flex: 0 0 auto;
     height: auto;
     margin: 0 auto;
     max-width: none;
     padding: 0;
-    pointer-events: none;
+    pointer-events: auto;
     user-select: none;
     width: auto;
 }

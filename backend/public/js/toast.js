@@ -91,7 +91,14 @@
 
   function showToast(options) {
     var wrap = getWrap();
-    if (!wrap) return;
+    if (!wrap) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          showToast(options);
+        });
+      }
+      return;
+    }
 
     var type = options.type || 'info';
     var message = options.message || '';
@@ -151,6 +158,7 @@
       });
 
       toast.addEventListener('mouseleave', function() {
+        if (toast.classList.contains('out') || !toast.parentNode) return;
         timer = setTimeout(function() {
           dismiss(toast);
         }, duration);

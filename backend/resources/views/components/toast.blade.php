@@ -19,11 +19,23 @@
       $toasts[] = ['error', $message];
     }
   }
+
+  $uniqueToasts = [];
+  $seenKeys = [];
+  foreach ($toasts as $t) {
+    $dedupKey = $t[0] . ':' . $t[1];
+    if (!isset($seenKeys[$dedupKey])) {
+      $seenKeys[$dedupKey] = true;
+      $uniqueToasts[] = $t;
+    }
+  }
 @endphp
+@if (!empty($uniqueToasts))
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  @foreach ($toasts as $t)
+  @foreach ($uniqueToasts as $t)
     showToast({ type: @json($t[0]), message: @json($t[1]) });
   @endforeach
 });
 </script>
+@endif
