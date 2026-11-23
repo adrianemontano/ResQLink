@@ -17,9 +17,13 @@
 
     loginInput.addEventListener('input', function () {
       clearInvalid(loginInput);
+      var err = document.getElementById('login-error');
+      if (err) err.style.display = 'none';
     });
     passwordInput.addEventListener('input', function () {
       clearInvalid(passwordInput);
+      var err = document.getElementById('password-error');
+      if (err) err.style.display = 'none';
     });
 
     form.addEventListener('submit', function (event) {
@@ -29,29 +33,34 @@
       clearInvalid(loginInput);
       clearInvalid(passwordInput);
 
-      if (loginEmpty || passwordEmpty) {
+      var hasError = false;
+      var loginErr = document.getElementById('login-error');
+      var passErr = document.getElementById('password-error');
+
+      if (loginEmpty) {
+        hasError = true;
+        loginInput.setAttribute('aria-invalid', 'true');
+        if (loginErr) {
+          loginErr.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Username or Email is required.</span>';
+          loginErr.style.display = 'flex';
+        }
+      } else if (loginErr) {
+        loginErr.style.display = 'none';
+      }
+
+      if (passwordEmpty) {
+        hasError = true;
+        passwordInput.setAttribute('aria-invalid', 'true');
+        if (passErr) {
+          passErr.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Password is required.</span>';
+          passErr.style.display = 'flex';
+        }
+      } else if (passErr) {
+        passErr.style.display = 'none';
+      }
+
+      if (hasError) {
         event.preventDefault();
-
-        if (loginEmpty) {
-          loginInput.setAttribute('aria-invalid', 'true');
-        }
-        if (passwordEmpty) {
-          passwordInput.setAttribute('aria-invalid', 'true');
-        }
-
-        var message;
-        if (loginEmpty && passwordEmpty) {
-          message = 'Please enter your username or email and password.';
-        } else if (loginEmpty) {
-          message = 'Please enter your username or email.';
-        } else {
-          message = 'Please enter your password.';
-        }
-
-        if (typeof window.showToast === 'function') {
-          window.showToast({ type: 'error', message: message });
-        }
-
         (loginEmpty ? loginInput : passwordInput).focus();
         return;
       }
