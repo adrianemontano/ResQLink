@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/resqlink-layout-scroll.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-forms.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/resqlink-footer.css') }}?v=20261123">
     @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
         <link rel="stylesheet" href="{{ asset('css/dispatcher-theme.css') }}?v=20261123">
@@ -31,6 +32,7 @@
         <script src="{{ asset('js/dispatcher-dropdowns.js') }}" defer></script>
     @endif
     <script src="{{ asset('js/responsive-tables.js') }}" defer></script>
+    <script src="{{ asset('js/resqlink-forms.js') }}?v=20261123" defer></script>
 </head>
 <body>
     <x-toast />
