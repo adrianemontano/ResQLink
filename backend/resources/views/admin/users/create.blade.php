@@ -10,7 +10,7 @@
     </div>
 
     <section class="card">
-        <form method="POST" action="{{ route('admin.users.store') }}">
+        <form method="POST" action="{{ route('admin.users.store') }}" novalidate>
             @csrf
             @include('admin.users.partials.form', ['managedUser' => null])
 
