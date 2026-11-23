@@ -12,10 +12,8 @@
 
 @section('content')
     <div class="volunteer-topbar"><div><h1>Submit Incident</h1><p>Provide accurate details. Dispatchers will review the preliminary assessment.</p></div></div>
-    @if (session('incident')) @php($incident = session('incident'))<div class="alert success">Incident <strong>INC-{{ str_pad((string) $incident['id'], 4, '0', STR_PAD_LEFT) }}</strong> was submitted. Status: <span class="badge status-{{ strtolower($incident['status']) }}">{{ $incident['status'] }}</span>. Preliminary severity: <span class="badge severity-{{ strtolower($incident['severity']) }}">{{ $incident['severity'] }}</span>.</div>@endif
-    @if ($errors->any())<div class="alert error">Please correct the highlighted fields before submitting.</div>@endif
     <div class="volunteer-report-grid">
-        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}">
+        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}" novalidate>
             @csrf
             <div class="volunteer-section-head">Incident details</div>
             <div class="volunteer-field-row"><x-volunteer-field label="Category" name="category" type="select" :options="['Flood', 'Earthquake', 'Landslide', 'Fire']" required /><div class="volunteer-field"><label for="barangay">Barangay <span class="required-asterisk" aria-hidden="true">*</span></label><input id="barangay" name="barangay" list="barangay-options" value="{{ old('barangay') }}" placeholder="Search a barangay" autocomplete="off" required data-barangay-field><datalist id="barangay-options"></datalist>@error('barangay')<small>{{ $message }}</small>@enderror</div></div>
