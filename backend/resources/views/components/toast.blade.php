@@ -7,10 +7,13 @@
     $inc = session('incident');
     $toasts[] = ['success', 'Incident INC-' . str_pad((string)($inc['id'] ?? ''), 4, '0', STR_PAD_LEFT) . ' was submitted successfully.'];
   }
-  foreach (['success', 'status', 'notice', 'incident_status_success'] as $k) {
+  foreach (['success', 'status', 'notice', 'incident_status_success', 'incident_update_success'] as $k) {
     if (session($k)) {
       $toasts[] = ['success', session($k)];
     }
+  }
+  if ($errors->has('update')) {
+    $toasts[] = ['error', $errors->first('update')];
   }
   if (session('warning')) {
     $toasts[] = ['warning', session('warning')];
