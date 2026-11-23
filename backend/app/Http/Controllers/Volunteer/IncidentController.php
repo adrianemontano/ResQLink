@@ -24,7 +24,10 @@ class IncidentController extends Controller
     ): RedirectResponse {
         $incident = $submissionService->submit($request->validated(), $request->user());
 
+        $reference = 'INC-'.str_pad((string) $incident->getKey(), 4, '0', STR_PAD_LEFT);
+
         return redirect()->route('volunteer.incidents.create')
+            ->with('success', "Incident {$reference} submitted successfully.")
             ->with('incident', [
                 'id' => $incident->getKey(),
                 'status' => $incident->status,

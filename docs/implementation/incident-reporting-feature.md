@@ -26,6 +26,12 @@ incident structure through `/volunteer/incidents/create`. The web form posts to
 `IncidentSubmissionService`, so API and web submissions produce the same stored
 incident data, severity, timestamp, and `Reported` status.
 
+After a successful web submission the volunteer is redirected back to the
+create form with a `success` flash (`Incident INC-0001 submitted successfully.`)
+that renders as an auto-dismissing `x-toast`, alongside the existing banner
+showing the incident reference, status, and preliminary severity. Validation
+errors from `StoreIncidentRequest` also render as error toasts.
+
 Development testing requires an active volunteer user with a related
 `volunteer_profiles.verification_status` value of `verified`.
 
