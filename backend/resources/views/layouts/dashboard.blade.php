@@ -80,14 +80,6 @@
                 </div>
             @endif
 
-            @if (session('status'))
-                <div class="alert success">{{ session('status') }}</div>
-            @endif
-
-            @if ($errors->has('account'))
-                <div class="alert error">{{ $errors->first('account') }}</div>
-            @endif
-
             @yield('content')
 
             <x-footer />
