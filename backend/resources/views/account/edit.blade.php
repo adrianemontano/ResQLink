@@ -7,7 +7,7 @@
 
     <section class="card account-card">
         <h2>My Profile</h2>
-        <form method="POST" action="{{ route($routePrefix.'.account.update') }}">
+        <form method="POST" action="{{ route($routePrefix.'.account.update') }}" novalidate>
             @csrf
             @method('PUT')
             <div class="form-grid">
@@ -22,7 +22,7 @@
 
     <section class="card account-card">
         <h2>Change Password</h2>
-        <form method="POST" action="{{ route($routePrefix.'.account.password') }}">
+        <form method="POST" action="{{ route($routePrefix.'.account.password') }}" novalidate>
             @csrf
             @method('PUT')
             <div class="form-grid">
