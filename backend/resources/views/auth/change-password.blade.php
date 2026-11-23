@@ -13,11 +13,7 @@
             </p>
         </div>
 
-        @if (session('status'))
-            <div class="alert success">{{ session('status') }}</div>
-        @endif
-
-        <form method="POST" action="{{ route('password.update') }}">
+        <form method="POST" action="{{ route('password.update') }}" novalidate>
             @csrf
 
             {{-- Current Password --}}
