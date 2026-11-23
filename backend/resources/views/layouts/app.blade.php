@@ -8,25 +8,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-tokens.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-theme.css') }}?v=2">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-badges.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}?v=21">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-status-filters.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-tokens.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-theme.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-badges.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-dashboard.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-incident-card.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-widgets.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-status-filters.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}?v=20261123">
     @stack('styles')
-    <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-layout-scroll.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/account.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-layout-scroll.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/account.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-footer.css') }}?v=20261123">
     @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
-        <link rel="stylesheet" href="{{ asset('css/dispatcher-theme.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/dispatcher-notifications.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/dispatcher-dropdowns.css') }}?v=2">
+        <link rel="stylesheet" href="{{ asset('css/dispatcher-theme.css') }}?v=20261123">
+        <link rel="stylesheet" href="{{ asset('css/dispatcher-notifications.css') }}?v=20261123">
+        <link rel="stylesheet" href="{{ asset('css/dispatcher-dropdowns.css') }}?v=20261123">
         <script src="{{ asset('js/dispatcher-dropdowns.js') }}" defer></script>
     @endif
     <script src="{{ asset('js/responsive-tables.js') }}" defer></script>
