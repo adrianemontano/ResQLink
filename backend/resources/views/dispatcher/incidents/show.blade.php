@@ -269,9 +269,6 @@
             </section>
         </div>
     </section>
-    <div id="incident-status-toast" class="incident-status-toast" role="status" aria-live="polite" @if (! session('incident_status_success')) hidden @endif>
-        {{ session('incident_status_success') }}
-    </div>
 @endsection
 
 @push('scripts')
