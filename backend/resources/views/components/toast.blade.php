@@ -3,7 +3,7 @@
 <script src="{{ asset('js/toast.js') }}"></script>
 @php
   $toasts = [];
-  foreach (['success', 'status', 'notice'] as $k) {
+  foreach (['success', 'status', 'notice', 'incident_status_success'] as $k) {
     if (session($k)) {
       $toasts[] = ['success', session($k)];
     }
@@ -14,10 +14,18 @@
   if (session('error')) {
     $toasts[] = ['error', session('error')];
   }
-  if ($errors->any()) {
-    foreach ($errors->all() as $message) {
-      $toasts[] = ['error', $message];
-    }
+
+  // Map authentication / system errors to standard toast pop-ups
+  if ($errors->has('login') && str_contains(strtolower($errors->first('login')), 'credential')) {
+    $toasts[] = ['error', 'Incorrect username or password.'];
+  } elseif ($errors->has('username') && str_contains(strtolower($errors->first('username')), 'credential')) {
+    $toasts[] = ['error', 'Incorrect username or password.'];
+  } elseif ($errors->has('email') && str_contains(strtolower($errors->first('email')), 'credential')) {
+    $toasts[] = ['error', 'Incorrect username or password.'];
+  } elseif ($errors->has('login') && str_contains(strtolower($errors->first('login')), 'deactivated')) {
+    $toasts[] = ['error', 'Your account has been deactivated. Please contact your administrator.'];
+  } elseif ($errors->has('status') && !str_contains(strtolower($errors->first('status')), 'required')) {
+    $toasts[] = ['error', $errors->first('status')];
   }
 
   $uniqueToasts = [];
