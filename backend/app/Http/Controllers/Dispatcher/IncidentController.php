@@ -209,7 +209,7 @@ class IncidentController extends Controller
         }
 
         return redirect()->route('dispatcher.incidents.show', $incident)
-            ->with('incident_status_success', $message);
+            ->with('incident_update_success', $message);
     }
 
     public function map(): View
