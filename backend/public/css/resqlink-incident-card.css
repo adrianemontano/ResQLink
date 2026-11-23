@@ -1,0 +1,18 @@
+/* Incident card: keep table content inside card boundaries. */
+section.card.incident-results {
+    overflow: hidden;
+}
+section.card.incident-results > table {
+    display: table !important;
+    width: 100%;
+    min-width: 640px;
+    overflow-x: auto;
+}
+
+/* Keep the footer pinned to the bottom of the page. */
+.app-footer {
+    margin-top: auto;
+}
+
+/* Keep category names on one line so "Earthquake" never breaks mid-word. */
+td[data-label="Category"], th:nth-child(3) { white-space: nowrap; }
