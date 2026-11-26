@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-    <div class="volunteer-topbar"><div><h1>Edit Incident</h1><p>Update the incident details.</p></div></div>
+    <div class="header-row"><div><h1>Edit Incident</h1><p>Update the incident details.</p></div><a class="button secondary dispatcher-view-button" href="{{ route('volunteer.incidents.index') }}">Back to reports</a></div>
     <div class="volunteer-report-grid">
         <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.update', $incident) }}" novalidate>
             @csrf
