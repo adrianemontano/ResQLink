@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(360px)';
             window.setTimeout(() => toast.remove(), 300);
-        }, 8000);
+        }, 5000);
     }
 
     async function pollNotifications() {
