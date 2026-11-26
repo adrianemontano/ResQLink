@@ -175,13 +175,50 @@ table { box-sizing: border-box; max-width: 100%; }
     p, .header-row > div > p, .volunteer-topbar p { font-size: 13px !important; line-height: 1.45; margin: 0 !important; }
 
     /* Compact stat cards (2-col grid) */
-    .grid, .admin-metrics { display: grid !important; gap: 8px !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important; margin-bottom: 10px !important; }
-    .grid .card, .admin-metrics .card { border-radius: 10px !important; padding: 10px 12px !important; }
-    .grid .card h2, .admin-metrics .card h2 {
-        color: var(--text-muted) !important; font-size: 11px !important; font-weight: 600 !important;
-        letter-spacing: .05em !important; line-height: 1.2 !important; margin: 0 0 4px 0 !important; text-transform: uppercase !important;
+    .grid, .admin-metrics, .volunteer-metrics, .report-stat-grid {
+        display: grid !important; gap: 8px !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        margin-bottom: 10px !important;
     }
-    .metric, .report-stat-val { font-size: 23px !important; font-weight: 700 !important; line-height: 1.1 !important; margin: 0 !important; }
+    .grid .card, .admin-metrics .card, .volunteer-metric-card, .report-stat {
+        border-radius: 10px !important; min-height: auto !important; padding: 10px 12px !important;
+    }
+    .grid .card h2, .admin-metrics .card h2, .admin-metric-label, .volunteer-metric-label, .report-stat-label {
+        color: var(--text-muted) !important; font-size: 11px !important; font-weight: 600 !important;
+        letter-spacing: .04em !important; line-height: 1.2 !important; margin: 0 0 4px 0 !important; text-transform: uppercase !important;
+    }
+    .metric, .report-stat-val, .admin-metric-card > strong, .volunteer-metric-card > strong {
+        font-size: 22px !important; font-weight: 700 !important; line-height: 1.1 !important; margin: 0 !important;
+    }
+    .admin-metric-card > small, .volunteer-metric-card > small { font-size: 11px !important; margin-top: 2px !important; }
+    .admin-metric-card, .volunteer-metric-card { grid-template-columns: 30px minmax(0, 1fr) !important; }
+    .admin-metric-mark, .volunteer-metric-icon { height: 26px !important; margin-right: 8px !important; width: 26px !important; }
+
+    /* Compact volunteer hero on mobile */
+    .volunteer-hero { border-radius: 10px !important; gap: 12px !important; min-height: auto !important; padding: 14px !important; }
+    .volunteer-hero h2 { font-size: 17px !important; margin: 6px 0 4px !important; }
+    .volunteer-hero p { font-size: 12.5px !important; line-height: 1.45 !important; }
+    .volunteer-hero-total { border-left: 0 !important; border-top: 1px solid rgba(255,255,255,.22) !important; flex-basis: auto !important; margin: 0 !important; padding: 10px 0 0 !important; width: 100% !important; }
+    .volunteer-hero-total strong { font-size: 26px !important; }
+
+    /* Filter bars: clean 1-col stack + side-by-side Filter/Clear buttons */
+    .filter-row, .record-filter-row, .report-filter-row, .admin-user-filter-row {
+        display: grid !important; gap: 10px !important; grid-template-columns: 1fr !important;
+    }
+    .filter-actions-group { display: flex !important; gap: 8px !important; width: 100% !important; }
+    .filter-actions-group > * { flex: 1 1 0 !important; }
+
+    /* Admin analytics & reports on mobile */
+    .admin-analytics-grid, .admin-bottom-grid, .volunteer-analytics-grid, .detail-grid {
+        gap: 10px !important; grid-template-columns: 1fr !important;
+    }
+    .bar-row { align-items: stretch !important; flex-direction: column !important; gap: 4px !important; }
+    .bar-label { font-size: 12px !important; width: auto !important; }
+
+    /* Status stepper on mobile */
+    .status-stepper { gap: 4px !important; overflow-x: auto !important; padding-bottom: 4px !important; }
+    .status-actions-row { display: flex !important; flex-direction: column !important; gap: 8px !important; }
+    .status-actions-row > * { width: 100% !important; }
 
     /* Slim header-row inside cards */
     .card .header-row {
@@ -271,7 +308,7 @@ table { box-sizing: border-box; max-width: 100%; }
 
 /* 3. Extra Narrow (<= 360px) */
 @media (max-width: 360px) {
-    .grid, .admin-metrics { grid-template-columns: 1fr !important; }
+    .grid, .admin-metrics, .volunteer-metrics, .report-stat-grid { grid-template-columns: 1fr !important; }
     .dashboard-main { padding: 10px 8px 20px !important; }
     h1, .header-row h1, .volunteer-topbar h1 { font-size: 18px !important; }
 }
