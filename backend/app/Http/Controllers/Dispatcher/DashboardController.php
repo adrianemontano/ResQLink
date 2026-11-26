@@ -48,9 +48,14 @@ class DashboardController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
+        $activeIncidents = (int) $statusCounts->get('Reported', 0)
+            + (int) $statusCounts->get('Received', 0)
+            + (int) $statusCounts->get('Dispatched', 0);
+        $completedIncidents = (int) $statusCounts->get('Completed', 0);
+
         return view('dispatcher.dashboard', [
-            'activeIncidents' => Incident::query()->whereIn('status', ['Reported', 'Received', 'Dispatched'])->count(),
-            'completedIncidents' => Incident::query()->where('status', 'Completed')->count(),
+            'activeIncidents' => $activeIncidents,
+            'completedIncidents' => $completedIncidents,
             'incidents' => $incidents,
             'statusFilters' => $statusFilters,
             'selectedStatus' => $selectedStatus,
