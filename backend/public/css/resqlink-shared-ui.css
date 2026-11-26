@@ -1,0 +1,63 @@
+/* Shared UI parity rules across Admin, Dispatcher, and Volunteer roles. */
+
+.dispatcher-view-button {
+    display: inline-flex;
+    justify-content: center;
+    min-width: 64px;
+    padding: 6px 12px;
+    text-decoration: none;
+}
+
+.badge.role-badge,
+.badge.active,
+.badge.inactive {
+    align-items: center;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 6px;
+    height: 24px;
+    justify-content: center;
+    letter-spacing: .025em;
+    padding: 0 10px;
+    white-space: nowrap;
+}
+
+.badge.role-badge {
+    background: var(--gray-50);
+    border: 1px solid var(--border);
+    color: var(--text-label);
+}
+
+.badge.active {
+    background: #ECFDF3;
+    border: 1px solid #A7E4BD;
+    color: #166534;
+}
+
+.badge.inactive {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #991B1B;
+}
+
+.admin-user-filter-row {
+    align-items: end;
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr) auto;
+}
+
+.admin-user-filter-row label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+}
+
+.filter-actions-group {
+    align-items: center;
+    display: flex;
+    gap: var(--space-2);
+}
