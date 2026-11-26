@@ -34,19 +34,19 @@ class LoginController extends Controller
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             return back()
-                ->withInput($request->only('login'))
+                ->withInput($request->only('login', 'password', 'remember'))
                 ->with('error', 'Incorrect username or password.');
         }
 
         if (! $user->is_active) {
             return back()
-                ->withInput($request->only('login'))
+                ->withInput($request->only('login', 'password', 'remember'))
                 ->with('error', 'Your account has been deactivated. Please contact your administrator.');
         }
 
         if (! $user->canAccessWeb()) {
             return back()
-                ->withInput($request->only('login'))
+                ->withInput($request->only('login', 'password', 'remember'))
                 ->with('error', 'This account is not authorized for web access.');
         }
 
