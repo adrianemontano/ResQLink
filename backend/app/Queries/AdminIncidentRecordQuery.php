@@ -160,11 +160,16 @@ class AdminIncidentRecordQuery
      */
     public static function countsByScope(): array
     {
-        $archived = Incident::query()->where('status', Incident::STATUS_COMPLETED)->count();
+        $counts = Incident::query()
+            ->selectRaw('COUNT(*) as total, SUM(status = ?) as archived', [Incident::STATUS_COMPLETED])
+            ->first();
+
+        $total = (int) ($counts?->total ?? 0);
+        $archived = (int) ($counts?->archived ?? 0);
 
         return [
-            'all' => Incident::query()->count(),
-            'active' => Incident::query()->whereNot('status', Incident::STATUS_COMPLETED)->count(),
+            'all' => $total,
+            'active' => max(0, $total - $archived),
             'archived' => $archived,
         ];
     }
