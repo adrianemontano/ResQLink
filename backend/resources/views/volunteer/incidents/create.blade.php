@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-    <div class="volunteer-topbar"><div><h1>Submit Incident</h1><p>Provide accurate details. Dispatchers will review the preliminary assessment.</p></div></div>
+    <div class="header-row"><div><h1>Submit Incident</h1><p>Provide accurate details. Dispatchers will review the preliminary assessment.</p></div></div>
     <div class="volunteer-report-grid">
         <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}" novalidate>
             @csrf
