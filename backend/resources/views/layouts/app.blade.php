@@ -17,10 +17,11 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-status-filters.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/resqlink-map.css') }}?v=20261123">
     @stack('styles')
-    <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}?v=20261123">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}?v=20261123">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}?v=20261123">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-design-system.css') }}?v=20261126">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-shared-ui.css') }}?v=20261126">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}?v=20261126">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}?v=20261126">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}?v=20261126">
     <link rel="stylesheet" href="{{ asset('css/resqlink-layout-scroll.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/resqlink-forms.css') }}?v=20261123">
