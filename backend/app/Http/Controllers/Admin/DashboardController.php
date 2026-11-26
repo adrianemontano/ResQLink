@@ -28,9 +28,9 @@ class DashboardController extends Controller
                             ->whereBetween('created_at', [$firstMonth, $lastMonth]);
                     });
             })
-            ->get(['reported_at', 'created_at'])
-            ->countBy(fn (Incident $incident): string => ($incident->reported_at ?? $incident->created_at)
-                ->format('Y-m'));
+            ->selectRaw("DATE_FORMAT(COALESCE(reported_at, created_at), '%Y-%m') as month, COUNT(*) as total")
+            ->groupBy('month')
+            ->pluck('total', 'month');
         $incidentTrend = $months->map(fn (CarbonImmutable $month): array => [
             'label' => $month->format('M'),
             'total' => $monthlyCounts->get($month->format('Y-m'), 0),
@@ -89,6 +89,14 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // Single query for all incident counts instead of 3 separate COUNT queries
+        $incidentCounts = Incident::query()
+            ->selectRaw("COUNT(*) as total, SUM(status = ?) as completed", [Incident::STATUS_COMPLETED])
+            ->first();
+        $totalIncidents = (int) $incidentCounts->total;
+        $completedIncidents = (int) $incidentCounts->completed;
+        $openIncidents = $totalIncidents - $completedIncidents;
+
         return view('admin.dashboard', [
             'totalVolunteers' => (clone $volunteerQuery)->count(),
             'verifiedVolunteers' => (clone $volunteerQuery)->whereHas('volunteerProfile', fn ($query) => $query->where('verification_status', 'verified'))->count(),
@@ -97,22 +105,9 @@ class DashboardController extends Controller
                     ->orWhereHas('volunteerProfile', fn ($profileQuery) => $profileQuery->where('verification_status', '!=', 'verified'));
             })->count(),
             'totalDispatchers' => User::query()->whereRelation('role', 'name', 'dispatcher')->count(),
-            'totalIncidents' => Incident::query()->count(),
-            'openIncidents' => Incident::query()
-                ->leftJoin('incident_statuses', 'incident_statuses.id', '=', 'incidents.status_id')
-                ->whereRaw(
-                    "COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, '')) IS NULL
-                    OR COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, '')) != ?",
-                    [Incident::STATUS_COMPLETED]
-                )
-                ->count(),
-            'completedIncidents' => Incident::query()
-                ->leftJoin('incident_statuses', 'incident_statuses.id', '=', 'incidents.status_id')
-                ->whereRaw(
-                    "COALESCE(NULLIF(incident_statuses.name, ''), NULLIF(incidents.status, '')) = ?",
-                    [Incident::STATUS_COMPLETED]
-                )
-                ->count(),
+            'totalIncidents' => $totalIncidents,
+            'openIncidents' => $openIncidents,
+            'completedIncidents' => $completedIncidents,
             'statusBreakdown' => $statusBreakdown,
             'categoryBreakdown' => $categoryBreakdown,
             'severityBreakdown' => $severityBreakdown,
