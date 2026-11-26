@@ -70,9 +70,7 @@
   }
 
   function getDuration(type) {
-    if (type === 'success' || type === 'info') return 4000;
-    if (type === 'warning') return 6000;
-    return 0;
+    return 5000;
   }
 
   function dismiss(toast) {
