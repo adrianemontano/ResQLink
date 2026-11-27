@@ -1,0 +1,44 @@
+/*
+ * ResQLink Form Validation Styling
+ * Matches Login page validation style:
+ * - Red border on invalid inputs with soft red focus ring
+ * - Custom inline error message below field with red exclamation icon
+ */
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+    border-color: var(--danger, #D92200) !important;
+    box-shadow: 0 0 0 3px rgba(217, 34, 0, 0.15) !important;
+    outline: none !important;
+}
+
+.rq-field-error,
+.error-text {
+    align-items: center;
+    color: var(--danger, #D92200);
+    display: flex;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    gap: 6px;
+    line-height: 1.4;
+    margin-top: 5px;
+}
+
+.rq-field-error svg,
+.error-text svg {
+    flex-shrink: 0;
+    stroke: var(--danger, #D92200);
+}
+
+label > small,
+.form-grid label > small {
+    align-items: center;
+    color: var(--danger, #D92200);
+    display: flex;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    gap: 4px;
+    margin-top: 4px;
+}

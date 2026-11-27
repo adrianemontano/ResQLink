@@ -17,10 +17,13 @@ class DashboardController extends Controller
         $volunteer = $request->user();
         abort_unless($volunteer instanceof User, 403);
 
-        $totalReports = $this->incidentsFor($volunteer)->count();
-        $completedReports = $this->incidentsFor($volunteer)
-            ->where('status', Incident::STATUS_COMPLETED)
-            ->count();
+        // Single query for counts by status instead of multiple count() calls
+        $statusCounts = $this->incidentsFor($volunteer)
+            ->selectRaw("COUNT(*) as total, SUM(status = ?) as completed", [Incident::STATUS_COMPLETED])
+            ->first();
+
+        $totalReports = (int) $statusCounts->total;
+        $completedReports = (int) $statusCounts->completed;
 
         $months = collect(range(5, 0))
             ->map(fn (int $monthsAgo): CarbonImmutable => CarbonImmutable::now()
@@ -29,7 +32,9 @@ class DashboardController extends Controller
         $firstMonth = $months->first();
         $lastMonth = $months->last()->endOfMonth();
 
+        // Use SQL GROUP BY instead of fetching all rows and counting in PHP
         $monthlyCounts = $this->incidentsFor($volunteer)
+            ->selectRaw("DATE_FORMAT(COALESCE(reported_at, created_at), '%Y-%m') as month, COUNT(*) as total")
             ->where(function (Builder $query) use ($firstMonth, $lastMonth): void {
                 $query->whereBetween('reported_at', [$firstMonth, $lastMonth])
                     ->orWhere(function (Builder $query) use ($firstMonth, $lastMonth): void {
@@ -37,25 +42,25 @@ class DashboardController extends Controller
                             ->whereBetween('created_at', [$firstMonth, $lastMonth]);
                     });
             })
-            ->get(['reported_at', 'created_at'])
-            ->countBy(fn (Incident $incident): string => ($incident->reported_at ?? $incident->created_at)
-                ->format('Y-m'));
+            ->groupBy('month')
+            ->pluck('total', 'month');
 
         $reportTrend = $months->map(fn (CarbonImmutable $month): array => [
             'label' => $month->format('M'),
-            'total' => $monthlyCounts->get($month->format('Y-m'), 0),
+            'total' => (int) $monthlyCounts->get($month->format('Y-m'), 0),
         ]);
 
+        // Use SQL GROUP BY instead of fetching all rows and counting in PHP
         $categoryBreakdown = $this->incidentsFor($volunteer)
-            ->get(['category'])
-            ->countBy(fn (Incident $incident): string => $incident->category ?: 'Other')
-            ->sortDesc()
-            ->map(fn (int $count, string $category): array => [
-                'name' => $category,
-                'count' => $count,
-                'percentage' => $totalReports === 0 ? 0 : (int) round($count / $totalReports * 100),
-            ])
-            ->values();
+            ->selectRaw("COALESCE(NULLIF(category, ''), 'Other') as name, COUNT(*) as `count`")
+            ->groupBy('name')
+            ->orderByDesc('count')
+            ->get()
+            ->map(fn ($row): array => [
+                'name' => $row->name,
+                'count' => (int) $row->count,
+                'percentage' => $totalReports === 0 ? 0 : (int) round($row->count / $totalReports * 100),
+            ]);
 
         $recentIncidents = $this->incidentsFor($volunteer)
             ->orderByDesc('reported_at')

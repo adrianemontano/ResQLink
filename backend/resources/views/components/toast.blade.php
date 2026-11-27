@@ -3,7 +3,11 @@
 <script src="{{ asset('js/toast.js') }}"></script>
 @php
   $toasts = [];
-  foreach (['success', 'status', 'notice'] as $k) {
+  if (session('incident')) {
+    $inc = session('incident');
+    $toasts[] = ['success', 'Incident INC-' . str_pad((string)($inc['id'] ?? ''), 4, '0', STR_PAD_LEFT) . ' was submitted successfully.'];
+  }
+  foreach (['success', 'status', 'notice', 'incident_status_success', 'incident_update_success'] as $k) {
     if (session($k)) {
       $toasts[] = ['success', session($k)];
     }
@@ -14,9 +18,35 @@
   if (session('error')) {
     $toasts[] = ['error', session('error')];
   }
+  // $errors is undefined in views rendered outside the web middleware group.
   if (isset($errors) && $errors->any()) {
-    foreach ($errors->all() as $message) {
-      $toasts[] = ['error', $message];
+    foreach (['update', 'account'] as $key) {
+      if ($errors->has($key)) {
+        $toasts[] = ['error', $errors->first($key)];
+      }
+    }
+
+    // Map authentication / system errors to standard toast pop-ups
+    if ($errors->has('login') && str_contains(strtolower($errors->first('login')), 'credential')) {
+      $toasts[] = ['error', 'Incorrect username or password.'];
+    } elseif ($errors->has('username') && str_contains(strtolower($errors->first('username')), 'credential')) {
+      $toasts[] = ['error', 'Incorrect username or password.'];
+    } elseif ($errors->has('email') && str_contains(strtolower($errors->first('email')), 'credential')) {
+      $toasts[] = ['error', 'Incorrect username or password.'];
+    } elseif ($errors->has('login') && str_contains(strtolower($errors->first('login')), 'deactivated')) {
+      $toasts[] = ['error', 'Your account has been deactivated. Please contact your administrator.'];
+    } elseif ($errors->has('status') && !str_contains(strtolower($errors->first('status')), 'required')) {
+      $toasts[] = ['error', $errors->first('status')];
+    }
+
+    // Remaining form validation errors (e.g. incident form) each get a toast.
+    $handledKeys = ['update', 'account', 'login', 'username', 'email', 'status'];
+    foreach ($errors->getMessages() as $field => $messages) {
+      if (!in_array($field, $handledKeys, true)) {
+        foreach ($messages as $message) {
+          $toasts[] = ['error', $message];
+        }
+      }
     }
   }
 

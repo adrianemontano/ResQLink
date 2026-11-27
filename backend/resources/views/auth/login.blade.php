@@ -59,16 +59,30 @@
         <div class="rq-input">
           <input id="login" type="text" name="login" value="{{ old('login') }}" autofocus autocomplete="username" @if (session('error') || $errors->has('login')) aria-invalid="true" @endif>
         </div>
+        <div id="login-error" class="rq-field-error" role="alert" style="display: none;"></div>
+        @if ($errors->has('login') && !str_contains(strtolower($errors->first('login')), 'credential') && !str_contains(strtolower($errors->first('login')), 'deactivated'))
+          <div class="rq-field-error" role="alert">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>{{ $errors->first('login') }}</span>
+          </div>
+        @endif
       </div>
 
       <div class="rq-field">
         <label for="password">Password <span class="req">*</span></label>
         <div class="rq-input">
-          <input id="password" type="password" name="password" autocomplete="current-password" @if (session('error') || $errors->has('password')) aria-invalid="true" @endif>
+          <input id="password" type="password" name="password" value="{{ old('password') }}" autocomplete="current-password" @if (session('error') || $errors->has('password')) aria-invalid="true" @endif>
           <button type="button" class="rq-eye" aria-label="Show password" onclick="var i=document.getElementById('password');i.type=i.type==='password'?'text':'password';this.setAttribute('aria-label', i.type==='password'?'Show password':'Hide password')">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
+        <div id="password-error" class="rq-field-error" role="alert" style="display: none;"></div>
+        @if ($errors->has('password') && !str_contains(strtolower($errors->first('password')), 'credential'))
+          <div class="rq-field-error" role="alert">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>{{ $errors->first('password') }}</span>
+          </div>
+        @endif
       </div>
 
       <label class="rq-remember"><input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}> Remember this device</label>

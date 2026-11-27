@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ResQLink • Login Page Redesign Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="resqlink-mockups.css">
+  <link rel="stylesheet" href="../../../backend/public/css/login.css">
+  <link rel="stylesheet" href="../../../backend/public/css/toast.css">
+  <style>
+    .mockup-header-bar {
+      background: var(--rosewood);
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .mockup-header-bar a {
+      color: #FFB366;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .mockup-controls {
+      display: flex;
+      gap: 8px;
+    }
+    .mockup-btn {
+      padding: 4px 10px;
+      font-size: 12px;
+      min-height: 28px;
+      cursor: pointer;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      font-weight: 500;
+    }
+    .mockup-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    .rq-login-wrap {
+      min-height: calc(100vh - 48px);
+      display: flex;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header class="mockup-header-bar">
+    <div><strong>ResQLink Design System</strong> • Login Page Redesign (Split Layout 50/50)</div>
+    <div class="mockup-controls">
+      <button type="button" class="mockup-btn" onclick="showToast({type:'success', message:'You have been signed out.'})">Test Logout Toast</button>
+      <button type="button" class="mockup-btn" onclick="showToast({type:'error', message:'Incorrect username or password.'})">Test Wrong Creds Toast</button>
+      <button type="button" class="mockup-btn" onclick="showToast({type:'warning', message:'Your session expired. Please log in again.'})">Test Expired Toast</button>
+    </div>
+  </header>
+
+  <div class="rq-toast-wrap" id="rqToasts" aria-live="polite"></div>
+
+  <div class="rq-login">
+    <!-- Left panel (50% Rosewood brand gradient & features) -->
+    <section class="rq-left">
+      <div class="rq-left-inner">
+        <div class="rq-logo">
+          <img src="../../../backend/public/images/resqlink-logo-white.png" alt="ResQLink" class="rq-logo-img">
+        </div>
+
+        <h1 class="rq-headline">Fast alerts. Coordinated response.</h1>
+        <p class="rq-desc">ResQLink connects barangay volunteers and dispatchers so emergency reports are received and acted on quickly.</p>
+
+        <ul class="rq-features">
+          <li>
+            <span class="rq-ficon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+            </span>
+            Real-time incident alerts
+          </li>
+          <li>
+            <span class="rq-ficon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
+            GPS location pinning
+          </li>
+          <li>
+            <span class="rq-ficon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </span>
+            Fast dispatch coordination
+          </li>
+        </ul>
+      </div>
+      <div class="rq-left-footer">CCDRRMO - Cebu City</div>
+    </section>
+
+    <!-- Right panel (50% warm cream/white form card) -->
+    <section class="rq-right">
+      <form class="rq-form" id="mockLoginForm" novalidate>
+        <div>
+          <h2>Welcome back</h2>
+          <p class="rq-sub">Administrator and dispatcher access only.</p>
+        </div>
+
+        <div class="rq-field">
+          <label for="login">Username or Email <span class="req">*</span></label>
+          <div class="rq-input">
+            <input id="login" type="text" name="login" placeholder="e.g. angela or angela@resqlink.gov.ph" autocomplete="username">
+          </div>
+          <div id="login-error" class="rq-field-error" role="alert" style="display: none;"></div>
+        </div>
+
+        <div class="rq-field">
+          <label for="password">Password <span class="req">*</span></label>
+          <div class="rq-input">
+            <input id="password" type="password" name="password" placeholder="••••••••" autocomplete="current-password">
+            <button type="button" class="rq-eye" aria-label="Show password" onclick="var i=document.getElementById('password');i.type=i.type==='password'?'text':'password';this.setAttribute('aria-label', i.type==='password'?'Show password':'Hide password')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div id="password-error" class="rq-field-error" role="alert" style="display: none;"></div>
+        </div>
+
+        <label class="rq-remember">
+          <input type="checkbox" name="remember" value="1"> Remember this device
+        </label>
+
+        <button type="submit" class="rq-btn" id="login-submit">
+          <span class="btn-text">Login</span>
+          <span class="rq-spinner" style="display: none;" aria-hidden="true"></span>
+        </button>
+
+        <p class="rq-forgot">Forgot your password? Contact your administrator.</p>
+      </form>
+
+      <footer class="app-footer">
+        © 2026 ResQLink <span class="app-footer-sep">|</span> All Rights Reserved.
+      </footer>
+    </section>
+  </div>
+
+  <script src="../../../backend/public/js/toast.js"></script>
+  <script src="../../../backend/public/js/login.js"></script>
+  <script>
+    // Demo toast on initial load
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        showToast({ type: 'success', message: 'You have been signed out.' });
+      }, 400);
+    });
+  </script>
+</body>
+</html>
+

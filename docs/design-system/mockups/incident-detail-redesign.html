@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ResQLink • Dispatcher Incident Detail Redesign Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="resqlink-mockups.css">
+  <style>
+    .timeline {
+      position: relative;
+      margin-left: 12px;
+      padding-left: 20px;
+      border-left: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .timeline-item {
+      position: relative;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -27px;
+      top: 3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--philippine-orange);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--philippine-orange);
+    }
+    .timeline-dot.done {
+      background: var(--success);
+      box-shadow: 0 0 0 2px var(--success);
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--rosewood);
+    }
+    .timeline-time {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .timeline-body {
+      font-size: 12px;
+      line-height: 1.5;
+      background: var(--cream);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--tangelo);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 0 4px;
+      text-decoration: underline;
+    }
+    .stepper-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+    .stepper-steps {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .step-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--rosewood);
+    }
+    .step-time {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .step-connector {
+      flex: 1;
+      height: 2px;
+      background: var(--success);
+      min-width: 24px;
+    }
+    .step-connector.future {
+      background: var(--border);
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      .stepper-wrap {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="m-page">
+    <header class="m-page-head">
+      <div>
+        <a href="dispatcher-web.html" style="font-size: 13px;">← Back to incidents</a>
+        <h1 style="margin-top: 8px;">INC-0085 • Fire Emergency</h1>
+        <p>Reported 12 minutes ago (Oct 29, 2026, 09:20 AM) by <strong>Carlos Garcia</strong> (Barangay Responder) • Poblacion Pardo</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <span class="m-pill critical">◆ Critical</span>
+        <span class="m-pill done" style="font-size: 12px; padding: 6px 14px;">Dispatched</span>
+      </div>
+    </header>
+
+    <!-- Operational Horizontal Stepper & Next Action -->
+    <section class="stepper-wrap">
+      <div class="stepper-steps">
+        <div class="step-item">
+          <span class="step-label">✓ 1. Reported</span>
+          <span class="step-time">09:20 AM</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <span class="step-label">✓ 2. Received</span>
+          <span class="step-time">09:24 AM</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <span class="step-label" style="color:var(--tangelo)">● 3. Dispatched</span>
+          <span class="step-time">09:32 AM</span>
+        </div>
+        <div class="step-connector future"></div>
+        <div class="step-item">
+          <span class="step-label" style="color:var(--muted)">○ 4. Completed</span>
+          <span class="step-time">Pending</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="secondary" style="min-height: 38px; font-size: 12px;">+ Add update</button>
+        <button style="min-height: 38px; font-size: 12px;">Mark as Completed</button>
+      </div>
+    </section>
+
+    <!-- 2-Column Operational Grid -->
+    <div class="m-two">
+      <!-- Left Column: Incident & Reporter Summaries + Vertical Timeline -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Card 1: Reporter & Location -->
+        <article class="m-card">
+          <div class="m-card-head">
+            <h3>Reporter & Location Details</h3>
+            <span class="m-pill">Poblacion Pardo</span>
+          </div>
+          <div class="m-list">
+            <div class="m-list-row">
+              <span>Volunteer Name</span>
+              <strong>Carlos Garcia</strong>
+            </div>
+            <div class="m-list-row">
+              <span>Contact Number</span>
+              <strong>0917-555-0192</strong>
+            </div>
+            <div class="m-list-row">
+              <span>Barangay / Sector</span>
+              <strong>Poblacion Pardo (District 2)</strong>
+            </div>
+            <div class="m-list-row">
+              <span>Nearest Landmark</span>
+              <strong>Near Pardo Public Market & Chapel</strong>
+            </div>
+            <div class="m-list-row">
+              <span>GPS Coordinates</span>
+              <span>
+                <strong>10.2934° N, 123.8612° E</strong>
+                <button type="button" class="copy-btn" onclick="navigator.clipboard.writeText('10.2934, 123.8612'); alert('Coordinates copied!');">Copy</button>
+              </span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2: Incident & Impact -->
+        <article class="m-card">
+          <div class="m-card-head">
+            <h3>Incident Scope & Impact</h3>
+            <span class="m-pill critical">Level 3 Response</span>
+          </div>
+          <div class="m-list">
+            <div class="m-list-row">
+              <span>Category</span>
+              <strong>Fire (Residential Area)</strong>
+            </div>
+            <div class="m-list-row">
+              <span>Persons Affected</span>
+              <strong>150 residents</strong>
+            </div>
+            <div class="m-list-row">
+              <span>Estimated Impact Radius</span>
+              <strong>300 metres</strong>
+            </div>
+            <div class="m-list-row">
+              <span>Field Reporter Note</span>
+              <p style="margin: 0; font-size: 12px;">Thick black smoke spreading across residential alleyway. BFP Station 7 dispatched with 3 tanker units.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Vertical Activity Timeline -->
+        <article class="m-card">
+          <div class="m-card-head">
+            <h3>Operational Activity Timeline</h3>
+            <span class="m-pill">3 Updates</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <span class="timeline-dot done"></span>
+              <div class="timeline-header">
+                <span class="timeline-title">Dispatched (BFP Unit 07)</span>
+                <span class="timeline-time">Today, 09:32 AM • Angela (Dispatcher)</span>
+              </div>
+              <div class="timeline-body">
+                Coordinated with Cebu City Fire Station 7. Three response engines en route to site via Sabellano St.
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <span class="timeline-dot done"></span>
+              <div class="timeline-header">
+                <span class="timeline-title">Received & Verified</span>
+                <span class="timeline-time">Today, 09:24 AM • Angela (Dispatcher)</span>
+              </div>
+              <div class="timeline-body">
+                Direct phone verification with Volunteer Carlos Garcia. Confirmed residential structure fire.
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <span class="timeline-dot done"></span>
+              <div class="timeline-header">
+                <span class="timeline-title">Emergency Reported</span>
+                <span class="timeline-time">Today, 09:20 AM • Field Responder</span>
+              </div>
+              <div class="timeline-body">
+                Report submitted via ResQLink volunteer portal with GPS lock and photo attachment.
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Right Column: Interactive Map & Photo Lightbox -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Leaflet / MapLibre representation -->
+        <article class="m-card">
+          <div class="m-card-head">
+            <h3>Incident Location & Impact Radius</h3>
+            <span class="m-pill high">300m Radius</span>
+          </div>
+          <div class="m-map" style="min-height: 280px;">
+            <div class="m-legend">Cebu City Emergency Grid • Pardo Sector</div>
+            <!-- Radius circle -->
+            <div class="m-radius" style="top: 80px; left: calc(50% - 52px);"></div>
+            <!-- Rosewood pin with orange pulse dot -->
+            <div class="m-pin" style="top: 122px; left: calc(50% - 10px);"></div>
+          </div>
+          <p class="muted" style="margin-top: 10px; font-size: 11px;">
+            ● Incident Center: 10.2934, 123.8612 • Orange zone indicates affected 300m advisory area.
+          </p>
+        </article>
+
+        <!-- Photo Card & Lightbox -->
+        <article class="m-card">
+          <div class="m-card-head">
+            <h3>Incident Photo & Attachment</h3>
+            <span class="m-pill">1 File</span>
+          </div>
+          <div style="text-align: center;">
+            <img src="../../../backend/public/images/resqlink-mark.png" alt="Incident preview" style="max-height: 180px; width: 100%; object-fit: contain; background: var(--cream); border-radius: 8px; border: 1px solid var(--border); padding: 12px; cursor: pointer;" onclick="alert('Enlarging photo in high-resolution lightbox dialog.');">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 12px;">
+              <span class="muted">fire-scene-poblacion.jpg (480 KB)</span>
+              <button class="secondary" style="min-height: 30px; font-size: 11px; padding: 0 10px;">Download</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
+

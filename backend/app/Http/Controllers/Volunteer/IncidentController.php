@@ -41,7 +41,7 @@ class IncidentController extends Controller
         $incidents = Incident::where('volunteer_id', $user->getKey())
             ->orWhere('reported_by', $user->getKey())
             ->latest('reported_at')
-            ->get();
+            ->paginate(15);
 
         return view('volunteer.incidents.index', compact('incidents'));
     }

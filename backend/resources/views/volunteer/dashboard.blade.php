@@ -7,10 +7,9 @@
 @endpush
 
 @section('content')
-    <div class="header-row volunteer-dashboard-heading">
+    <div class="header-row">
         <div>
-            <span class="volunteer-eyebrow">Barangay Responder overview</span>
-            <h1>Your response impact</h1>
+            <h1>Barangay Responder Dashboard</h1>
             <p>A clear view of the incidents you have reported and the difference you are making.</p>
         </div>
         <a class="button" href="{{ route('volunteer.incidents.create') }}">Report an incident</a>
@@ -121,12 +120,13 @@
             </article>
         </section>
 
-        <section class="volunteer-analytics-card volunteer-recent-card">
-            <div class="volunteer-card-heading">
+        <section class="card volunteer-analytics-card volunteer-recent-card">
+            <div class="header-row">
                 <div>
                     <span class="volunteer-eyebrow">Your activity</span>
                     <h2>Recent reports</h2>
                 </div>
+                <a class="button secondary dispatcher-view-button" href="{{ route('volunteer.incidents.index') }}">View all reports</a>
             </div>
             @forelse ($recentIncidents as $incident)
                 <article class="volunteer-recent-row">

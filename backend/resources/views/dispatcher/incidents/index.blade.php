@@ -47,8 +47,10 @@
                 :searchable="true"
             />
         </label>
-        <button class="button secondary dispatcher-view-button" type="submit">Filter</button>
-        <a class="button secondary dispatcher-view-button" href="{{ route('dispatcher.incidents.index') }}">Clear</a>
+        <div class="filter-actions-group">
+            <button class="button secondary dispatcher-view-button" type="submit">Filter</button>
+            <a class="button secondary dispatcher-view-button" href="{{ route('dispatcher.incidents.index') }}">Clear</a>
+        </div>
     </form>
 
     <section class="card incident-results" data-incident-results aria-live="polite">

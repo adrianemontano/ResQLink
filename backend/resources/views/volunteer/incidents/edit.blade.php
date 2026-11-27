@@ -11,15 +11,9 @@
 @endpush
 
 @section('content')
-    <div class="volunteer-topbar"><div><h1>Edit Incident</h1><p>Update the incident details.</p></div></div>
-    @if (session('status'))
-        <div class="alert success">{{ session('status') }}</div>
-    @endif
-    @if ($errors->any())
-        <div class="alert error">Please correct the highlighted fields before submitting.</div>
-    @endif
+    <div class="header-row"><div><h1>Edit Incident</h1><p>Update the incident details.</p></div><a class="button secondary dispatcher-view-button" href="{{ route('volunteer.incidents.index') }}">Back to reports</a></div>
     <div class="volunteer-report-grid">
-        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.update', $incident) }}">
+        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.update', $incident) }}" novalidate>
             @csrf
             @method('PATCH')
             <div class="volunteer-section-head">Incident details</div>

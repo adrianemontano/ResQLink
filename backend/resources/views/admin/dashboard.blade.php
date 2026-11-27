@@ -6,7 +6,7 @@
 @endpush
 
 @section('content')
-    <div class="header-row admin-dashboard-heading">
+    <div class="header-row">
         <div>
             <h1>Admin Dashboard</h1>
             <p>Operational overview for account administration, Barangay Responder readiness, and incident response.</p>
@@ -190,7 +190,7 @@
                     </div>
                     <a class="admin-text-link" href="{{ route('admin.incidents.index') }}">View all <span aria-hidden="true">&rarr;</span></a>
                 </div>
-                <div class="admin-table-wrap">
+                <div class="table-scroll admin-table-wrap">
                     <table class="admin-recent-table">
                         <thead>
                             <tr>
@@ -199,19 +199,21 @@
                                 <th scope="col">Location</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Reported</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($recentIncidents as $incident)
                                 <tr>
-                                    <td><a href="{{ route('admin.incidents.show', $incident) }}">INC-{{ str_pad((string) $incident->getKey(), 4, '0', STR_PAD_LEFT) }}</a></td>
+                                    <td>INC-{{ str_pad((string) $incident->getKey(), 4, '0', STR_PAD_LEFT) }}</td>
                                     <td>{{ $incident->category ?: 'Other' }}</td>
                                     <td>{{ $incident->barangay ?: 'Not provided' }}</td>
-                                    <td><span class="admin-status-label">{{ $incident->status ?: 'Unassigned' }}</span></td>
+                                    <td><span class="badge status-{{ strtolower($incident->status ?: 'reported') }}">{{ $incident->status ?: 'Unassigned' }}</span></td>
                                     <td>{{ ($incident->reported_at ?? $incident->created_at)->format('M j, Y') }}</td>
+                                    <td><a class="button secondary dispatcher-view-button" href="{{ route('admin.incidents.show', $incident) }}">View</a></td>
                                 </tr>
                             @empty
-                                <tr><td class="admin-table-empty" colspan="5">No incidents have been reported yet.</td></tr>
+                                <tr><td class="admin-table-empty" colspan="6">No incidents have been reported yet.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

@@ -31,35 +31,35 @@
       path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', 'M6 6l12 12M18 6L6 18');
     } else if (type === 'warning') {
+      svg.setAttribute('stroke', '#5A0006');
       var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('x1', '12');
-      line.setAttribute('y1', '9');
+      line.setAttribute('y1', '7');
       line.setAttribute('x2', '12');
-      line.setAttribute('y2', '17');
+      line.setAttribute('y2', '14');
       var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       dot.setAttribute('cx', '12');
-      dot.setAttribute('cy', '21');
-      dot.setAttribute('r', '1');
+      dot.setAttribute('cy', '18');
+      dot.setAttribute('r', '1.5');
+      dot.setAttribute('fill', '#5A0006');
+      dot.setAttribute('stroke', 'none');
       svg.appendChild(line);
       svg.appendChild(dot);
       return svg;
     } else if (type === 'info') {
-      var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circle.setAttribute('cx', '12');
-      circle.setAttribute('cy', '12');
-      circle.setAttribute('r', '10');
-      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', '12');
-      line.setAttribute('y1', '16');
-      line.setAttribute('x2', '12');
-      line.setAttribute('y2', '12');
       var dot2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       dot2.setAttribute('cx', '12');
-      dot2.setAttribute('cy', '8');
-      dot2.setAttribute('r', '1');
-      svg.appendChild(circle);
-      svg.appendChild(line);
+      dot2.setAttribute('cy', '7');
+      dot2.setAttribute('r', '1.5');
+      dot2.setAttribute('fill', 'white');
+      dot2.setAttribute('stroke', 'none');
+      var line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line2.setAttribute('x1', '12');
+      line2.setAttribute('y1', '11');
+      line2.setAttribute('x2', '12');
+      line2.setAttribute('y2', '17');
       svg.appendChild(dot2);
+      svg.appendChild(line2);
       return svg;
     }
 
@@ -70,9 +70,7 @@
   }
 
   function getDuration(type) {
-    if (type === 'success' || type === 'info') return 4000;
-    if (type === 'warning') return 6000;
-    return 0;
+    return 5000;
   }
 
   function dismiss(toast) {

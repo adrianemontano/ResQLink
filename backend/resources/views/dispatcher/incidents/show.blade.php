@@ -73,7 +73,7 @@
                             This action cannot be undone.
                         </p>
 
-                        <form id="incident-status-form" method="POST" action="{{ route('dispatcher.incidents.status', $incident) }}">
+                        <form id="incident-status-form" method="POST" action="{{ route('dispatcher.incidents.status', $incident) }}" novalidate>
                             @csrf
                             @method('PATCH')
                             <input id="status-modal-value" type="hidden" name="status" value="{{ $modalStatus }}">
@@ -97,7 +97,7 @@
                         <h2 id="add-update-modal-title">Add update</h2>
                         <p id="add-update-modal-description">Incident <strong>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</strong></p>
 
-                        <form id="incident-update-form" method="POST" action="{{ route('dispatcher.incidents.updates.store', $incident) }}">
+                        <form id="incident-update-form" method="POST" action="{{ route('dispatcher.incidents.updates.store', $incident) }}" novalidate>
                             @csrf
                             <div class="field status-modal-field">
                                 <label for="update-modal-category">Category <span class="required-asterisk" aria-hidden="true">*</span></label>
@@ -269,9 +269,6 @@
             </section>
         </div>
     </section>
-    <div id="incident-status-toast" class="incident-status-toast" role="status" aria-live="polite" @if (! session('incident_status_success')) hidden @endif>
-        {{ session('incident_status_success') }}
-    </div>
 @endsection
 
 @push('scripts')

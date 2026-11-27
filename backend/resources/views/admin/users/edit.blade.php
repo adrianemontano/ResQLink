@@ -11,7 +11,7 @@
 
     <div class="split">
         <section class="card">
-            <form method="POST" action="{{ route('admin.users.update', $managedUser) }}">
+            <form method="POST" action="{{ route('admin.users.update', $managedUser) }}" novalidate>
                 @csrf
                 @method('PUT')
                 @include('admin.users.partials.form')
@@ -26,7 +26,7 @@
             <h2>Reset Password</h2>
             <p>Set a new temporary password for this account.</p>
 
-            <form method="POST" action="{{ route('admin.users.password', $managedUser) }}">
+            <form method="POST" action="{{ route('admin.users.password', $managedUser) }}" novalidate>
                 @csrf
                 @method('PATCH')
 

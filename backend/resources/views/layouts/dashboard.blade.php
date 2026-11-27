@@ -15,31 +15,32 @@
                 <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
             </button>
             <div class="mobile-header-brand">
-                <span class="sidebar-logo-mark">
-                    <svg viewBox="0 0 28 28"><path d="M14 6l2 5h5l-4 3 1.5 5L14 16l-4.5 3 1.5-5-4-3h5z"/></svg>
+                <span class="sidebar-brand-mark" aria-hidden="true" style="display: inline-flex;">
+                    <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img" style="height: 24px; width: 24px;">
                 </span>
                 <span class="mobile-header-title">ResQLink</span>
             </div>
         </header>
 
         <aside class="sidebar">
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-row">
-                    <a href="{{ route('dashboard') }}" class="sidebar-brand-badge sidebar-brand-link" aria-label="ResQLink">
-                        <span class="sidebar-brand-mark" aria-hidden="true">
-                            <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img">
-                        </span>
-                        <span class="sidebar-brand-full sidebar-label">
-                            <img src="{{ asset('images/resqlink-logo-white.png') }}" alt="ResQLink" class="sidebar-logo-img">
-                        </span>
-                    </a>
-                    <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
-                        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-                    </button>
-                </div>
-                <div class="sidebar-logo-sub sidebar-label">
-                    @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @elseif (auth()->user()->hasRole('volunteer')) Volunteer Portal @endif
-                </div>
+            <div class="sidebar-head">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-row">
+                        <a href="{{ route('dashboard') }}" class="sidebar-brand-badge sidebar-brand-link" aria-label="ResQLink">
+                            <span class="sidebar-brand-mark" aria-hidden="true">
+                                <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img">
+                            </span>
+                            <span class="sidebar-brand-full sidebar-label">
+                                <img src="{{ asset('images/resqlink-logo-white.png') }}" alt="ResQLink" class="sidebar-logo-img">
+                            </span>
+                        </a>
+                        <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-expanded="true" aria-label="Collapse sidebar">
+                            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                    </div>
+                    <div class="sidebar-logo-sub sidebar-label">
+                        @if (auth()->user()->hasRole('admin')) Admin Control Panel @elseif (auth()->user()->hasRole('dispatcher')) Dispatch Control Center @elseif (auth()->user()->hasRole('volunteer')) Volunteer Portal @endif
+                    </div>
                 </div>
                 <button type="button" class="sidebar-close" data-sidebar-close aria-label="Close menu">
                     <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -71,20 +72,12 @@
 
         <main class="dashboard-main">
             @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
-                <div class="dashboard-topbar" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border);">
-                    <div style="font-size: 13px; color: var(--text-muted); margin-right: auto; display: flex; align-items: center; gap: 6px;">
-                        <strong>Dispatcher Live Center</strong> &bull; Cebu City Emergency Grid
+                <div class="dashboard-topbar">
+                    <div class="dashboard-topbar-title">
+                        <strong>Dispatcher Live Center</strong> <span class="topbar-sep">&bull;</span> Cebu City Emergency Grid
                     </div>
                     @include('layouts.partials.notifications')
                 </div>
-            @endif
-
-            @if (session('status'))
-                <div class="alert success">{{ session('status') }}</div>
-            @endif
-
-            @if ($errors->has('account'))
-                <div class="alert error">{{ $errors->first('account') }}</div>
             @endif
 
             @yield('content')

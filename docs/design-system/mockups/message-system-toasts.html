@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ResQLink • Unified Message System Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="resqlink-mockups.css">
+  <link rel="stylesheet" href="../../../backend/public/css/toast.css">
+  <style>
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .demo-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(90,0,6,0.04);
+    }
+    .demo-card h3 {
+      font-size: 15px;
+      margin-bottom: 12px;
+      color: var(--rosewood);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .demo-btn {
+      width: 100%;
+      text-align: left;
+      font-size: 13px;
+      padding: 8px 12px;
+      min-height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--cream);
+      color: var(--rosewood);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+    .demo-btn:hover {
+      background: #FFF0DF;
+      border-color: var(--tangelo);
+    }
+    .demo-btn span.badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .badge-success { background: #4CAF50; color: #fff; }
+    .badge-error { background: #D92200; color: #fff; }
+    .badge-warning { background: #F37100; color: #5A0006; }
+    .badge-info { background: #5A0006; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="rq-toast-wrap" id="rqToasts" aria-live="polite"></div>
+
+  <main class="m-page">
+    <header class="m-page-head">
+      <div>
+        <h1>Unified Message System</h1>
+        <p>Top-left floating toasts, inline field validation, and confirmation dialogs adhering to ResQLink design system.</p>
+      </div>
+      <span class="m-pill done">4 Toast Types</span>
+    </header>
+
+    <section class="demo-grid">
+      <!-- 1. Success Toasts -->
+      <article class="demo-card">
+        <h3><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#4CAF50"></span> Success Messages</h3>
+        <p class="muted" style="font-size:12px;margin-bottom:12px">Auto-dismiss after 4s. Hover to pause timer.</p>
+        <div class="demo-btn-group">
+          <button type="button" class="demo-btn" onclick="showToast({type:'success', message:'Status updated', detail:'INC-0085 is now Completed.'})">
+            <span>Status updated</span>
+            <span class="badge badge-success">Success</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'success', message:'Login successful', detail:'Welcome back, Angela (Dispatcher).'})">
+            <span>Login success</span>
+            <span class="badge badge-success">Success</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'success', message:'Note added', detail:'Your update was saved to the activity history.'})">
+            <span>Note added</span>
+            <span class="badge badge-success">Success</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'success', message:'You have been signed out.', detail:'See you next time.'})">
+            <span>Signed out</span>
+            <span class="badge badge-success">Success</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- 2. Error Toasts -->
+      <article class="demo-card">
+        <h3><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#D92200"></span> Error Messages</h3>
+        <p class="muted" style="font-size:12px;margin-bottom:12px">Persistent until user clicks Close (X). Role="alert".</p>
+        <div class="demo-btn-group">
+          <button type="button" class="demo-btn" onclick="showToast({type:'error', message:'Incorrect username or password', detail:'Check your details and try again.'})">
+            <span>Wrong credentials</span>
+            <span class="badge badge-error">Error</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'error', message:'Couldn\'t update status', detail:'Something went wrong. Please try again.'})">
+            <span>Update failed</span>
+            <span class="badge badge-error">Error</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'error', message:'Account deactivated', detail:'Please contact your administrator.'})">
+            <span>Account deactivated</span>
+            <span class="badge badge-error">Error</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'error', message:'Action not allowed', detail:'This incident is already completed.'})">
+            <span>Action not allowed</span>
+            <span class="badge badge-error">Error</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- 3. Warning Toasts -->
+      <article class="demo-card">
+        <h3><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#F37100"></span> Warning Messages</h3>
+        <p class="muted" style="font-size:12px;margin-bottom:12px">Auto-dismiss after 6s. Philippine orange with dark Rosewood symbol.</p>
+        <div class="demo-btn-group">
+          <button type="button" class="demo-btn" onclick="showToast({type:'warning', message:'Your session expired', detail:'Please log in again to continue.'})">
+            <span>Session expired (419)</span>
+            <span class="badge badge-warning">Warning</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'warning', message:'Too many attempts', detail:'Please wait a moment before trying again.'})">
+            <span>Throttled attempts</span>
+            <span class="badge badge-warning">Warning</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'warning', message:'Unsaved changes', detail:'Confirm status before leaving the page.'})">
+            <span>Unsaved prompt</span>
+            <span class="badge badge-warning">Warning</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- 4. Info Toasts -->
+      <article class="demo-card">
+        <h3><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#5A0006"></span> Info Messages</h3>
+        <p class="muted" style="font-size:12px;margin-bottom:12px">Auto-dismiss after 4s. Rosewood circle with white "i".</p>
+        <div class="demo-btn-group">
+          <button type="button" class="demo-btn" onclick="showToast({type:'info', message:'New Critical incident', detail:'Fire in Poblacion Pardo, 150 persons affected.'})">
+            <span>New emergency alert</span>
+            <span class="badge badge-info">Info</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="showToast({type:'info', message:'Incident queue refreshed', detail:'All active Cebu City reports are up to date.'})">
+            <span>Queue refreshed</span>
+            <span class="badge badge-info">Info</span>
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Confirmation Modal Specs -->
+    <section class="m-card" style="margin-top:24px">
+      <div class="m-card-head">
+        <h3>Confirmation Dialog Standard Specification</h3>
+        <span class="m-pill">Modal Copy</span>
+      </div>
+      <div class="m-two">
+        <div>
+          <p><strong>Title:</strong> Confirm status update</p>
+          <p><strong>Incident:</strong> INC-0085 • Fire (Poblacion Pardo)</p>
+          <p><strong>Transition:</strong> Dispatched → Completed</p>
+          <p style="color:var(--maximum-red);font-weight:600;margin-top:8px">⚠ This action cannot be undone.</p>
+          <p style="margin-top:8px;font-size:13px;color:var(--muted)">Requires dispatcher audit note (max 300 chars) before submission.</p>
+        </div>
+        <div style="background:var(--cream);padding:16px;border-radius:12px;border:1px solid var(--border)">
+          <div style="font-size:12px;font-weight:700;margin-bottom:6px">Live Preview:</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <span class="m-pill">Dispatched</span>
+            <span>→</span>
+            <span class="m-pill done">Completed</span>
+          </div>
+          <textarea rows="2" style="font-size:12px" readonly>Controlled and resolved by responding fire brigade teams.</textarea>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
+            <button class="secondary" style="min-height:34px;font-size:12px">Cancel</button>
+            <button style="min-height:34px;font-size:12px">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../../backend/public/js/toast.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        showToast({ type: 'success', message: 'Status updated', detail: 'INC-0085 is now Completed.' });
+      }, 300);
+    });
+  </script>
+</body>
+</html>
+

@@ -184,6 +184,20 @@ html, body {
   box-shadow: 0 0 0 3px rgba(217, 34, 0, 0.12);
 }
 
+.rq-field-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--red);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.rq-field-error svg {
+  flex-shrink: 0;
+}
+
 .rq-eye {
   position: absolute;
   right: 0;

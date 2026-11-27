@@ -12,7 +12,6 @@
     const finalWarning = document.getElementById('status-final-warning');
     const confirmButton = document.getElementById('status-confirm-button');
     const currentStatusBadge = document.getElementById('incident-current-status');
-    const toast = document.getElementById('incident-status-toast');
     const historyBody = document.querySelector('[data-status-history-body]');
     const historyNotesModal = document.getElementById('history-notes-modal');
     const historyNotesContent = document.getElementById('history-notes-content');
@@ -54,7 +53,6 @@
     let opener = null;
     let notesOpener = null;
     let updateOpener = null;
-    let toastTimer = null;
 
     const clearErrors = () => {
         noteError.hidden = true;
@@ -344,13 +342,10 @@
         return button;
     };
 
-    const showToast = message => {
-        toast.textContent = message;
-        toast.hidden = false;
-        window.clearTimeout(toastTimer);
-        toastTimer = window.setTimeout(() => {
-            toast.hidden = true;
-        }, 5000);
+    const fireToast = (message, type = 'success') => {
+        if (typeof window.showToast === 'function') {
+            window.showToast({ type, message });
+        }
     };
 
     form.addEventListener('submit', async event => {
@@ -388,7 +383,7 @@
             const nextFocus = updatePage(data);
             closeModal(nextFocus);
             window.dispatchEvent(new CustomEvent('resqlink:incident-status-updated'));
-            showToast(data.message);
+            fireToast(data.message);
         } catch {
             showError('The status could not be updated. Check your connection and try again.');
         } finally {
@@ -440,7 +435,7 @@
 
             updatePage(data);
             closeAddUpdateModal();
-            showToast(data.message);
+            fireToast(data.message);
         } catch {
             showUpdateError('The update could not be saved. Check your connection and try again.');
         } finally {
@@ -459,12 +454,6 @@
             openModal(trigger, trigger.dataset.status, true);
         }
     }
-    if (!toast.hidden) {
-        window.setTimeout(() => {
-            toast.hidden = true;
-        }, 5000);
-    }
-
     // Handle history notes view button clicks
     historyBody?.addEventListener('click', function(event) {
         const viewButton = event.target.closest('.history-notes-view-btn');

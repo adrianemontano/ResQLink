@@ -42,17 +42,19 @@
             @endforeach
         </select>
 
-        <button type="submit">Filter</button>
-        <a class="button secondary" href="{{ route('admin.incidents.index') }}">Clear</a>
+        <div class="filter-actions-group">
+            <button class="button secondary dispatcher-view-button" type="submit">Filter</button>
+            <a class="button secondary dispatcher-view-button" href="{{ route('admin.incidents.index') }}">Clear</a>
+        </div>
     </form>
 
     <section class="card" aria-label="Incident search results">
-        <nav class="record-scope-nav" aria-label="Record scope">
+        <nav class="record-scope-nav status-filter-chips" aria-label="Record scope">
             @foreach ($recordScopes as $scope => $label)
                 <a
-                    class="record-scope-item {{ $currentScope === $scope ? 'active' : '' }}"
+                    class="record-scope-item status-filter-chip {{ $currentScope === $scope ? 'active' : '' }}"
                     href="{{ route('admin.incidents.index', array_filter(['search' => $filters['search'] ?? null, 'category' => $filters['category'] ?? null, 'status' => $filters['status'] ?? null, 'scope' => $scope === 'all' ? null : $scope])) }}"
-                >{{ $label }} <span class="record-scope-count">{{ $recordCounts[$scope] }}</span></a>
+                >{{ $label }} <span class="record-scope-count status-filter-count">{{ $recordCounts[$scope] }}</span></a>
             @endforeach
         </nav>
 
@@ -61,47 +63,49 @@
             of {{ $incidents->total() }} incidents
         </p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">Incident ID</th>
-                    <th scope="col">Reporter</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Persons</th>
-                    <th scope="col">Barangay</th>
-                    <th scope="col">Landmark</th>
-                    <th scope="col">Reported</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Severity</th>
-                    <th scope="col"><span class="sr-only">Actions</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($incidents as $incident)
+        <div class="table-scroll">
+            <table class="record-table">
+                <thead>
                     <tr>
-                        <td>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</td>
-                        <td>{{ $incident->reporter?->name ?? $incident->volunteer?->name ?? '—' }}</td>
-                        <td>{{ $incident->category ?? '—' }}</td>
-                        <td>{{ $incident->affected_population ?? $incident->persons_count ?? '—' }}</td>
-                        <td>{{ $incident->barangay ?? '—' }}</td>
-                        <td>{{ $incident->nearest_landmark ?? $incident->landmark ?? '—' }}</td>
-                        <td>{{ ($incident->reported_at ?? $incident->created_at)?->timezone(config('app.timezone'))->format('M d, Y H:i') ?? '—' }}</td>
-                        <td>
-                            <span class="badge status-{{ strtolower($incident->status ?? 'unknown') }}">{{ $incident->status ?? '—' }}</span>
-                        </td>
-                        <td><span class="badge severity-{{ strtolower($incident->severity ?? 'unrated') }}">{{ $incident->severity ?? '—' }}</span></td>
-                        <td><a href="{{ route('admin.incidents.show', $incident) }}">View</a></td>
+                        <th scope="col">Incident ID</th>
+                        <th scope="col">Reporter</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Persons</th>
+                        <th scope="col">Barangay</th>
+                        <th scope="col">Landmark</th>
+                        <th scope="col">Reported</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Severity</th>
+                        <th scope="col"><span class="sr-only">Actions</span></th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="10">
-                            {{ $currentScope === 'archived' ? 'No archived incidents found.' : 'No matching incidents found.' }}
-                            Try changing or clearing the filters.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($incidents as $incident)
+                        <tr>
+                            <td>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</td>
+                            <td>{{ $incident->reporter?->name ?? $incident->volunteer?->name ?? '—' }}</td>
+                            <td>{{ $incident->category ?? '—' }}</td>
+                            <td>{{ $incident->affected_population ?? $incident->persons_count ?? '—' }}</td>
+                            <td>{{ $incident->barangay ?? '—' }}</td>
+                            <td>{{ $incident->nearest_landmark ?? $incident->landmark ?? '—' }}</td>
+                            <td>{{ ($incident->reported_at ?? $incident->created_at)?->timezone(config('app.timezone'))->format('M d, Y H:i') ?? '—' }}</td>
+                            <td>
+                                <span class="badge status-{{ strtolower($incident->status ?? 'unknown') }}">{{ $incident->status ?? '—' }}</span>
+                            </td>
+                            <td><span class="badge severity-{{ strtolower($incident->severity ?? 'unrated') }}">{{ $incident->severity ?? '—' }}</span></td>
+                            <td><a class="button secondary dispatcher-view-button" href="{{ route('admin.incidents.show', $incident) }}">View</a></td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10">
+                                {{ $currentScope === 'archived' ? 'No archived incidents found.' : 'No matching incidents found.' }}
+                                Try changing or clearing the filters.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
         <nav class="records-pagination" aria-label="Incident records pages">
             {{ $incidents->links() }}
