@@ -7,6 +7,8 @@ use App\Http\Requests\Dispatcher\AddIncidentUpdateRequest;
 use App\Http\Requests\Dispatcher\UpdateIncidentStatusRequest;
 use App\Models\Incident;
 use App\Models\IncidentHistory;
+use App\Models\Team;
+use App\Services\IncidentDispatchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
@@ -35,7 +37,7 @@ class IncidentController extends Controller
             ->when(request('barangay'), fn ($query, $barangay) => $query->where('barangay', $barangay));
 
         $incidents = (clone $baseQuery)
-            ->with(['reporter.volunteerProfile', 'photos'])
+            ->with(['reporter.volunteerProfile', 'photos', 'dispatches.team'])
             ->orderByRaw('COALESCE(reported_at, created_at) DESC')
             ->orderByDesc('id')
             ->paginate($perPage)
@@ -58,12 +60,21 @@ class IncidentController extends Controller
 
     public function show(Incident $incident): View
     {
-        $incident->load(['reporter.volunteerProfile', 'photos', 'history.dispatcher', 'history.status']);
+        $incident->load([
+            'reporter.volunteerProfile', 'photos', 'history.dispatcher', 'history.status',
+            'dispatches.team.teamLead', 'dispatches.dispatcher', 'dispatches.canceller',
+        ]);
 
         // Mark any unread notifications for this incident as read.
         $this->markIncidentNotificationsRead(request()->user(), $incident->id);
 
-        return view('dispatcher.incidents.show', compact('incident'));
+        return view('dispatcher.incidents.show', [
+            'incident' => $incident,
+            // Only teams not already out on an open incident, with teams from
+            // the incident's own barangay listed first.
+            'teams' => Team::query()->availableForDispatch()->with('teamLead')->withCount('members')->orderBy('name')->get()
+                ->sortBy(fn (Team $team) => $team->isInBarangay($incident->barangay) ? 0 : 1)->values(),
+        ]);
     }
 
     private function markIncidentNotificationsRead($user, int $incidentId): void
@@ -110,6 +121,12 @@ class IncidentController extends Controller
                 $historyData['entry_type'] = IncidentHistory::ENTRY_TYPE_STATUS_CHANGE;
             }
             $lockedIncident->history()->create($historyData);
+
+            if ($status === 'Dispatched') {
+                app(IncidentDispatchService::class)->dispatchTeam(
+                    $lockedIncident, (int) $data['team_id'], $request->user(), $data['notes'], $changedAt, recordHistory: false,
+                );
+            }
 
             return [
                 'dispatcher' => $request->user()->name,

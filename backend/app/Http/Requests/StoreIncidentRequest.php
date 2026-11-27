@@ -50,6 +50,7 @@ class StoreIncidentRequest extends FormRequest
             'photo.image' => 'Photo must be an image.',
             'photo.mimes' => 'Photo must be JPEG, JPG, or PNG.',
             'photo.max' => 'Photo must not exceed 5 MB.',
+            'photo.uploaded' => 'The photo could not be uploaded, usually because it is too large. Please take it again.',
         ];
     }
 }

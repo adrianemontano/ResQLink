@@ -3,10 +3,6 @@
 <script src="{{ asset('js/toast.js') }}"></script>
 @php
   $toasts = [];
-  if (session('incident')) {
-    $inc = session('incident');
-    $toasts[] = ['success', 'Incident INC-' . str_pad((string)($inc['id'] ?? ''), 4, '0', STR_PAD_LEFT) . ' was submitted successfully.'];
-  }
   foreach (['success', 'status', 'notice', 'incident_status_success', 'incident_update_success'] as $k) {
     if (session($k)) {
       $toasts[] = ['success', session($k)];

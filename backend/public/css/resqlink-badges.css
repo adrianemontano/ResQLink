@@ -131,26 +131,26 @@
 }
 
 .btn-status-received {
-    background: var(--status-received, #FFB366);
-    color: var(--status-received-text, #5A0006);
-    border-color: var(--status-received-border, #E69543);
+    background: var(--status-received, var(--status-received));
+    color: var(--status-received-text, var(--rosewood));
+    border-color: var(--status-received-border, var(--status-received-border));
 }
 
 .btn-status-received:hover {
-    background: var(--status-received-hover, #FFA447);
-    color: var(--status-received-text, #5A0006);
-    border-color: var(--status-received-active, #E68A2E);
+    background: var(--status-received-hover, var(--status-received-hover));
+    color: var(--status-received-text, var(--rosewood));
+    border-color: var(--status-received-active, var(--status-received-active));
 }
 
 .btn-status-received:active {
-    background: var(--status-received-active, #E68A2E);
-    color: var(--status-received-text, #5A0006);
+    background: var(--status-received-active, var(--status-received-active));
+    color: var(--status-received-text, var(--rosewood));
     transform: translateY(1px);
     box-shadow: inset 0 2px 4px rgba(90, 0, 6, 0.2);
 }
 
 .btn-status-received:focus-visible {
-    outline: 2px solid var(--rosewood, #5A0006);
+    outline: 2px solid var(--rosewood, var(--rosewood));
     outline-offset: 2px;
 }
 
@@ -167,7 +167,7 @@
 
 .btn-status-reported {
     background: #FEE2E2;
-    color: var(--status-reported, #C81E1E);
+    color: var(--status-reported, var(--status-reported));
     border-color: #F87171;
 }
 .btn-status-reported:hover { background: #FECACA; }
@@ -185,9 +185,67 @@
 
 .btn-status-completed {
     background: #F3F4F6;
-    color: var(--status-completed, #4B5563);
+    color: var(--status-completed, var(--status-completed));
     border-color: #D1D5DB;
 }
 .btn-status-completed:hover { background: #E5E7EB; }
 .btn-status-completed:active { background: #D1D5DB; transform: translateY(1px); }
 .btn-status-completed:focus-visible { outline: 2px solid var(--status-completed); outline-offset: 2px; }
+
+/* Dashboard pages: soft status/severity pills (moved from resqlink-dashboard.css). */
+.dashboard-main .badge.status-reported,
+.dashboard-main .badge.status-received,
+.dashboard-main .badge.status-dispatched,
+.dashboard-main .badge.status-completed,
+.dashboard-main .badge.severity-low,
+.dashboard-main .badge.severity-moderate,
+.dashboard-main .badge.severity-high,
+.dashboard-main .badge.severity-critical,
+.dashboard-main .badge.severity-unrated {
+    background: var(--badge-bg) !important;
+    border: 1px solid var(--badge-border) !important;
+    border-radius: 999px;
+    color: var(--badge-text) !important;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 6px;
+    height: 24px;
+    justify-content: center;
+    letter-spacing: .025em;
+    min-width: 0;
+    padding: 0 10px;
+}
+/* Soft pills tinted from the shared status/severity tokens, so badges match
+ * map markers, legends, and report bars. */
+.dashboard-main .badge.status-reported { --badge-tone: var(--status-reported); }
+.dashboard-main .badge.status-received { --badge-tone: var(--status-received-border); --badge-text: var(--status-received-text); }
+.dashboard-main .badge.status-dispatched { --badge-tone: var(--status-dispatched); }
+.dashboard-main .badge.status-completed { --badge-tone: var(--status-completed); }
+.dashboard-main .badge.severity-low { --badge-tone: var(--severity-low); --badge-text: var(--severity-low-text); }
+.dashboard-main .badge.severity-moderate { --badge-tone: var(--severity-moderate-bg); --badge-text: var(--severity-moderate-text); }
+.dashboard-main .badge.severity-high { --badge-tone: var(--severity-high); }
+.dashboard-main .badge.severity-critical { --badge-tone: var(--severity-critical); }
+.dashboard-main .badge:is(.status-reported, .status-received, .status-dispatched, .status-completed, .severity-low, .severity-moderate, .severity-high, .severity-critical) {
+    --badge-bg: color-mix(in srgb, var(--badge-tone) 10%, #FFFFFF);
+    --badge-border: color-mix(in srgb, var(--badge-tone) 40%, #FFFFFF);
+}
+.dashboard-main .badge:is(.status-reported, .status-dispatched, .status-completed, .severity-high, .severity-critical) {
+    --badge-text: color-mix(in srgb, var(--badge-tone) 72%, #000000);
+}
+.dashboard-main .badge.severity-unrated { --badge-bg: var(--gray-50); --badge-border: var(--border); --badge-text: var(--text-muted); }
+
+.dashboard-main .badge.status-reported::before,
+.dashboard-main .badge.status-received::before,
+.dashboard-main .badge.status-dispatched::before,
+.dashboard-main .badge.status-completed::before,
+.dashboard-main .badge.severity-low::before,
+.dashboard-main .badge.severity-moderate::before,
+.dashboard-main .badge.severity-high::before,
+.dashboard-main .badge.severity-critical::before,
+.dashboard-main .badge.severity-unrated::before {
+    background: currentColor;
+    border-radius: 50%;
+    content: "";
+    flex: 0 0 6px;
+    height: 6px;
+}

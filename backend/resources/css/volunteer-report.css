@@ -5,7 +5,7 @@
 }
 
 .required-asterisk {
-    color: var(--maximum-red, #D92200);
+    color: var(--maximum-red, var(--maximum-red));
     font-weight: 700;
     margin-left: 2px;
 }
@@ -15,3 +15,6 @@
         min-height: 420px;
     }
 }
+.volunteer-photo-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.volunteer-photo-actions{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-3)}.volunteer-photo-camera-button{display:inline-flex;align-items:center;gap:var(--space-2);cursor:pointer}.volunteer-photo-camera-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}.volunteer-photo-gallery-link{font-size:12.5px;font-weight:500;color:var(--text-muted);text-decoration:underline;cursor:pointer}.volunteer-photo-preview{margin:0;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}.volunteer-photo-preview img{display:block;width:100%;max-height:260px;object-fit:contain;background:var(--gray-50)}.volunteer-photo-preview figcaption{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);padding:var(--space-2) var(--space-3);font-size:12.5px;color:var(--text-muted)}.volunteer-photo-preview-actions{display:flex;gap:var(--space-2)}.volunteer-photo-preview-actions label{cursor:pointer}.volunteer-field small.volunteer-photo-hint,.volunteer-field small.volunteer-photo-status{color:var(--text-muted)}
+.volunteer-camera-modal{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.65);padding:var(--space-4)}.volunteer-camera-modal[hidden]{display:none}.volunteer-camera-dialog{background:var(--surface,#fff);border-radius:var(--radius-sm);padding:var(--space-4);width:min(720px,100%);box-shadow:var(--shadow-md)}.volunteer-camera-dialog h2{font-size:15px;margin:0 0 var(--space-3)}.volunteer-camera-dialog video{display:block;width:100%;max-height:70vh;background:#000;border-radius:var(--radius-sm)}.volunteer-camera-actions{display:flex;justify-content:flex-end;gap:var(--space-2);margin-top:var(--space-3)}
+.volunteer-photo-field [hidden]{display:none!important}

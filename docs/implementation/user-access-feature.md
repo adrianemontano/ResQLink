@@ -36,6 +36,8 @@ before incident submission is allowed.
   (`volunteer_documents.volunteer_profile_id` → `volunteer_profiles.user_id`,
   unique per `document_type`).
 - `volunteer_documents.reviewed_by` → `users.id`.
+- `teams.team_lead_id` → `users.id`; `teams` N—N `users` through `team_user`
+  (`team_user.user_id` is unique, so a Barangay Responder is in at most one team).
 
 Because `volunteer_profiles` uses `user_id` as its primary key,
 `VolunteerProfile::documents()` and `VolunteerDocument::volunteerProfile()`
@@ -69,6 +71,8 @@ its `authorize()` method.
 | `admin.users.activation` | `PATCH /admin/users/{user}/activation` | Toggle active/inactive |
 | `admin.users.verification` | `PATCH /admin/users/{user}/verification` | Verify or revert a volunteer |
 | `admin.users.documents.store` | `POST /admin/users/{user}/documents` | Upload a volunteer document |
+| `admin.teams.index/create/store/edit/update` | `/admin/teams…` | List, create, edit Barangay Responder teams |
+| `admin.teams.activation` | `PATCH /admin/teams/{team}/activation` | Toggle a team active/inactive |
 
 Admin user and document routes sit in the `auth` + `role:admin` group. Volunteer
 routes sit in the `auth` + `role:volunteer` group.

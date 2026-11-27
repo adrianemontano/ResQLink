@@ -358,6 +358,7 @@ Available web areas:
 * `/login`
 * `/admin/dashboard`
 * `/admin/users`
+* `/admin/teams`
 * `/admin/incidents`
 * `/admin/reports`
 * `/dispatcher/dashboard`
@@ -475,7 +476,7 @@ Recommended contributor workflow:
 * Volunteer profiles, verification, and required document records
 * Incident validation, persistence, timestamps, and authenticated reporter assignment
 * Preliminary severity assessment using affected population and impact radius
-* Dispatcher incident queue with severity ordering and filters
+* Dispatcher incident queue, newest first, with severity badges and filters
 * Dispatcher incident details and status workflow: Reported, Received, Dispatched, Completed
 * Incident history with dispatcher and timestamp tracking
 * Local MapLibre maps with incident markers and impact-radius circles

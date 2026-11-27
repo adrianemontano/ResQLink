@@ -76,7 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 String(data.severity || '').toLowerCase()
             ) ? String(data.severity).toLowerCase() : 'unrated';
             const unreadClass = notification.read_at ? '' : ' unread';
-            const readButton = notification.read_at ? '' : `
+            const readButton = notification.read_at ? `
+                <button type="button" class="notification-read-button"
+                    data-notification-unread="${escapeHtml(notification.id)}">
+                    Mark as unread
+                </button>` : `
                 <button type="button" class="notification-read-button"
                     data-notification-read="${escapeHtml(notification.id)}">
                     Mark as read
@@ -117,6 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    async function markAsUnread(id) {
+        const url = widget.dataset.unreadUrlTemplate.replace('__NOTIFICATION__', encodeURIComponent(id));
+        return requestJson(url, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrfToken },
+        });
+    }
+
     function closeDropdown(returnFocus = false) {
         dropdown.hidden = true;
         bell.setAttribute('aria-expanded', 'false');
@@ -144,7 +156,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     list.addEventListener('click', async (event) => {
         const readButton = event.target.closest('[data-notification-read]');
+        const unreadButton = event.target.closest('[data-notification-unread]');
         const notificationLink = event.target.closest('[data-notification-link]');
+
+        if (unreadButton) {
+            unreadButton.disabled = true;
+            try {
+                const data = await markAsUnread(unreadButton.dataset.notificationUnread);
+                updateUnreadCount(data.unread_count);
+                await loadNotifications();
+            } catch (error) {
+                console.error('Failed to mark notification as unread.', error);
+                showError('This notification could not be marked as unread.');
+            } finally {
+                unreadButton.disabled = false;
+            }
+            return;
+        }
 
         if (readButton) {
             readButton.disabled = true;

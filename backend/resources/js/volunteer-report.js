@@ -6,6 +6,7 @@ import {
     maplibregl,
     radiusPolygon,
 } from './map/local-map';
+import './volunteer-incident-photo';
 
 document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('[data-volunteer-map]').forEach(initializeMap));
 
@@ -14,6 +15,9 @@ async function initializeMap(wrapper) {
     addLocalMapControls(map);
 
     const datasetsPromise = loadDatasets(wrapper);
+    // Fill the barangay dropdown as soon as the data arrives, without waiting
+    // for the map: a slow or unavailable tile server must not leave it empty.
+    datasetsPromise.then((datasets) => fillBarangayOptions(datasets.barangays));
     map.on('load', async () => {
         const datasets = await datasetsPromise;
         addOverlayLayers(map, datasets);
@@ -55,14 +59,7 @@ function bindBarangaySearch(map, wrapper, data) {
     if (!data?.features?.length) return;
     const mapSearch = wrapper.querySelector('[data-barangay-search]');
     const formField = document.querySelector('[data-barangay-field]');
-    const datalist = document.querySelector('#barangay-options');
     const features = data.features.map((feature) => ({ feature, name: barangayName(feature) }));
-    features.forEach(({ name }) => {
-        if (!datalist || [...datalist.options].some((option) => option.value === name)) return;
-        const option = document.createElement('option');
-        option.value = name;
-        datalist.append(option);
-    });
     const select = (value) => {
         const match = features.find(({ name }) => name.toLowerCase() === value.trim().toLowerCase());
         if (!match) return;
@@ -75,6 +72,18 @@ function bindBarangaySearch(map, wrapper, data) {
     mapSearch?.addEventListener('change', () => select(mapSearch.value));
     mapSearch?.addEventListener('keydown', (event) => { if (event.key === 'Enter') select(mapSearch.value); });
     formField?.addEventListener('change', () => select(formField.value));
+}
+
+function fillBarangayOptions(data) {
+    const datalist = document.querySelector('#barangay-options');
+    if (!datalist || !data?.features?.length) return;
+    const names = [...new Set(data.features.map(barangayName).filter(Boolean))]
+        .sort((first, second) => first.localeCompare(second));
+    datalist.replaceChildren(...names.map((name) => {
+        const option = document.createElement('option');
+        option.value = name;
+        return option;
+    }));
 }
 
 function barangayName(feature) {

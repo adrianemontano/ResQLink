@@ -86,6 +86,16 @@ class Incident extends Model
     }
 
     /**
+     * Teams sent to this incident, newest first, including cancelled dispatches.
+     *
+     * @return HasMany<IncidentDispatch, $this>
+     */
+    public function dispatches(): HasMany
+    {
+        return $this->hasMany(IncidentDispatch::class)->latest('dispatched_at')->latest('id');
+    }
+
+    /**
      * @return HasMany<IncidentPhoto, $this>
      */
     public function photos(): HasMany

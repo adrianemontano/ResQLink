@@ -72,6 +72,17 @@ The canonical workflow statuses are declared on `App\Models\Incident` as
 `STATUS_REPORTED` and `STATUS_COMPLETED`, so views and queries reference the
 same values instead of repeating status strings.
 
+### Dashboard: team dispatch frequency
+
+The Admin dashboard has a "Team dispatch frequency" card
+(`admin/partials/team-dispatch-frequency.blade.php`, data from
+`TeamDispatchFrequencyService`). For the last 30 days it lists every team,
+most-dispatched first, with a bar for its dispatch count. Each row also shows
+the team lead, the average dispatches per week, the all-time total, when the
+team was last dispatched, and whether it is **On a call** (dispatched to an
+incident that is not completed), **Available**, or **Inactive**. Cancelled
+dispatches are not counted. Added 2026-11-27 at the team's request.
+
 ### Detail view
 
 `GET /admin/incidents/{incident}` shows a read-only record-state badge, the
@@ -80,6 +91,11 @@ absent), category, barangay, landmark, affected persons, coordinates, impact
 radius, severity, status, reported time with timezone, notes, and the status
 history with the dispatcher and timestamp for each change. Missing history
 displays an explicit empty state.
+
+The detail view also shows the read-only "Dispatched Teams" card: each team
+sent to the incident, its lead, who dispatched it and when, and any
+cancellation with its reason. Admin can view this data but cannot dispatch or
+cancel (2026-11-27 feedback item 13).
 
 Affected persons and landmark read `affected_population`/`nearest_landmark`
 first and fall back to the legacy `persons_count`/`landmark` columns, matching
@@ -119,6 +135,11 @@ The page displays the timezone and window boundaries. Queries use
 - **Distribution by status** — grouped counts with proportional bars.
 - **Frequency by date** — one row per date in the window, including dates with
   zero incidents.
+- **Dispatches by team** — one row per team (including teams with no
+  dispatches): team lead, members, active and cancelled dispatches, incidents,
+  completed incidents, and average minutes from report to dispatch, counted by
+  `dispatched_at` within the period. Built by `TeamDispatchReportService`
+  (2026-11-27 feedback item 14).
 
 Blank category, barangay, or status values are grouped as `Unknown`. Status
 bars use the shared `--status-*` tokens and category bars use the `--chart-1`

@@ -106,6 +106,8 @@
         @endforelse
     </section>
 
+    @include('admin.reports.partials.team-dispatches')
+
     <section class="chart-card" aria-label="Incident frequency by date">
         <h2 class="chart-title">Incident frequency by date</h2>
         @foreach ($byFrequency as $row)

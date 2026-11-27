@@ -36,6 +36,10 @@
         <p><strong>Notes:</strong> {{ $incident->notes ?: '—' }}</p>
     </section>
 
+    <x-incident-photo-card :incident="$incident" route-prefix="admin.incidents.photo" />
+
+    <x-incident-dispatches :incident="$incident" />
+
     <section class="card" aria-label="Incident status history">
         <h2>Status history</h2>
         @forelse ($incident->history as $history)

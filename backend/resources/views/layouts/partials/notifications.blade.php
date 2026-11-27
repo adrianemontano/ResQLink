@@ -5,6 +5,7 @@
     data-poll-url="{{ route('dispatcher.notifications.poll') }}"
     data-mark-all-url="{{ route('dispatcher.notifications.mark-all-read') }}"
     data-read-url-template="{{ route('dispatcher.notifications.read', ['notification' => '__NOTIFICATION__']) }}"
+    data-unread-url-template="{{ route('dispatcher.notifications.unread', ['notification' => '__NOTIFICATION__']) }}"
 >
     <button
         type="button"

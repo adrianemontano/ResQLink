@@ -10,6 +10,10 @@ use Illuminate\Support\Collection;
 
 class AdminIncidentReportService
 {
+    public function __construct(private readonly TeamDispatchReportService $teamReports)
+    {
+    }
+
     /**
      * Build report totals and distributions for one application-timezone window.
      *
@@ -33,6 +37,7 @@ class AdminIncidentReportService
             'byBarangay' => $this->distribution(clone $scope, 'barangay'),
             'byStatus' => $this->distribution(clone $scope, 'status'),
             'byFrequency' => $this->frequency(clone $scope, $from, $until),
+            'byTeam' => $this->teamReports->summarize($from, $until),
             'hasIncidents' => $total > 0,
         ];
     }

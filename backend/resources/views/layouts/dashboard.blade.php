@@ -15,8 +15,8 @@
                 <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
             </button>
             <div class="mobile-header-brand">
-                <span class="sidebar-brand-mark" aria-hidden="true" style="display: inline-flex;">
-                    <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img" style="height: 24px; width: 24px;">
+                <span class="sidebar-brand-mark mobile-header-mark" aria-hidden="true">
+                    <img src="{{ asset('images/resqlink-mark-white.png') }}" alt="" class="sidebar-mark-img">
                 </span>
                 <span class="mobile-header-title">ResQLink</span>
             </div>

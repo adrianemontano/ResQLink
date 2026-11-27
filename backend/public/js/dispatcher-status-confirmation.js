@@ -76,6 +76,8 @@
         nextBadge.className = `badge ${statusClass(status)}`;
         nextBadge.textContent = status;
         finalWarning.hidden = status !== 'Completed';
+        const teamField = document.getElementById('status-modal-team-field');
+        if (teamField) teamField.hidden = status !== 'Dispatched';
         if (clearPreviousErrors) {
             clearErrors();
         }
@@ -376,7 +378,12 @@
             }
             if (!response.ok) {
                 const noteMessage = data.errors?.notes?.[0];
-                showError(noteMessage || data.errors?.status?.[0] || data.message || 'The status could not be updated.', Boolean(noteMessage));
+                showError(noteMessage || data.errors?.team_id?.[0] || data.errors?.status?.[0] || data.message || 'The status could not be updated.', Boolean(noteMessage));
+                return;
+            }
+            if (data.status === 'Dispatched') {
+                // Reload so the Dispatched Teams card shows the team that was sent.
+                window.location.reload();
                 return;
             }
 

@@ -98,6 +98,27 @@ class NotificationController extends Controller
     }
 
     /**
+     * Mark a specific notification as unread again.
+     */
+    public function markAsUnread(Request $request, string $notification): JsonResponse
+    {
+        $record = $request->user()->notifications()->where('id', $notification)->first();
+        if ($record) {
+            $record->markAsUnread();
+        }
+        $reportedIncidentIds = Incident::query()
+            ->where('status', Incident::STATUS_REPORTED)
+            ->pluck('id');
+
+        return response()->json([
+            'success' => true,
+            'unread_count' => $request->user()->unreadNotifications()
+                ->whereIn('data->incident_id', $reportedIncidentIds)
+                ->count(),
+        ]);
+    }
+
+    /**
      * Mark all notifications as read.
      */
     public function markAllAsRead(Request $request): JsonResponse

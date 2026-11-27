@@ -1,8 +1,8 @@
 :root {
   --rosewood: #5A0006;
-  --red: #D92200;
+  --red: var(--maximum-red, #D92200);
   --tangelo: #F3500A;
-  --orange: #F37100;
+  --orange: var(--philippine-orange, #F37100);
   --cream: #FFF6EE;
   --cream-deep: #FDE6D3;
   --muted: #6B5A55;
@@ -13,7 +13,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-body, 'Poppins', sans-serif);
 }
 
 .rq-login {
@@ -165,7 +165,7 @@ html, body {
   border: 1.5px solid #D8C3B6;
   border-radius: 10px;
   font-size: 15px;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-body, 'Poppins', sans-serif);
   background: #fff;
   color: var(--rosewood);
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -239,7 +239,7 @@ html, body {
   border-radius: 10px;
   font-size: 16px;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-body, 'Poppins', sans-serif);
   cursor: pointer;
   display: flex;
   align-items: center;

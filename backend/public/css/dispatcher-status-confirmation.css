@@ -75,9 +75,9 @@
 
 .btn-add-update {
     background: var(--surface, #FFFFFF);
-    border: 1px solid var(--border, #EDE2D8);
+    border: 1px solid var(--border, var(--border));
     border-radius: var(--radius-sm, 6px);
-    color: var(--rosewood, #5A0006);
+    color: var(--rosewood, var(--rosewood));
     cursor: pointer;
     font: inherit;
     font-size: 14px;
@@ -93,7 +93,7 @@
 
 .btn-add-update:hover {
     background: var(--surface-alt, #F5F0EB);
-    border-color: var(--rosewood, #5A0006);
+    border-color: var(--rosewood, var(--rosewood));
 }
 
 .btn-add-update:focus-visible {
@@ -120,14 +120,14 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: var(--border, #EDE2D8);
-    border: 2px solid var(--border, #EDE2D8);
+    background: var(--border, var(--border));
+    border: 2px solid var(--border, var(--border));
 }
 
 .stepper-label {
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-muted, #6B5B55);
+    color: var(--text-muted, var(--text-muted));
 }
 
 .stepper-current .stepper-dot {
@@ -136,39 +136,39 @@
 }
 
 .stepper-current .stepper-label {
-    color: var(--rosewood, #5A0006);
+    color: var(--rosewood, var(--rosewood));
     font-weight: 700;
 }
 
 .stepper-past .stepper-dot {
-    background: var(--success, #476B45);
-    border-color: var(--success, #476B45);
+    background: var(--success, var(--success));
+    border-color: var(--success, var(--success));
 }
 
 .stepper-past .stepper-label {
-    color: var(--text-muted, #6B5B55);
+    color: var(--text-muted, var(--text-muted));
     font-weight: 500;
 }
 
 .stepper-connector {
     flex: 1;
     height: 2px;
-    background: var(--border, #EDE2D8);
+    background: var(--border, var(--border));
     min-width: 20px;
 }
 
 .stepper-connector-past {
-    background: var(--success, #476B45);
+    background: var(--success, var(--success));
 }
 
 /* Update Category Select Dropdown */
 .status-modal-dialog select,
 .status-modal-select {
     background: var(--surface, #FFFFFF);
-    border: 1px solid var(--control-border, #8A766A);
+    border: 1px solid var(--control-border, var(--control-border));
     border-radius: var(--radius-sm, 6px);
     box-sizing: border-box;
-    color: var(--text-primary, #2B1D1B);
+    color: var(--text-primary, var(--text-primary));
     display: block;
     font: inherit;
     font-size: 14px;
@@ -180,13 +180,13 @@
 
 .status-modal-dialog select:focus,
 .status-modal-select:focus {
-    border-color: var(--focus, #5A4A45);
+    border-color: var(--focus, var(--focus));
     box-shadow: var(--focus-ring);
     outline: none;
 }
 
 .required-asterisk {
-    color: var(--danger, #D92200);
+    color: var(--danger, var(--maximum-red));
     font-weight: 700;
     margin-left: 2px;
 }
@@ -194,8 +194,8 @@
 /* Update Tag in History */
 .update-tag {
     background: var(--surface-alt, #F5F0EB);
-    border: 1px solid var(--border, #EDE2D8);
-    color: var(--text-primary, #2B1D1B);
+    border: 1px solid var(--border, var(--border));
+    color: var(--text-primary, var(--text-primary));
     font-size: 11px;
     font-weight: 600;
     margin-right: var(--space-2);
@@ -206,7 +206,7 @@
 
 .update-category {
     font-size: 12px;
-    color: var(--text-muted, #6B5B55);
+    color: var(--text-muted, var(--text-muted));
     margin-left: var(--space-2);
 }
 
@@ -228,10 +228,10 @@
 
 .status-modal-dialog {
     background: var(--surface, #FFFFFF);
-    border: 1px solid var(--border, #EDE2D8);
+    border: 1px solid var(--border, var(--border));
     border-radius: var(--radius-xl, 12px);
     box-shadow: var(--shadow-lg, 0 8px 24px rgba(43, 29, 27, .10));
-    color: var(--text-primary, #2B1D1B);
+    color: var(--text-primary, var(--text-primary));
     max-height: calc(100vh - 2rem);
     max-width: 34rem;
     overflow-y: auto;
@@ -241,7 +241,7 @@
 }
 
 .status-modal-dialog h2 {
-    color: var(--rosewood, #5A0006);
+    color: var(--rosewood, var(--rosewood));
     margin: 0 0 .5rem;
 }
 
@@ -253,7 +253,7 @@
 }
 
 .status-final-warning {
-    color: var(--danger, #D92200);
+    color: var(--danger, var(--maximum-red));
     font-weight: 600;
     margin: 0 0 1rem;
 }
@@ -266,10 +266,10 @@
 
 .status-modal-dialog textarea {
     background: var(--surface, #FFFFFF);
-    border: 1px solid var(--control-border, #8A766A);
+    border: 1px solid var(--control-border, var(--control-border));
     border-radius: var(--radius-sm, 6px);
     box-sizing: border-box;
-    color: var(--text-primary, #2B1D1B);
+    color: var(--text-primary, var(--text-primary));
     display: block;
     font: inherit;
     min-height: 6rem;
@@ -284,14 +284,14 @@
 }
 
 .status-note-counter {
-    color: var(--text-muted, #6B5B55);
+    color: var(--text-muted, var(--text-muted));
     font-size: .85rem;
     margin-top: .25rem;
     text-align: right;
 }
 
 .status-modal-error {
-    color: var(--sangria, #920004);
+    color: var(--sangria, var(--sangria));
     font-weight: 600;
     margin-top: .5rem;
 }
@@ -308,10 +308,10 @@
 .status-confirm-button {
     align-items: center;
     background: #ffffff !important;
-    border: 1px solid var(--control-border, #8A766A) !important;
+    border: 1px solid var(--control-border, var(--control-border)) !important;
     border-radius: var(--radius-sm, 6px) !important;
     box-sizing: border-box;
-    color: var(--rosewood, #5A0006) !important;
+    color: var(--rosewood, var(--rosewood)) !important;
     cursor: pointer;
     display: inline-flex;
     font: inherit;
@@ -331,16 +331,16 @@
 .status-modal-actions .button:hover,
 .status-confirm-button:hover {
     background: var(--surface-alt, #F5F0EB) !important;
-    border-color: var(--rosewood, #5A0006) !important;
-    color: var(--rosewood, #5A0006) !important;
+    border-color: var(--rosewood, var(--rosewood)) !important;
+    color: var(--rosewood, var(--rosewood)) !important;
 }
 
 .status-modal-actions button:active,
 .status-modal-actions .button:active,
 .status-confirm-button:active {
-    background: var(--border, #EDE2D8) !important;
-    border-color: var(--rosewood, #5A0006) !important;
-    color: var(--rosewood, #5A0006) !important;
+    background: var(--border, var(--border)) !important;
+    border-color: var(--rosewood, var(--rosewood)) !important;
+    color: var(--rosewood, var(--rosewood)) !important;
     transform: translateY(1px);
 }
 
@@ -358,10 +358,10 @@
 
 .incident-status-toast {
     background: var(--surface, #FFFFFF);
-    border: 2px solid var(--success, #476B45);
+    border: 2px solid var(--success, var(--success));
     border-radius: var(--radius-md, 8px);
     box-shadow: var(--shadow-lg, 0 8px 24px rgba(43, 29, 27, .10));
-    color: var(--text-primary, #2B1D1B);
+    color: var(--text-primary, var(--text-primary));
     font-weight: 600;
     padding: .9rem 1.1rem;
     position: fixed;

@@ -181,6 +181,8 @@
             </article>
         </section>
 
+        @include('admin.partials.team-dispatch-frequency')
+
         <section class="admin-bottom-grid">
             <article class="card admin-analytics-card admin-recent-card">
                 <div class="admin-card-heading">

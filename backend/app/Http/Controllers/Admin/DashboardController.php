@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Incident;
 use App\Models\User;
+use App\Services\TeamDispatchFrequencyService;
 use Carbon\CarbonImmutable;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(TeamDispatchFrequencyService $teamFrequency): View
     {
         $volunteerQuery = User::query()->whereRelation('role', 'name', 'volunteer');
 
@@ -115,6 +116,8 @@ class DashboardController extends Controller
             'trendMaximum' => max(1, $incidentTrend->max('total')),
             'trendTotal' => max(1, $incidentTrend->sum('total')),
             'recentIncidents' => $recentIncidents,
+            'teamFrequency' => $teamFrequency->summary(),
+            'teamFrequencyDays' => TeamDispatchFrequencyService::WINDOW_DAYS,
         ]);
     }
 }

@@ -222,7 +222,7 @@ label {
 }
 
 .required-asterisk {
-    color: var(--danger, #D92200);
+    color: var(--danger, var(--maximum-red));
     font-weight: 700;
     margin-left: 2px;
 }

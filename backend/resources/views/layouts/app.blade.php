@@ -21,11 +21,12 @@
     <link rel="stylesheet" href="{{ asset('css/resqlink-shared-ui.css') }}?v=20261126">
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh.css') }}?v=20261126">
     <link rel="stylesheet" href="{{ asset('css/resqlink-refresh-shell.css') }}?v=20261126">
-    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}?v=20261126">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-responsive.css') }}?v=20261127b">
     <link rel="stylesheet" href="{{ asset('css/resqlink-layout-scroll.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/resqlink-forms.css') }}?v=20261123">
     <link rel="stylesheet" href="{{ asset('css/resqlink-footer.css') }}?v=20261123">
+    <link rel="stylesheet" href="{{ asset('css/resqlink-utilities.css') }}?v=20261127b">
     @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
         <link rel="stylesheet" href="{{ asset('css/dispatcher-theme.css') }}?v=20261123">
         <link rel="stylesheet" href="{{ asset('css/dispatcher-notifications.css') }}?v=20261123">

@@ -10,6 +10,7 @@
             <th>Reported at</th>
             <th>Severity</th>
             <th>Status</th>
+            <th>Teams</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -20,7 +21,7 @@
                 <td data-label="Reported by">
                     <strong>{{ $incident->reporter?->name ?? '—' }}</strong>
                     @if ($incident->reporter?->volunteerProfile?->barangay || $incident->reporter?->contact_number)
-                        <br><small style="color: var(--text-muted);">{{ $incident->reporter?->volunteerProfile?->barangay ? 'Barangay: '.$incident->reporter->volunteerProfile->barangay : '' }}{{ $incident->reporter?->volunteerProfile?->barangay && $incident->reporter?->contact_number ? ' · ' : '' }}{{ $incident->reporter?->contact_number ? 'Contact: '.$incident->reporter->contact_number : '' }}</small>
+                        <small class="dispatch-subline">{{ $incident->reporter?->volunteerProfile?->barangay ? 'Barangay: '.$incident->reporter->volunteerProfile->barangay : '' }}{{ $incident->reporter?->volunteerProfile?->barangay && $incident->reporter?->contact_number ? ' · ' : '' }}{{ $incident->reporter?->contact_number ? 'Contact: '.$incident->reporter->contact_number : '' }}</small>
                     @endif
                 </td>
                 <td data-label="Category">{{ $incident->category }}</td>
@@ -29,11 +30,12 @@
                 <td data-label="Reported at">{{ ($incident->reported_at ?? $incident->created_at)->timezone('Asia/Manila')->format('M d, Y, h:i A') }}</td>
                 <td data-label="Severity"><span class="badge severity-{{ strtolower($incident->severity ?? 'unrated') }}">{{ $incident->severity ?? 'Unrated' }}</span></td>
                 <td data-label="Status"><span class="badge status-{{ strtolower($incident->status) }}">{{ $incident->status }}</span></td>
+                <td data-label="Teams">{{ $incident->dispatches->filter->isActive()->map(fn ($dispatch) => $dispatch->team?->name)->filter()->implode(', ') ?: '—' }}</td>
                 <td data-label="Action"><a class="button secondary dispatcher-view-button" href="{{ route('dispatcher.incidents.show', $incident) }}">View</a></td>
             </tr>
         @empty
             <tr>
-                <td colspan="9">No incidents have been reported yet.</td>
+                <td colspan="10">No incidents have been reported yet.</td>
             </tr>
         @endforelse
     </tbody>

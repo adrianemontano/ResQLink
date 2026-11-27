@@ -1,0 +1,140 @@
+/* ResQLink shared UI utilities.
+ * Small, token-based classes that replace one-off inline style="" attributes,
+ * so muted text, spacing, empty states, and error pages look the same on
+ * every page. Loaded after the theme stylesheets in layouts/app.blade.php. */
+
+/* Text */
+.text-muted { color: var(--text-muted); }
+.text-small { font-size: 12.5px; }
+.text-center { text-align: center; }
+
+/* Headings inside compact cards sit flush with the card's top padding. */
+.card-title { margin-top: 0; }
+
+/* Vertical rhythm between stacked cards and blocks. */
+.stack-gap { margin-bottom: var(--space-4); }
+.stack-gap-sm { margin-bottom: var(--space-3); }
+.mt-section { margin-top: var(--space-5); }
+
+/* Empty states: dashed, muted panel used when a list has nothing to show. */
+.empty-panel {
+    background: var(--surface-alt);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    padding: var(--space-4);
+    text-align: center;
+}
+
+/* Inline field error (matches resqlink-forms.css error colour and size). */
+.field-error-text {
+    color: var(--maximum-red);
+    font-size: 12px;
+    margin-top: var(--space-1);
+}
+
+/* Password inputs with a show/hide toggle button inside the field. */
+.password-field { position: relative; }
+.password-field input { padding-right: 40px; width: 100%; }
+.password-toggle {
+    background: none;
+    border: none;
+    height: auto;
+    padding: 2px 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.password-toggle:focus-visible { border-radius: var(--radius-sm); box-shadow: var(--focus-ring); outline: none; }
+
+/* Full-page centred layout for error pages (403, 404, 419, 500). */
+.error-page {
+    background: var(--surface-alt);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: var(--space-4);
+}
+.error-page-main { align-items: center; display: flex; flex: 1; justify-content: center; }
+.error-page-card { max-width: 480px; text-align: center; width: 100%; }
+.error-page-code { color: var(--rosewood); font-size: 48px; line-height: 1.1; margin: 0 0 var(--space-2); }
+.error-page-message { color: var(--text-muted); margin: 0 0 var(--space-5); }
+
+/* Empty-state icon and title (used inside .empty-panel). */
+.empty-panel-icon { fill: none; height: 36px; margin-bottom: 6px; opacity: .6; stroke: var(--text-muted); stroke-width: 1.5; width: 36px; }
+.empty-panel-title { color: var(--text-primary); font-size: 13px; font-weight: 500; margin: 0; }
+.empty-panel small { font-size: 11px; }
+
+/* Incident photo card and its <dialog> lightbox. */
+.incident-photo-open {
+    cursor: zoom-in;
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
+}
+.incident-photo-open:focus-visible { border-radius: var(--radius-sm); box-shadow: var(--focus-ring); outline: none; }
+.incident-photo-thumb {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    display: block;
+    height: auto;
+    max-height: 220px;
+    max-width: 100%;
+    object-fit: contain;
+}
+.incident-photo-meta {
+    align-items: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 12px;
+    gap: var(--space-2);
+    justify-content: space-between;
+    margin-top: var(--space-2);
+}
+.photo-lightbox {
+    background: var(--surface);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    max-height: 90vh;
+    max-width: min(90vw, 1100px);
+    overflow: visible;
+    padding: var(--space-3);
+}
+.photo-lightbox::backdrop { background: rgba(43, 29, 27, .75); }
+.photo-lightbox img { border-radius: var(--radius-sm); display: block; max-height: 75vh; max-width: 100%; }
+.photo-lightbox-close {
+    background: var(--rosewood);
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    color: var(--surface);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    height: 32px;
+    line-height: 1;
+    padding: 0;
+    position: absolute;
+    right: -12px;
+    top: -12px;
+    width: 32px;
+}
+
+/* Dispatched Teams card (components/incident-dispatches.blade.php). */
+.dispatch-subline { color: var(--text-muted); display: block; font-size: 12px; margin-top: 2px; }
+.dispatch-cancel summary { cursor: pointer; list-style: none; }
+.dispatch-cancel summary::-webkit-details-marker { display: none; }
+.dispatch-cancel-form { display: grid; gap: var(--space-2); margin-top: var(--space-2); min-width: 200px; }
+.dispatch-cancel-form label { font-size: 12px; font-weight: 600; }
+.incident-dispatch-form { border-top: 1px solid var(--border); display: grid; gap: var(--space-3); margin-top: var(--space-4); padding-top: var(--space-4); }
+.incident-dispatch-form h3 { font-size: 14px; margin: 0; }
+.incident-dispatch-form .field { margin: 0; }
+
+/* Brand mark in the mobile header bar. */
+.mobile-header-mark { display: inline-flex; }
+.mobile-header-mark .sidebar-mark-img { height: 24px; width: 24px; }

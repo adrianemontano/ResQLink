@@ -42,9 +42,9 @@ class DashboardController extends Controller
                 $selectedStatus !== 'all',
                 fn ($query) => $query->where('status', $statusOptions[$selectedStatus]),
             )
-            ->orderByRaw("CASE severity WHEN 'Critical' THEN 1 WHEN 'High' THEN 2 WHEN 'Moderate' THEN 3 WHEN 'Low' THEN 4 ELSE 5 END")
-            ->orderByRaw("CASE status WHEN 'Reported' THEN 1 WHEN 'Received' THEN 2 WHEN 'Dispatched' THEN 3 ELSE 4 END")
-            ->orderByDesc('reported_at')
+            // Newest incidents first (2026-11-27 feedback); severity stays visible as a badge.
+            ->orderByRaw('COALESCE(reported_at, created_at) DESC')
+            ->orderByDesc('id')
             ->paginate($perPage)
             ->withQueryString();
 

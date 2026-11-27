@@ -13,7 +13,7 @@
 @section('content')
     <div class="header-row"><div><h1>Submit Incident</h1><p>Provide accurate details. Dispatchers will review the preliminary assessment.</p></div></div>
     <div class="volunteer-report-grid">
-        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}" novalidate>
+        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}" enctype="multipart/form-data" novalidate>
             @csrf
             <div class="volunteer-section-head">Incident details</div>
             <div class="volunteer-field-row"><x-volunteer-field label="Category" name="category" type="select" :options="['Flood', 'Earthquake', 'Landslide', 'Fire']" required /><div class="volunteer-field"><label for="barangay">Barangay <span class="required-asterisk" aria-hidden="true">*</span></label><input id="barangay" name="barangay" list="barangay-options" value="{{ old('barangay') }}" placeholder="Search a barangay" autocomplete="off" required data-barangay-field><datalist id="barangay-options"></datalist>@error('barangay')<small>{{ $message }}</small>@enderror</div></div>
@@ -22,6 +22,7 @@
             <div class="volunteer-field-row"><x-volunteer-field label="Latitude" name="latitude" type="number" step="any" min="-90" max="90" required placeholder="e.g. 10.3157" /><x-volunteer-field label="Longitude" name="longitude" type="number" step="any" min="-180" max="180" required placeholder="e.g. 123.8854" /></div>
             <x-volunteer-field label="Impact radius (metres)" name="impact_radius" type="number" step="any" min="0.01" :value="300" required placeholder="Enter radius or use map slider" />
             <p class="volunteer-synced-note">ⓘ Place a pin and adjust the map slider to fill these fields, or enter the location and radius manually.</p>
+            @include('volunteer.incidents.partials.photo-field')
             <x-volunteer-field label="Notes" name="notes" type="textarea" placeholder="Anything dispatchers should know before they respond" required />
             <div class="volunteer-form-footer"><button class="button" type="submit" data-submit-incident>Submit Incident Report</button></div>
         </form>

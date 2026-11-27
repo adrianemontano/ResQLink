@@ -187,9 +187,11 @@ each requirement; no requirements are added.
 - **`TASK3-001`** Dispatchers can view incoming incidents in an incident queue.
   - Frontend: Show counted status filter chips, incident summaries, and consistent 10/25/50-row pagination. The Incidents page lists newest reports first. Match dashboard chip hover states to the map filters; show the map's All filter without a dot.
   - Backend: Provide dispatcher-authorized, server-side queue filters and counts; preserve filters and page size across pagination.
-- **`TASK3-002`** The queue is ordered by preliminary severity and shows workflow status.
-  - Frontend: Display severity ordering and current status in each filtered queue.
-  - Backend: Preserve severity ordering within each status query.
+- **`TASK3-002`** The queue shows the newest incidents first, with preliminary severity and workflow status.
+  - Frontend: Display each incident's severity badge and current status in each filtered queue.
+  - Backend: Order each status query by report time, newest first.
+  - Changed 2026-11-27 from severity-first ordering, per review feedback
+    (`docs/tasks-2/pm-work/feedback-2026-11-27-checklist.md`, item 10).
 - **`TASK3-003`** Dispatchers can view complete incident summaries and details.
   - Frontend: Build the incident details view and show only the selected incident on its focused map.
   - Backend: Return all required summary fields.

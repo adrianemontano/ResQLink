@@ -5,8 +5,8 @@
 ## Implemented workflow
 
 Dispatcher routes are protected by authentication and the `dispatcher` role.
-The incident queue is ordered by preliminary severity, then workflow sequence
-and reported time, with category, status, and a searchable barangay selector.
+The incident queue lists the newest reports first (changed 2026-11-27 from
+severity-first ordering; severity remains visible on each row), with category, status, and a searchable barangay selector.
 The selector uses the barangay names from the local Cebu City map dataset, so
 the incident list can be filtered by an existing mapped barangay. Dispatchers
 can open a full incident summary and update status only through `Reported`,
@@ -78,6 +78,53 @@ responsive behavior for incident tables and detail layouts on small screens.
 	`mobile_access_tokens`. This first-party token implementation was used because
 	Composer package downloads required an unavailable GitHub credential; review
 	it before production use.
+
+## Team dispatch (2026-11-27 feedback)
+
+Source: `docs/tasks-2/pm-work/feedback-2026-11-27-checklist.md`, items 4 and
+9–12.
+
+- **Choosing a team.** Moving an incident from `Received` to `Dispatched` now
+  requires a `team_id` (an active team) in the status confirmation dialog.
+  `IncidentController::updateStatus` records the dispatch in the same
+  transaction through `IncidentDispatchService`.
+  Teams created by Admin (Admin → Teams) appear in this dropdown as soon as
+  they are active. Each option shows the team's barangay and lead, and teams
+  whose barangay matches the incident's barangay are listed first and marked
+  "same barangay". An incident still moves one step at a time, so a
+  `Reported` incident is marked `Received` before a team can be chosen.
+- **Busy teams are hidden.** A team with an uncancelled dispatch to an incident
+  that is not yet `Completed` does not appear in either team dropdown and is
+  rejected by validation (`App\Rules\AvailableTeam`, `Team::availableForDispatch`).
+  `IncidentDispatchService` re-checks availability under a row lock so two
+  dispatchers cannot send the same team at once. The team becomes available
+  again when that incident is completed or the dispatch is cancelled.
+- **Dispatching another team.** While the incident is `Dispatched`, the
+  "Dispatched Teams" card (`<x-incident-dispatches>`) sends additional teams
+  through `IncidentDispatchController::store`. A team cannot be on two active
+  dispatches for the same incident. Each additional dispatch adds a
+  "Coordination" update to the incident history.
+- **Cancelling.** Each active dispatch can be cancelled with a required reason
+  (`IncidentDispatchController::cancel`). Cancelled rows stay visible. When the
+  last active dispatch is cancelled, the incident returns to `Received` with a
+  status-history entry, so a new team can be chosen. This rule is pending
+  CCDRRMO confirmation (checklist item 7).
+- **Incident list.** The Dispatcher incident list shows a "Teams" column with
+  the active teams.
+- **Notifications.** Read notifications in the bell have a "Mark as unread"
+  button.
+
+| Route name | Method and URL | Purpose |
+| --- | --- | --- |
+| `dispatcher.incidents.dispatches.store` | `POST /dispatcher/incidents/{incident}/dispatches` | Send another team |
+| `dispatcher.incidents.dispatches.cancellation` | `PATCH /dispatcher/incidents/{incident}/dispatches/{dispatch}/cancellation` | Cancel a dispatch |
+| `dispatcher.notifications.unread` | `POST /dispatcher/notifications/{notification}/unread` | Mark a notification unread |
+
+Data: `incident_dispatches` (`incident_id`, `team_id`, `dispatched_by`,
+`dispatched_at`, `notes`, `cancelled_at`, `cancelled_by`,
+`cancellation_reason`), from migration
+`2026_11_27_000001_create_incident_dispatches_table`. Coverage:
+`tests/Feature/IncidentDispatchTest.php` (written, not yet executed).
 
 ## Verification setup
 

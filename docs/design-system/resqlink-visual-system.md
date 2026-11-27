@@ -27,6 +27,12 @@ Severity and incident status are distinct concepts. Severity indicates assessed
 impact; status tracks the Notify–Receive–Dispatch workflow. Display both with
 clear text labels. Laravel remains authoritative for severity and status.
 
+On web dashboard pages, status and severity badges are soft pills whose
+background, border, and text are computed from the `--status-*` and
+`--severity-*` tokens (`resqlink-badges.css`), so a badge always matches the
+map marker, legend, and report bar for the same value. Completed is grey
+(`--status-completed`) everywhere.
+
 ## Typography, spacing, and shape
 
 - Prefer platform-readable typography and scalable text.
@@ -35,6 +41,26 @@ clear text labels. Laravel remains authoritative for severity and status.
 - Preserve keyboard, focus, loading, disabled, validation, empty, and error
   states in both web and mobile designs.
 - Validate mobile layouts at 360–412px widths and with larger text settings.
+
+### Web implementation rules (2026-11-27 consistency pass)
+
+- **One font.** Every stylesheet uses `var(--font-body)` (Poppins). Stylesheets
+  that can load without `resqlink-tokens.css` (the login page and toasts) use
+  `var(--font-body, 'Poppins', sans-serif)`.
+- **Colours come from tokens.** Hard-coded hex values that equal a brand,
+  text, border, success, or status token were replaced with the token. New CSS
+  should use tokens rather than hex values.
+- **No one-off inline styles.** Static `style="…"` attributes in Blade views
+  were replaced with classes in `public/css/resqlink-utilities.css`
+  (`.text-muted`, `.card-title`, `.stack-gap`, `.mt-section`, `.empty-panel`,
+  `.password-field`, error-page and photo-lightbox classes). Inline styles
+  remain only for data-driven values such as bar widths and chart colours, and
+  for elements a script shows or hides.
+- **Shared components.** Error pages use `<x-error-page>`; incident photos use
+  `<x-incident-photo-card>` (Dispatcher and Admin) with a native `<dialog>`
+  lightbox; dispatched teams use `<x-incident-dispatches>`.
+- `public/css/resqlink-login.css` is not loaded by any page; the login page
+  uses `login.css`. Confirm with its owner before removing it.
 
 ## Brand Identity and Sidebar Assets
 
@@ -68,7 +94,8 @@ mockup remains a design reference for the future Expo implementation.
 
 ## Application checklist
 
-- [ ] Shared colors and semantic roles match the current web system.
+- [x] Shared colors and semantic roles match the current web system (web
+  consistency pass, 2026-11-27).
 - [ ] Text/icon labels accompany severity and status colors.
 - [ ] Form controls cover focus, error, disabled, loading, and success states.
 - [ ] Volunteer layouts work at supported Android widths and larger text sizes.

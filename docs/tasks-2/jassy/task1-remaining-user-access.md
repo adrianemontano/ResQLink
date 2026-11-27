@@ -20,6 +20,30 @@ are development-only and may be overridden by the documented environment values.
   document types rejected for a volunteer.
 - Direct volunteer-route and submission authorization for active, verified
   volunteers.
+- Admin-managed Barangay Responder teams (2026-11-27 feedback item 5): create,
+  edit, and activate/deactivate teams, select members, and assign a team lead.
+  See "Teams and team leads" below.
+
+## Teams and team leads
+
+Added from the 2026-11-27 feedback checklist
+(`docs/tasks-2/pm-work/feedback-2026-11-27-checklist.md`, item 5).
+
+- Data: `teams` (`name` unique, optional `barangay`, `team_lead_id`,
+  `is_active`) and the `team_user` membership pivot.
+- Rules enforced by `StoreTeamRequest` / `UpdateTeamRequest`:
+  - Members must be Barangay Responder (`volunteer` role) accounts; at least
+    one member is required.
+  - A Barangay Responder belongs to at most one team (unique `team_user.user_id`).
+    The form lists responders already in another team but disables them.
+  - The team lead is required and must be one of the selected members.
+- Teams are deactivated, not deleted, so later dispatch history (feedback item 4)
+  can keep referring to them.
+- Admin sidebar: Management → Teams.
+- Coverage: `backend/tests/Feature/AdminTeamManagementTest.php` (written, not yet
+  executed; the local PHP install lacks `pdo_sqlite`).
+- Not included yet: dispatching a team to an incident (TASK3, Angela, item 4),
+  which waits on the CCDRRMO process answer (item 7).
 
 ## Confirmed remaining gaps
 
@@ -43,6 +67,8 @@ are development-only and may be overridden by the documented environment values.
 | `admin.users.activation` | `PATCH /admin/users/{user}/activation` | Toggle active/inactive |
 | `admin.users.verification` | `PATCH /admin/users/{user}/verification` | Verify or revert a volunteer |
 | `admin.users.documents.store` | `POST /admin/users/{user}/documents` | Upload a volunteer document |
+| `admin.teams.index/create/store/edit/update` | `/admin/teams...` | List, create, and edit Barangay Responder teams |
+| `admin.teams.activation` | `PATCH /admin/teams/{team}/activation` | Toggle a team active/inactive |
 
 ## Verification status
 

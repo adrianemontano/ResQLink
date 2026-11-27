@@ -223,6 +223,13 @@ unless that database is disposable. Existing `incident_histories` already
 contains status, actor, and timestamp data and is reused for Dispatcher
 resolution-time reporting.
 
+The `2026_11_27_000000_create_teams_table` migration (TASK1, Jassy) adds the
+`teams` table and the `team_user` membership pivot for Admin-managed Barangay
+Responder teams. The `2026_11_27_000001_create_incident_dispatches_table`
+migration (TASK3, Angela) adds `incident_dispatches`, which records each team
+sent to an incident. Both only create new tables and do not change existing
+data; apply them with `php artisan migrate`.
+
 ### Mock defense dataset & verification
 
 To seed the full mock defense dataset (at least 8 responders, 20+ incidents per category across all statuses and severities, with complete status transition histories):

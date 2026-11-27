@@ -21,7 +21,7 @@
   min-width: 260px;
   max-width: 420px;
   box-shadow: 0 8px 24px rgba(90, 0, 6, 0.15);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-body, 'Poppins', sans-serif);
   font-size: 15px;
   font-weight: 500;
   color: #2B1A18;
@@ -47,15 +47,15 @@
 }
 
 .rq-toast.error .ic {
-  background: #D92200;
+  background: var(--maximum-red, #D92200);
 }
 
 .rq-toast.warning .ic {
-  background: #F37100;
+  background: var(--philippine-orange, #F37100);
 }
 
 .rq-toast.info .ic {
-  background: #F37100;
+  background: var(--philippine-orange, #F37100);
 }
 
 .rq-toast .txt {
@@ -88,7 +88,7 @@
 }
 
 .rq-toast .x:hover {
-  color: #5A0006;
+  color: var(--rosewood, #5A0006);
 }
 
 @keyframes rqIn {

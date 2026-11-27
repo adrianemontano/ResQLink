@@ -51,6 +51,10 @@ class IncidentController extends Controller
                 'volunteer',
                 'history.dispatcher',
                 'history.status',
+                'photos',
+                'dispatches.team.teamLead',
+                'dispatches.dispatcher',
+                'dispatches.canceller',
             ]),
         ]);
     }

@@ -159,7 +159,7 @@
 }
 
 .metric-active .volunteer-metric-icon {
-    background: #FFF0DF;
+    background: var(--accent-light);
     color: #935000;
 }
 
@@ -397,7 +397,7 @@
 
 .volunteer-recent-icon {
     align-items: center;
-    background: #FFF0DF;
+    background: var(--accent-light);
     border-radius: 50%;
     color: var(--sangria);
     display: flex;
@@ -425,7 +425,7 @@
 }
 
 .volunteer-status-badge {
-    background: #FFF0DF;
+    background: var(--accent-light);
     border-radius: 12px;
     color: #7A3F00;
     font-size: var(--text-sm);

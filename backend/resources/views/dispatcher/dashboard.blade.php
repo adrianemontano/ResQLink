@@ -47,7 +47,7 @@
                             <td>INC-{{ str_pad($incident->id, 4, '0', STR_PAD_LEFT) }}</td>
                             <td>{{ $incident->reporter?->name ?? 'Unknown' }}
                                 @if ($incident->reporter?->volunteerProfile?->barangay || $incident->reporter?->contact_number)
-                                    <br><small style="color:var(--text-muted)">{{ $incident->reporter?->volunteerProfile?->barangay ?? $incident->reporter?->contact_number }}</small>
+                                    <small class="dispatch-subline">{{ $incident->reporter?->volunteerProfile?->barangay ?? $incident->reporter?->contact_number }}</small>
                                 @endif
                             </td>
                             <td>{{ ($incident->reported_at ?? $incident->created_at)->timezone('Asia/Manila')->format('M d, Y, h:i A') }}</td>

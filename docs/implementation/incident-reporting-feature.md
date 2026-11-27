@@ -27,10 +27,38 @@ incident structure through `/volunteer/incidents/create`. The web form posts to
 incident data, severity, timestamp, and `Reported` status.
 
 After a successful web submission the volunteer is redirected back to the
-create form with a `success` flash (`Incident INC-0001 submitted successfully.`)
-that renders as an auto-dismissing `x-toast`, alongside the existing banner
-showing the incident reference, status, and preliminary severity. Validation
+create form with a `success` flash (`Incident INC-0001 was submitted successfully.`)
+that renders as a single auto-dismissing `x-toast`. This toast is the only
+submission confirmation; the inline banner was removed. Validation
 errors from `StoreIncidentRequest` also render as error toasts.
+
+### Incident photo (camera capture)
+
+The web form (`multipart/form-data`) has an optional photo field
+(`volunteer/incidents/partials/photo-field.blade.php`):
+
+- **Take photo** opens the device's rear camera directly on phones and tablets
+  (`<input type="file" capture="environment">`).
+- On laptops and desktops, whose browsers ignore `capture`, **Take photo**
+  opens an in-page webcam window with **Capture** and **Cancel**
+  (`resources/js/volunteer-incident-webcam.js`, using `getUserMedia`). The
+  webcam is switched off when the window closes. If no camera exists or
+  access is denied, the form falls back to the file picker and says why.
+  Browsers allow webcam access only on HTTPS, or on `http://localhost` /
+  `http://127.0.0.1` during development, so production needs HTTPS.
+- **Or choose from gallery** picks an existing image; it is copied into the
+  submitted `photo` input, so one file is always sent.
+- A preview with **Retake** and **Remove** is shown before submitting.
+- `resources/js/volunteer-incident-photo.js` resizes large photos in the browser
+  (longest side 1,920 px, JPEG, target about 1.5 MB). Phone camera photos are
+  often 3–10 MB, and PHP's default `upload_max_filesize` is 2 MB.
+- The photo is stored on the private `local` disk by `IncidentSubmissionService`
+  and appears on the Dispatcher incident page ("Incident Photo & Attachment")
+  and through the protected Dispatcher/Admin photo routes.
+- Browsers do not keep a selected file after a validation error, so the
+  volunteer must take the photo again if the form is returned with errors.
+- Coverage: `tests/Feature/VolunteerIncidentPhotoTest.php` (written, not yet
+  executed).
 
 Development testing requires an active volunteer user with a related
 `volunteer_profiles.verification_status` value of `verified`.
@@ -50,6 +78,7 @@ The endpoint accepts JSON or form data with:
 | `longitude` | Yes | Numeric value from -180 to 180 |
 | `impact_radius` | Yes | Positive numeric value, maximum 100,000 metres |
 | `notes` | No | Text, maximum 5,000 characters |
+| `photo` | No | JPEG or PNG image, maximum 5 MB (multipart upload) |
 
 The authenticated volunteer is assigned automatically; clients cannot choose a
 different reporter.

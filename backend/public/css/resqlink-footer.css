@@ -1,6 +1,6 @@
 /* Standard ResQLink footer: Poppins 13px, centered, WCAG AA on light surfaces. */
 .app-footer {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body, 'Poppins', sans-serif);
     font-size: 13px;
     line-height: 1.5;
     text-align: center;
