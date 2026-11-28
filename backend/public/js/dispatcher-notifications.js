@@ -99,9 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="notification-item-meta">
                             <span>Barangay: ${escapeHtml(data.barangay || 'Not provided')}</span>
                         </div>
-                        <div class="notification-item-time">${escapeHtml(notification.created_at || '')}</div>
                     </a>
-                    ${readButton}
+                    <div class="notification-item-footer">
+                        <span class="notification-item-time">${escapeHtml(notification.created_at || '')}</span>
+                        ${readButton}
+                    </div>
                 </article>`;
         }).join('');
     }

@@ -2,13 +2,13 @@
 
 @push('scripts')
     <script src="{{ asset('js/sidebar-toggle.js') }}"></script>
-    @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
+    @if (auth()->check() && auth()->user()->hasRole(['dispatcher', 'admin']))
         <script src="{{ asset('js/dispatcher-notifications.js') }}"></script>
     @endif
 @endpush
 
 @section('body')
-    <div class="dashboard-shell{{ auth()->user()->hasRole('dispatcher') ? ' dispatcher-ui' : '' }}">
+    <div class="dashboard-shell{{ auth()->user()->hasRole(['dispatcher', 'admin']) ? ' dispatcher-ui' : '' }}">
         <!-- Mobile top bar: brand + burger menu button (phones only). -->
         <header class="mobile-header">
             <button type="button" class="mobile-menu-toggle" data-mobile-menu-toggle aria-expanded="false" aria-label="Open menu">
@@ -71,10 +71,10 @@
         <div class="sidebar-overlay" data-sidebar-overlay aria-hidden="true"></div>
 
         <main class="dashboard-main">
-            @if (auth()->check() && auth()->user()->hasRole('dispatcher'))
+            @if (auth()->check() && auth()->user()->hasRole(['dispatcher', 'admin']))
                 <div class="dashboard-topbar">
                     <div class="dashboard-topbar-title">
-                        <strong>Dispatcher Live Center</strong> <span class="topbar-sep">&bull;</span> Cebu City Emergency Grid
+                        <strong>{{ auth()->user()->hasRole('admin') ? 'Admin & Dispatch Control' : 'Dispatcher Live Center' }}</strong> <span class="topbar-sep">&bull;</span> Cebu City Emergency Grid
                     </div>
                     @include('layouts.partials.notifications')
                 </div>

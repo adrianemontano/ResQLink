@@ -161,24 +161,41 @@
     margin-top: 4px;
 }
 
+.notification-item-footer {
+    align-items: center;
+    display: flex;
+    gap: var(--space-2);
+    justify-content: space-between;
+    margin-top: 6px;
+}
+
 .notification-item-time {
     color: var(--text-muted);
     font-size: 11px;
-    margin-top: 4px;
 }
 
 .notification-read-button {
-    background: transparent;
-    border: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
     color: var(--sangria);
     cursor: pointer;
     font: inherit;
     font-size: 11px;
-    font-weight: 700;
-    min-height: 28px;
-    padding: 2px 0;
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    font-weight: 600;
+    height: auto;
+    line-height: 1.2;
+    min-height: 24px;
+    padding: 3px 10px;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+    white-space: nowrap;
+}
+
+.notification-read-button:hover {
+    background: var(--accent-light);
+    border-color: var(--tangelo);
+    color: var(--rosewood);
 }
 
 .notification-empty,
