@@ -97,15 +97,16 @@ label > .dispatcher-dropdown {
 
 .dispatcher-dropdown-trigger {
     appearance: none;
-    background: var(--surface);
-    border: 1px solid var(--control-border);
-    border-radius: 9px;
-    color: var(--text-primary);
+    background: #ffffff;
+    border: 1px solid var(--control-border, #8A766A);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--rosewood, #5A0006);
     cursor: pointer;
     display: block;
     font: inherit;
     font-size: 14px;
-    height: var(--control-height);
+    font-weight: 600;
+    height: var(--control-height, 40px);
     line-height: normal;
     overflow: hidden;
     padding: 0 38px 0 var(--space-3);
@@ -113,6 +114,7 @@ label > .dispatcher-dropdown {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+    transition: background .15s, border-color .15s, color .15s;
 }
 
 .dispatcher-dropdown-value {
@@ -120,33 +122,35 @@ label > .dispatcher-dropdown {
 }
 
 .dispatcher-dropdown-trigger:hover:not(:disabled) {
-    border-color: var(--tangelo);
+    background: var(--surface-alt, #F5F0EB);
+    border-color: var(--rosewood, #5A0006);
+    color: var(--rosewood, #5A0006);
 }
 
 .dispatcher-ui .dashboard-main .dispatcher-dropdown .dispatcher-dropdown-trigger {
-    background-color: var(--surface);
+    background-color: #ffffff;
     background-image: none;
-    border: 1px solid var(--control-border);
-    border-radius: 9px;
-    color: var(--text-primary);
-    font-weight: 400;
+    border: 1px solid var(--control-border, #8A766A);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--rosewood, #5A0006);
+    font-weight: 600;
 }
 
 .dispatcher-ui .dashboard-main .dispatcher-dropdown.is-open .dispatcher-dropdown-trigger {
-    border-color: var(--control-border);
+    border-color: var(--rosewood, #5A0006);
     box-shadow: 0 0 0 2px var(--surface-alt);
 }
 
 .dispatcher-ui .dashboard-main .dispatcher-dropdown .dispatcher-dropdown-trigger:focus-visible {
-    border-color: var(--tangelo);
-    box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--tangelo);
+    border-color: var(--rosewood, #5A0006);
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--rosewood, #5A0006);
     outline: none;
 }
 
 .dispatcher-ui .dashboard-main .dispatcher-dropdown .dispatcher-dropdown-trigger:hover:not(:disabled) {
-    background-color: var(--surface);
-    border-color: var(--control-border);
-    color: var(--text-primary);
+    background-color: var(--surface-alt, #F5F0EB);
+    border-color: var(--rosewood, #5A0006);
+    color: var(--rosewood, #5A0006);
 }
 
 .dispatcher-dropdown-trigger:disabled {
@@ -197,16 +201,18 @@ label > .dispatcher-dropdown {
 .dispatcher-dropdown-option {
     background: transparent;
     border: 0;
-    border-radius: 6px;
-    color: var(--rosewood);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--rosewood, #5A0006);
     cursor: pointer;
     display: block;
     font: inherit;
     font-size: 14px;
+    font-weight: 500;
     min-height: 38px;
     padding: 8px 10px;
     text-align: left;
     width: 100%;
+    transition: background .15s, border-color .15s, color .15s;
 }
 
 .dispatcher-dropdown-option[hidden] {
@@ -216,13 +222,13 @@ label > .dispatcher-dropdown {
 .dispatcher-dropdown-option:hover,
 .dispatcher-dropdown-option:focus-visible,
 .dispatcher-dropdown-option.is-active {
-    background: var(--accent-light);
-    color: var(--rosewood);
+    background: var(--surface-alt, #F5F0EB);
+    color: var(--rosewood, #5A0006);
     outline: none;
 }
 
 .dispatcher-dropdown-option:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--tangelo);
+    box-shadow: inset 0 0 0 2px var(--rosewood, #5A0006);
 }
 
 .dispatcher-dropdown-no-results {

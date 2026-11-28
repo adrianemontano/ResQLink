@@ -64,6 +64,12 @@
 .badge.status-received::before { content: "■ "; }
 .badge.status-dispatched::before { content: "■ "; }
 .badge.status-completed::before { content: "■ "; }
+.badge.status-cancelled {
+    background: var(--red-light);
+    color: var(--red-dark);
+    border-color: var(--red-dark);
+}
+.badge.status-cancelled::before { content: "■ "; }
 
 /* Severity: filled badges that escalate in weight; Critical is the strongest. */
 .badge.severity-low {

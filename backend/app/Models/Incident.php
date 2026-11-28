@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 
 #[Fillable([
     'volunteer_id', 'reported_by', 'category_id', 'barangay_id', 'severity_id',
-    'status_id', 'category', 'barangay', 'nearest_landmark', 'landmark',
+    'status_id', 'dispatched_team_id', 'external_team_name', 'category', 'barangay', 'nearest_landmark', 'landmark',
     'affected_population', 'persons_count', 'latitude', 'longitude',
-    'impact_radius', 'notes', 'reported_at', 'status', 'severity',
+    'impact_radius', 'notes', 'reported_at', 'received_at', 'dispatched_at', 'completed_at',
+    'status', 'severity',
 ])]
 class Incident extends Model
 {
@@ -61,6 +63,9 @@ class Incident extends Model
             'impact_radius' => 'decimal:2',
             'affected_population' => 'integer',
             'reported_at' => 'datetime',
+            'received_at' => 'datetime',
+            'dispatched_at' => 'datetime',
+            'completed_at' => 'datetime',
         ];
     }
 
@@ -75,6 +80,24 @@ class Incident extends Model
     public function volunteer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'volunteer_id');
+    }
+
+    /**
+     * @return BelongsTo<ResponseTeam, $this>
+     */
+    public function dispatchedTeam(): BelongsTo
+    {
+        return $this->belongsTo(ResponseTeam::class, 'dispatched_team_id');
+    }
+
+    /**
+     * @return BelongsToMany<ResponseTeam, $this>
+     */
+    public function responseTeams(): BelongsToMany
+    {
+        return $this->belongsToMany(ResponseTeam::class, 'incident_response_teams')
+            ->withPivot('dispatched_at', 'cancelled_at', 'status', 'dispatched_by', 'cancelled_by', 'cancel_reason')
+            ->withTimestamps();
     }
 
     /**

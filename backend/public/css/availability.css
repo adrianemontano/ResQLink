@@ -1,0 +1,160 @@
+.availability-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.availability-tab {
+    background: var(--surface, #ffffff);
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--rosewood, #5a0006);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.availability-tab:hover {
+    background: #f9f3ef;
+}
+
+.availability-tab.is-active {
+    background: var(--rosewood, #5a0006);
+    border-color: var(--rosewood, #5a0006);
+    color: #ffffff;
+}
+
+.availability-tab-count {
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+.availability-row {
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+}
+
+.availability-row:hover {
+    background: #faf5f2;
+}
+
+.availability-subtext {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.availability-status-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.availability-status-badge.available  { background: #dcfce7; color: #15803d; }
+.availability-status-badge.on_mission { background: #fef3c7; color: #92400e; }
+.availability-status-badge.inactive   { background: #f3f4f6; color: #6b7280; }
+
+.availability-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.availability-modal[hidden] {
+    display: none;
+}
+
+.availability-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(24, 8, 10, 0.45);
+}
+
+.availability-modal-dialog {
+    position: relative;
+    z-index: 1;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid var(--border, #EDE2D8);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    width: min(680px, 100%);
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.availability-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.availability-modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--rosewood, #5a0006);
+}
+
+.availability-modal-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    padding: 10px 14px;
+    background: #faf7f5;
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.availability-modal-section {
+    margin-top: 16px;
+}
+
+.availability-modal-section h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--rosewood, #5a0006);
+    margin: 0 0 8px;
+}
+
+.availability-members-list {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 4px 16px;
+}
+
+.availability-log-table {
+    width: 100%;
+    font-size: 13px;
+    border-collapse: collapse;
+}
+
+.availability-log-table th,
+.availability-log-table td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border, #EDE2D8);
+}
+
+.availability-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}

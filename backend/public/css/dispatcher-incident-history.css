@@ -3,54 +3,49 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.incident-details-card > table {
+.history-table-wrapper table {
     table-layout: fixed;
     width: 100%;
     min-width: 600px;
 }
 
-.incident-details-card > table thead th {
-    padding: var(--space-3) var(--space-4);
+.history-table-wrapper table thead th {
+    font-size: 10px;
+    padding: 10px 8px;
     text-align: left;
     vertical-align: middle;
 }
 
-.incident-details-card > table thead th:nth-child(1) {
-    width: 120px;
+.history-table-wrapper table thead th:nth-child(1) {
+    width: 25%;
 }
 
-.incident-details-card > table thead th:nth-child(2) {
-    width: 20%;
+.history-table-wrapper table thead th:nth-child(2) {
+    width: 22%;
 }
 
-.incident-details-card > table thead th:nth-child(3) {
-    width: 180px;
+.history-table-wrapper table thead th:nth-child(3) {
+    width: 29%;
+    text-align: left;
 }
 
-.incident-details-card > table thead th:nth-child(4) {
-    width: auto;
-    text-align: right;
-}
-
-.incident-details-card > table tbody td {
-    padding: var(--space-3) var(--space-4);
+.history-table-wrapper table tbody td {
+    font-size: 12px;
+    padding: 10px 8px;
     vertical-align: middle;
 }
 
-.incident-details-card > table tbody td:nth-child(1) .badge {
+.history-table-wrapper table tbody td:nth-child(1) .badge {
+    box-sizing: border-box;
+    max-width: 100%;
     white-space: nowrap;
 }
 
-.incident-details-card > table tbody td:nth-child(2) {
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-.incident-details-card > table tbody td:nth-child(3) {
+.history-table-wrapper table tbody td:nth-child(3) {
     white-space: nowrap;
 }
 
-.incident-details-card > table tbody td:nth-child(4) {
+.history-table-wrapper table tbody td:nth-child(4) {
     text-align: right;
 }
 

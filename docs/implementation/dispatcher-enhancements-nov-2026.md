@@ -30,6 +30,9 @@ Apply the pending migrations only after reviewing the target database. `migrate:
 
 ## Setup notes
 
+8. **Status Dropdown & Dedicated Dispatch Screens:** Verify the 'Update status' dropdown matches the mockup with four actions: Reported, Cancel Dispatch, Dispatched (Re-dispatch team), and Completed. Verify that 'Dispatched (Re-dispatch team)' and 'Cancel Dispatch' navigate to dedicated full-page screens with search filters, multi-select checkboxes for teams, and note inputs.
+9. **Volunteer Camera Capture:** Verify that on the Volunteer incident create page, the 'Take a photo' button triggers direct camera capture alongside file selection.
+
 After pulling these changes, install Laravel dependencies with `composer install`, run `php artisan migrate`, clear config cache, and run `flutter pub get` from `mobile/`. For Android emulator local development, use API base `http://10.0.2.2:8000/api`; set `RESQLINK_API_URL` with `--dart-define` as needed. The Android manifest permits cleartext only to support local HTTP development; production must use HTTPS and disable cleartext traffic. Verify `ZipArchive` is enabled before XLSX export.
 
 The `APP_TIMEZONE` setting changes application timestamps to Manila time. Existing timestamp values remain as stored; verify legacy records before rollout and migrate/backfill them only if their original timezone is known.

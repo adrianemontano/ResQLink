@@ -11,6 +11,10 @@ The selector uses the barangay names from the local Cebu City map dataset, so
 the incident list can be filtered by an existing mapped barangay. Dispatchers
 can open a full incident summary and update status only through `Reported`,
 `Received`, `Dispatched`, and `Completed`, one step forward at a time.
+Dispatcher dashboard and incident lists share 10/25/50 pagination controls,
+preserving active filters and the selected page size. Team Availability uses
+the same controls, with status filters applied across pages and counts covering
+all teams.
 
 If a dispatcher picks a status that skips a step (for example `Reported` to
 `Completed`), the incident is not changed and the TASK3 Update Status form
@@ -23,6 +27,18 @@ transitions is pending PM approval.
 Each accepted status change stores the acting dispatcher, timestamp, status
 reference, and optional note in `incident_histories`. Completed incidents remain
 available in the queue and map for historical review.
+
+**TASK3 — Completion and history details:** Completing an incident is final.
+Dispatchers can still inspect its details and activity, but status changes,
+dispatch actions, new updates, and history-note edits are blocked. The completion
+confirmation appears immediately after the status update. The activity table
+hides its Team column; team names are shown above the notes when a history
+entry's View dialog is opened. Incident filter menus, the status action menu, and
+the team search use consistent rounded panels, option spacing, and hover states.
+The history table uses a compact layout, and Update and Cancelled Dispatch
+entries use rounded status badges with a leading dot, matching the Received
+badge style. The Update Status and Add Update controls use compact sizing and
+return to full width on narrow screens.
 
 The map is intentionally read-only. Dispatchers inspect incident locations and
 open details from markers; incident creation remains in the volunteer reporting

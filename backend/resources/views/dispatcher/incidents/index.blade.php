@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <form class="card filter-row" method="GET" action="{{ route('dispatcher.incidents.index') }}">
+    <form class="card filter-row incident-filter-row" method="GET" action="{{ route('dispatcher.incidents.index') }}">
         <input type="hidden" name="per_page" value="{{ $perPage }}">
         <label>Category
             <x-dropdown
@@ -58,6 +58,10 @@
     </section>
 @endsection
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dispatcher-incident-ui.css') }}?v=20261128-3">
+@endpush
+
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -74,8 +78,8 @@
                     if (!response.ok) throw new Error('Unable to load incidents.');
                     const updatedResults = document.createElement('div');
                     updatedResults.innerHTML = await response.text();
-                    const currentPageSize = results.querySelector('#dispatcher-pagination-per-page');
-                    const updatedPageSize = updatedResults.querySelector('#dispatcher-pagination-per-page');
+                    const currentPageSize = results.querySelector('#resqlink-pagination-per-page');
+                    const updatedPageSize = updatedResults.querySelector('#resqlink-pagination-per-page');
                     if (currentPageSize && updatedPageSize) {
                         // Keep the initialized dropdown while replacing its surrounding results.
                         updatedPageSize.replaceWith(currentPageSize);

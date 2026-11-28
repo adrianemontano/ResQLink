@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['incident_id', 'entry_type', 'category', 'status_id', 'changed_by', 'notes', 'changed_at'])]
+#[Fillable(['incident_id', 'entry_type', 'category', 'status_id', 'response_team_id', 'external_team_name', 'changed_by', 'notes', 'changed_at'])]
 class IncidentHistory extends Model
 {
     public const ENTRY_TYPE_STATUS_CHANGE = 'status_change';
@@ -38,5 +38,10 @@ class IncidentHistory extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(IncidentStatus::class, 'status_id');
+    }
+
+    public function responseTeam(): BelongsTo
+    {
+        return $this->belongsTo(ResponseTeam::class, 'response_team_id');
     }
 }

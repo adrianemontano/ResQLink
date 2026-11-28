@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\TeamAvailabilityController as AdminTeamAvailabilityController;
+use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VolunteerDocumentController;
 use App\Http\Controllers\AccountController;
@@ -11,6 +13,8 @@ use App\Http\Controllers\Auth\PasswordChangeController;
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\Dispatcher\DashboardController as DispatcherDashboardController;
 use App\Http\Controllers\Dispatcher\IncidentController as DispatcherIncidentController;
+use App\Http\Controllers\Dispatcher\IncidentDispatchController as DispatcherIncidentDispatchController;
+use App\Http\Controllers\Dispatcher\IncidentMapController as DispatcherIncidentMapController;
 use App\Http\Controllers\Dispatcher\IncidentPhotoController;
 use App\Http\Controllers\Dispatcher\NotificationController;
 use App\Http\Controllers\Volunteer\DashboardController as VolunteerDashboardController;
@@ -51,6 +55,11 @@ Route::middleware(['auth', 'role:admin'])
         Route::patch('/users/{user}/verification', [UserController::class, 'toggleVerification'])->name('users.verification');
         Route::get('/incidents', [AdminIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidents/{incident}', [AdminIncidentController::class, 'show'])->name('incidents.show');
+        Route::get('/teams', [AdminTeamController::class, 'index'])->name('teams.index');
+        Route::post('/teams', [AdminTeamController::class, 'store'])->name('teams.store');
+        Route::patch('/teams/{team}/toggle', [AdminTeamController::class, 'toggle'])->name('teams.toggle');
+        Route::get('/teams/availability', [AdminTeamAvailabilityController::class, 'index'])->name('teams.availability');
+        Route::get('/teams/availability/{team}', [AdminTeamAvailabilityController::class, 'show'])->name('teams.availability.show');
         Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
         Route::get('/account', [AccountController::class, 'edit'])->name('account.edit');
         Route::put('/account', [AccountController::class, 'update'])->name('account.update');
@@ -65,17 +74,24 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/{photo}/download', [IncidentPhotoController::class, 'download'])->name('download');
     });
 
-Route::middleware(['auth', 'role:dispatcher'])
+Route::middleware(['auth', 'role:dispatcher,admin'])
     ->prefix('dispatcher')
     ->name('dispatcher.')
     ->group(function (): void {
         Route::get('/dashboard', DispatcherDashboardController::class)->name('dashboard');
         Route::get('/incidents', [DispatcherIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidents/{incident}', [DispatcherIncidentController::class, 'show'])->name('incidents.show');
+        Route::get('/incidents/{incident}/dispatch', [DispatcherIncidentDispatchController::class, 'dispatchPage'])->name('incidents.dispatch');
+        Route::get('/incidents/{incident}/cancel-dispatch', [DispatcherIncidentDispatchController::class, 'cancelDispatchPage'])->name('incidents.cancel-dispatch.page');
         Route::patch('/incidents/{incident}/status', [DispatcherIncidentController::class, 'updateStatus'])->name('incidents.status');
         Route::post('/incidents/{incident}/updates', [DispatcherIncidentController::class, 'addUpdate'])->name('incidents.updates.store');
-        Route::get('/map', [DispatcherIncidentController::class, 'map'])->name('map');
-        Route::get('/map/incidents', [DispatcherIncidentController::class, 'mapIncidents'])->name('map.incidents');
+        Route::patch('/incidents/{incident}/histories/{history}', [DispatcherIncidentController::class, 'updateHistory'])->name('incidents.histories.update');
+        Route::post('/incidents/{incident}/cancel-dispatch', [DispatcherIncidentDispatchController::class, 'cancelDispatch'])->name('incidents.cancel-dispatch');
+        Route::get('/response-teams', [DispatcherIncidentDispatchController::class, 'fetchResponseTeams'])->name('response-teams.index');
+        Route::get('/teams/availability', [AdminTeamAvailabilityController::class, 'index'])->name('teams.availability');
+        Route::get('/teams/availability/{team}', [AdminTeamAvailabilityController::class, 'show'])->name('teams.availability.show');
+        Route::get('/map', [DispatcherIncidentMapController::class, 'map'])->name('map');
+        Route::get('/map/incidents', [DispatcherIncidentMapController::class, 'mapIncidents'])->name('map.incidents');
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::get('/notifications/poll', [NotificationController::class, 'poll'])->name('notifications.poll');
         Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
@@ -87,7 +103,7 @@ Route::middleware(['auth', 'role:dispatcher'])
         Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password');
     });
 
-Route::middleware(['auth', 'role:volunteer'])
+Route::middleware(['auth', 'role:volunteer,admin'])
     ->prefix('volunteer')
     ->name('volunteer.')
     ->group(function (): void {

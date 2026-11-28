@@ -40,4 +40,4 @@
 </table>
 </div>
 
-<x-dispatcher-pagination :paginator="$incidents" :per-page="$perPage" />
+<x-resqlink-pagination :paginator="$incidents" :per-page="$perPage" />
