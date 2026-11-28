@@ -1,0 +1,125 @@
+/* Response Teams Section */
+#response-teams-section {
+    margin-bottom: var(--space-5);
+}
+
+.teams-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.team-type-count {
+    background: var(--surface-alt, #F5F0EB);
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: var(--radius-sm, 6px);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary, #2B1D1B);
+}
+
+.recent-teams-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: var(--space-3);
+}
+
+.recent-team-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--surface, #FFFFFF);
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: var(--radius-sm, 6px);
+}
+
+.team-name {
+    font-weight: 600;
+    color: var(--text-primary, #2B1D1B);
+}
+
+.team-type {
+    font-size: 13px;
+    color: var(--text-muted, #6B5B55);
+}
+
+.team-time {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-muted, #6B5B55);
+}
+
+.view-all-teams-btn {
+    background: transparent;
+    border: none;
+    color: var(--rosewood, #5A0006);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0;
+    margin-bottom: var(--space-3);
+}
+
+.view-all-teams-btn:hover {
+    text-decoration: underline;
+}
+
+.no-teams-message {
+    color: var(--text-muted, #6B5B55);
+    font-size: 14px;
+    margin-bottom: var(--space-3);
+}
+
+.warning-banner {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: var(--radius-sm, 6px);
+    padding: 12px;
+    color: #92400e;
+    font-size: 13px;
+    margin-bottom: var(--space-3);
+}
+
+.teams-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.btn-manage-teams,
+.btn-dispatch-team {
+    background: var(--surface, #FFFFFF);
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--rosewood, #5A0006);
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    height: var(--control-height, 40px);
+    min-height: var(--control-height, 40px);
+    padding: 0 var(--space-4, 16px);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-manage-teams:hover,
+.btn-dispatch-team:hover {
+    background: var(--surface-alt, #F5F0EB);
+    border-color: var(--rosewood, #5A0006);
+}
+
+.btn-dispatch-team {
+    background: var(--dispatcher-primary, var(--philippine-orange));
+    border: none;
+    color: #ffffff;
+}
+
+.btn-dispatch-team:hover {
+    background: var(--dispatcher-primary-dark, #e65c00);
+}

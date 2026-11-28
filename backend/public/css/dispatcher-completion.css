@@ -1,0 +1,80 @@
+/* Completed Incident Modal */
+#completed-incident-modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 12000;
+    background: rgba(43, 29, 27, 0.58);
+}
+
+#completed-incident-modal .status-modal-dialog {
+    background: var(--surface, #FFFFFF);
+    border: 1px solid var(--border, #EDE2D8);
+    border-radius: var(--radius-xl, 12px);
+    box-shadow: var(--shadow-lg, 0 8px 24px rgba(43, 29, 27, .10));
+    color: var(--text-primary, #2B1D1B);
+    max-width: 28rem;
+    padding: 1.5rem;
+    position: relative;
+    width: 100%;
+    margin: 1rem;
+}
+
+#completed-incident-modal h2 {
+    color: var(--success, #476B45);
+    margin: 0 0 1rem;
+    font-size: 18px;
+}
+
+#completed-incident-modal p {
+    margin: 0 0 1.5rem;
+    color: var(--text-primary, #2B1D1B);
+    line-height: 1.5;
+}
+
+#completed-incident-modal .status-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.status-action-dropdown {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: auto !important;
+    min-width: 0;
+}
+
+.status-action-dropdown .dispatcher-dropdown-trigger-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: auto !important;
+}
+
+.status-action-dropdown .dispatcher-dropdown-trigger {
+    width: auto !important;
+    min-width: 0;
+    padding: 0 34px 0 var(--space-4, 16px) !important;
+    border: 1px solid var(--border, #EDE2D8) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.status-action-dropdown .dispatcher-dropdown-menu {
+    width: auto;
+    min-width: 280px;
+    padding: 6px;
+}
+
+.status-action-dropdown .dispatcher-dropdown-option {
+    white-space: nowrap;
+    padding: 9px 12px;
+}

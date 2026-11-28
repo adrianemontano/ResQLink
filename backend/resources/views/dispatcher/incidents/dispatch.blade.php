@@ -93,5 +93,5 @@
 @endpush
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dispatcher-status-confirmation.css') }}">
+    @include('dispatcher.incidents.partials.status-styles')
 @endpush

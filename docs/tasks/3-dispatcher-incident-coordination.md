@@ -79,9 +79,11 @@ map, and recording status changes through completion.
   landmark, impact radius, notes, severity, and status.
 - `TASK3-004` The dashboard displays active and historical incidents on a
   MapLibre map using markers and impact-radius visualization.
-- `TASK3-005` A dispatcher can update status only through the forward-only
-  Reported, Received, Dispatched, and Completed workflow. Each update requires
-  confirmation and a note of at most 300 characters; completion is irreversible.
+- `TASK3-005` A dispatcher can update status only through the Reported, Received,
+  Dispatched, and Completed workflow, one step at a time. Cancelling a dispatch
+  returns the incident from Dispatched to Received; a repeated Dispatched update
+  may add response teams. Each update requires confirmation and a note of at most
+  300 characters; completion is irreversible.
 - `TASK3-006` Every status change records the dispatcher, timestamp, status, and
   required note in `incident_histories`.
 - `TASK3-007` The dispatcher can distinguish active incidents from completed or
@@ -114,9 +116,10 @@ map, and recording status changes through completion.
   status, and history information; the focused map shows only that incident.
 - [x] `TASK3-004` Local MapLibre map renders database incident markers and
   impact-radius polygons from stored coordinates.
-- [x] `TASK3-005` Status updates show only the next forward transition, require
-  confirmation and a note (maximum 300 characters), and warn that completion
-  cannot be undone.
+- [x] `TASK3-005` The server accepts only the next workflow transition; cancelling
+  dispatch returns the incident to Received, and a repeated Dispatched update
+  may add response teams. Status changes require confirmation and a note
+  (maximum 300 characters), and completion cannot be undone.
 - [x] `TASK3-006` `incident_histories` stores the dispatcher, timestamp, status,
   and required note for every status change.
 - [x] `TASK3-007` Status badges and filters distinguish active and completed

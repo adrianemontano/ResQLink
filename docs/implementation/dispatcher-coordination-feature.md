@@ -11,6 +11,8 @@ The selector uses the barangay names from the local Cebu City map dataset, so
 the incident list can be filtered by an existing mapped barangay. Dispatchers
 can open a full incident summary and update status only through `Reported`,
 `Received`, `Dispatched`, and `Completed`, one step forward at a time.
+From `Dispatched`, the cancel-dispatch action returns the incident to
+`Received`; a repeated `Dispatched` update may add response teams.
 Dispatcher dashboard and incident lists share 10/25/50 pagination controls,
 preserving active filters and the selected page size. Team Availability uses
 the same controls, with status filters applied across pages and counts covering
