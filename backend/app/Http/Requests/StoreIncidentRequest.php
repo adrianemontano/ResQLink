@@ -13,10 +13,6 @@ class StoreIncidentRequest extends FormRequest
             return false;
         }
 
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-
         return $user->hasRole('volunteer')
             && $user->volunteerProfile?->verification_status === 'verified';
     }

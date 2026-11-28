@@ -40,16 +40,12 @@ class IncidentController extends Controller
             ? (int) $requestedPerPage
             : 10;
         $user = Auth::user();
-        $query = Incident::query();
-
-        if (! $user?->hasRole('admin')) {
-            $query->where(function ($q) use ($user): void {
-                $q->where('volunteer_id', $user->getKey())
+        abort_unless($user?->hasRole('volunteer'), 403);
+        $incidents = Incident::query()
+            ->where(function ($query) use ($user): void {
+                $query->where('volunteer_id', $user->getKey())
                     ->orWhere('reported_by', $user->getKey());
-            });
-        }
-
-        $incidents = $query
+            })
             ->latest('reported_at')
             ->paginate($perPage)
             ->withQueryString();
@@ -99,10 +95,6 @@ class IncidentController extends Controller
     protected function verifyVolunteerOwnsIncident(Incident $incident): void
     {
         $user = Auth::user();
-
-        if ($user?->hasRole('admin')) {
-            return;
-        }
 
         if (! $user?->hasRole('volunteer')
             || $incident->volunteer_id !== $user->id

@@ -48,22 +48,6 @@
             </a>
         </details>
 
-        <details class="sidebar-section admin-module-accordion" @if (request()->routeIs('volunteer.incidents.create', 'volunteer.incidents.index', 'volunteer.incidents.edit')) open @endif>
-            <summary class="sidebar-section-label sidebar-label admin-module-toggle">
-                <svg class="admin-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                <span class="admin-module-title">Responder Portal</span>
-                <svg class="admin-module-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-            </summary>
-            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.create') ? 'active' : '' }}" href="{{ route('volunteer.incidents.create') }}">
-                <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                <span class="sidebar-label">Submit Incident</span>
-            </a>
-            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.index') || request()->routeIs('volunteer.incidents.edit') ? 'active' : '' }}" href="{{ route('volunteer.incidents.index') }}">
-                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                <span class="sidebar-label">Responder Reports</span>
-            </a>
-        </details>
-
         <details class="sidebar-section admin-module-accordion" @if (request()->routeIs('admin.incidents.*', 'admin.reports.*')) open @endif>
             <summary class="sidebar-section-label sidebar-label admin-module-toggle">
                 <svg class="admin-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>

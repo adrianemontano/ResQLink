@@ -78,7 +78,9 @@ Route::middleware(['auth', 'role:dispatcher,admin'])
     ->prefix('dispatcher')
     ->name('dispatcher.')
     ->group(function (): void {
-        Route::get('/dashboard', DispatcherDashboardController::class)->name('dashboard');
+        Route::get('/dashboard', DispatcherDashboardController::class)
+            ->middleware('role:dispatcher')
+            ->name('dashboard');
         Route::get('/incidents', [DispatcherIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidents/{incident}', [DispatcherIncidentController::class, 'show'])->name('incidents.show');
         Route::get('/incidents/{incident}/dispatch', [DispatcherIncidentDispatchController::class, 'dispatchPage'])->name('incidents.dispatch');
@@ -103,7 +105,7 @@ Route::middleware(['auth', 'role:dispatcher,admin'])
         Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password');
     });
 
-Route::middleware(['auth', 'role:volunteer,admin'])
+Route::middleware(['auth', 'role:volunteer'])
     ->prefix('volunteer')
     ->name('volunteer.')
     ->group(function (): void {
