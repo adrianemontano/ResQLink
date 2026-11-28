@@ -33,8 +33,12 @@ class DashboardController extends Controller
         $lastMonth = $months->last()->endOfMonth();
 
         // Use SQL GROUP BY instead of fetching all rows and counting in PHP
+        $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+        $monthExpr = $driver === 'sqlite'
+            ? "strftime('%Y-%m', COALESCE(reported_at, created_at))"
+            : "DATE_FORMAT(COALESCE(reported_at, created_at), '%Y-%m')";
         $monthlyCounts = $this->incidentsFor($volunteer)
-            ->selectRaw("DATE_FORMAT(COALESCE(reported_at, created_at), '%Y-%m') as month, COUNT(*) as total")
+            ->selectRaw("{$monthExpr} as month, COUNT(*) as total")
             ->where(function (Builder $query) use ($firstMonth, $lastMonth): void {
                 $query->whereBetween('reported_at', [$firstMonth, $lastMonth])
                     ->orWhere(function (Builder $query) use ($firstMonth, $lastMonth): void {

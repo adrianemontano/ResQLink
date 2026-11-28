@@ -20,6 +20,10 @@ class DashboardController extends Controller
                 ->subMonths($monthsAgo));
         $firstMonth = $months->first();
         $lastMonth = $months->last()->endOfMonth();
+        $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+        $monthExpr = $driver === 'sqlite'
+            ? "strftime('%Y-%m', COALESCE(reported_at, created_at))"
+            : "DATE_FORMAT(COALESCE(reported_at, created_at), '%Y-%m')";
         $monthlyCounts = Incident::query()
             ->where(function ($query) use ($firstMonth, $lastMonth): void {
                 $query->whereBetween('reported_at', [$firstMonth, $lastMonth])
@@ -28,7 +32,7 @@ class DashboardController extends Controller
                             ->whereBetween('created_at', [$firstMonth, $lastMonth]);
                     });
             })
-            ->selectRaw("DATE_FORMAT(COALESCE(reported_at, created_at), '%Y-%m') as month, COUNT(*) as total")
+            ->selectRaw("{$monthExpr} as month, COUNT(*) as total")
             ->groupBy('month')
             ->pluck('total', 'month');
         $incidentTrend = $months->map(fn (CarbonImmutable $month): array => [
