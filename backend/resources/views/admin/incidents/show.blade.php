@@ -32,7 +32,17 @@
         <p><strong>Current status:</strong>
             <span class="badge status-{{ strtolower($incident->status ?? 'unknown') }}">{{ $incident->status ?? '—' }}</span>
         </p>
+        <p><strong>Dispatched team:</strong> {{ $incident->dispatchedTeam?->name ?? '—' }}</p>
         <p><strong>Reported:</strong> {{ ($incident->reported_at ?? $incident->created_at)?->timezone(config('app.timezone'))->format('M d, Y H:i') ?? '—' }} {{ config('app.timezone') }}</p>
+        @if ($incident->received_at)
+            <p><strong>Received:</strong> {{ $incident->received_at->timezone(config('app.timezone'))->format('M d, Y H:i') }} {{ config('app.timezone') }}</p>
+        @endif
+        @if ($incident->dispatched_at)
+            <p><strong>Dispatched:</strong> {{ $incident->dispatched_at->timezone(config('app.timezone'))->format('M d, Y H:i') }} {{ config('app.timezone') }}</p>
+        @endif
+        @if ($incident->completed_at)
+            <p><strong>Completed:</strong> {{ $incident->completed_at->timezone(config('app.timezone'))->format('M d, Y H:i') }} {{ config('app.timezone') }}</p>
+        @endif
         <p><strong>Notes:</strong> {{ $incident->notes ?: '—' }}</p>
     </section>
 
@@ -43,6 +53,9 @@
                 <p>
                     {{ $history->changed_at?->timezone(config('app.timezone'))->format('M d, Y H:i') ?? '—' }}
                     {{ config('app.timezone') }} — {{ $history->status?->name ?? 'Status updated' }}
+                    @if ($history->responseTeam)
+                        (Team: {{ $history->responseTeam->name }})
+                    @endif
                     by {{ $history->dispatcher?->name ?? 'Unknown user' }}
                 </p>
                 @if ($history->notes)

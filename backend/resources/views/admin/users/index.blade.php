@@ -88,9 +88,7 @@
             </table>
         </div>
 
-        <div class="records-pagination">
-            {{ $users->links() }}
-        </div>
+        <x-resqlink-pagination :paginator="$users" :per-page="$perPage" />
     </section>
 
 @endsection

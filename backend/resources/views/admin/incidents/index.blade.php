@@ -107,8 +107,6 @@
             </table>
         </div>
 
-        <nav class="records-pagination" aria-label="Incident records pages">
-            {{ $incidents->links() }}
-        </nav>
+        <x-resqlink-pagination :paginator="$incidents" :per-page="$perPage" />
     </section>
 @endsection

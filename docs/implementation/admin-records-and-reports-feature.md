@@ -16,6 +16,10 @@ dispatcher status transitions, or shared incident fields.
 All routes sit behind the `admin.` route group, which applies the `auth` and
 `role:admin` middleware. Dispatchers, volunteers, inactive accounts, and
 unauthenticated users cannot access these pages; non-admin users receive `403`.
+Admin sidebar sections for management, dispatch operations, responder portal,
+incidents, and account are collapsible; the Dashboard remains directly visible.
+The Admin menu does not include the Dispatch Queue link; Dispatcher navigation
+retains it. Volunteer navigation remains unchanged.
 
 | Route name | Method and URI | Purpose |
 | --- | --- | --- |
@@ -25,9 +29,12 @@ unauthenticated users cannot access these pages; non-admin users receive `403`.
 
 ## Incident records
 
-`GET /admin/incidents` renders a paginated table (15 records per page, ordered
-by report time then ID) with filters carried through pagination links via
-`withQueryString()`.
+`GET /admin/incidents` renders a paginated table (10 records per page by
+default, with 10/25/50 options, ordered by report time then ID) with filters
+carried through pagination links via `withQueryString()`. Admin team, user, and
+incident lists share the same page controls and page-size selector. Team
+availability uses the same pagination while retaining its status totals and
+status filters across pages.
 
 Accepted query parameters:
 

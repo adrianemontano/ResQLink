@@ -25,6 +25,10 @@ class IncidentController extends Controller
             'status' => ['nullable', 'string', 'max:30'],
             'scope' => ['nullable', 'in:all,active,archived'],
         ]);
+        $requestedPerPage = $request->query('per_page');
+        $perPage = in_array($requestedPerPage, ['10', '25', '50'], true)
+            ? (int) $requestedPerPage
+            : 10;
 
         $scope = in_array($filters['scope'] ?? null, self::RECORD_SCOPES, true)
             ? $filters['scope']
@@ -35,7 +39,8 @@ class IncidentController extends Controller
             ->orderByDesc('id');
 
         return view('admin.incidents.index', [
-            'incidents' => $query->paginate(15)->withQueryString(),
+            'incidents' => $query->paginate($perPage)->withQueryString(),
+            'perPage' => $perPage,
             'categories' => Incident::query()->whereNotNull('category')->distinct()->orderBy('category')->pluck('category'),
             'statuses' => Incident::query()->whereNotNull('status')->distinct()->orderBy('status')->pluck('status'),
             'filters' => [...$filters, 'scope' => $scope],
@@ -49,8 +54,11 @@ class IncidentController extends Controller
             'incident' => $incident->load([
                 'reporter',
                 'volunteer',
+                'dispatchedTeam',
+                'photos',
                 'history.dispatcher',
                 'history.status',
+                'history.responseTeam',
             ]),
         ]);
     }

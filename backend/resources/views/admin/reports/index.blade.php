@@ -59,6 +59,18 @@
             <div class="report-stat-val">{{ $daysWithIncidents }}</div>
             <div class="report-stat-label">Days With Incidents</div>
         </div>
+        <div class="report-stat">
+            <div class="report-stat-val">{{ $responseMetrics['avgReceiveMinutes'] !== null ? $responseMetrics['avgReceiveMinutes'] . 'm' : '—' }}</div>
+            <div class="report-stat-label">Avg Time to Receive</div>
+        </div>
+        <div class="report-stat">
+            <div class="report-stat-val">{{ $responseMetrics['avgDispatchMinutes'] !== null ? $responseMetrics['avgDispatchMinutes'] . 'm' : '—' }}</div>
+            <div class="report-stat-label">Avg Time to Dispatch</div>
+        </div>
+        <div class="report-stat">
+            <div class="report-stat-val">{{ $responseMetrics['avgCompleteMinutes'] !== null ? $responseMetrics['avgCompleteMinutes'] . 'm' : '—' }}</div>
+            <div class="report-stat-label">Avg Time to Complete</div>
+        </div>
     </div>
 
     @unless ($hasIncidents)
@@ -94,6 +106,38 @@
             </div>
         @empty
             <p>No status totals for this period.</p>
+        @endforelse
+    </section>
+
+    <section class="chart-card" aria-label="Dispatches by response team">
+        <h2 class="chart-title">Dispatches by response team</h2>
+        @forelse ($byTeam as $index => $row)
+            @php $teamTotal = max(1, $byTeam->sum('total')); $percent = round($row->total / $teamTotal * 100); @endphp
+            <div class="bar-row">
+                <div class="bar-label">{{ $row->label }}</div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ $percent }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};"></div>
+                    <strong class="bar-value">{{ $row->total }} ({{ $percent }}%)</strong>
+                </div>
+            </div>
+        @empty
+            <p>No team dispatches recorded for this period.</p>
+        @endforelse
+    </section>
+
+    <section class="chart-card" aria-label="Incidents by severity">
+        <h2 class="chart-title">Incidents by severity</h2>
+        @forelse ($bySeverity as $index => $row)
+            @php $percent = $totalIncidents > 0 ? round($row->total / $totalIncidents * 100) : 0; @endphp
+            <div class="bar-row">
+                <div class="bar-label">{{ $row->label }}</div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ $percent }}%; background: {{ $categoryPalette[$index % count($categoryPalette)] }};"></div>
+                    <strong class="bar-value">{{ $row->total }} ({{ $percent }}%)</strong>
+                </div>
+            </div>
+        @empty
+            <p>No severity totals for this period.</p>
         @endforelse
     </section>
 

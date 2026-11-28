@@ -23,6 +23,10 @@ class UserController extends Controller
     {
         $roleFilter = $request->query('role', 'all');
         $statusFilter = $request->query('status', 'all');
+        $requestedPerPage = $request->query('per_page');
+        $perPage = in_array($requestedPerPage, ['10', '25', '50'], true)
+            ? (int) $requestedPerPage
+            : 10;
         $allowedFilters = ['all', 'admin', 'barangay-responder', 'dispatcher'];
         $roleFilter = in_array($roleFilter, $allowedFilters, true) ? $roleFilter : 'all';
         $statusFilter = in_array($statusFilter, ['all', 'active', 'inactive'], true) ? $statusFilter : 'all';
@@ -51,12 +55,18 @@ class UserController extends Controller
             $query->orderBy('first_name')->orderBy('last_name');
         }
 
-        $users = $query->paginate(15)->appends([
+        $users = $query->paginate($perPage)->appends([
             'role' => $roleFilter === 'all' ? null : $roleFilter,
             'status' => $statusFilter === 'all' ? null : $statusFilter,
+            'per_page' => $perPage,
         ]);
 
-        return view('admin.users.index', ['users' => $users, 'roleFilter' => $roleFilter, 'statusFilter' => $statusFilter]);
+        return view('admin.users.index', [
+            'users' => $users,
+            'roleFilter' => $roleFilter,
+            'statusFilter' => $statusFilter,
+            'perPage' => $perPage,
+        ]);
     }
 
     public function create(): View
