@@ -97,6 +97,8 @@ class TeamAvailabilityController extends Controller
         $perPage = in_array($requestedPerPage, ['10', '25', '50'], true)
             ? (int) $requestedPerPage
             : 10;
+        $requestedSearch = $request->query('search', '');
+        $search = is_string($requestedSearch) ? trim($requestedSearch) : '';
         $requestedStatus = $request->query('status', 'all');
         $allowedStatuses = ['all', 'available', 'on_mission', 'inactive'];
         $selectedStatus = is_string($requestedStatus) && in_array($requestedStatus, $allowedStatuses, true)
@@ -123,6 +125,13 @@ class TeamAvailabilityController extends Controller
         ];
 
         $query = ResponseTeam::query()->orderBy('name');
+        if ($search !== '') {
+            $query->where(function ($query) use ($search): void {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('team_leader', 'like', '%' . $search . '%');
+            });
+        }
+
         if ($selectedStatus === 'available') {
             $query->where('is_active', true);
             if ($activeTeamIds !== []) {
@@ -139,7 +148,7 @@ class TeamAvailabilityController extends Controller
             $teams->getCollection()->map(fn (ResponseTeam $team): array => $this->buildTeamData($team)),
         );
 
-        return view('admin.teams.availability', compact('teams', 'summary', 'perPage', 'selectedStatus'));
+        return view('admin.teams.availability', compact('teams', 'summary', 'perPage', 'search', 'selectedStatus'));
     }
 
     public function show(ResponseTeam $team): View

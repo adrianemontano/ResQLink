@@ -5,11 +5,25 @@
 @endpush
 
 @section('content')
-    <div class="header-row">
+    <div class="header-row availability-header-row">
         <div>
             <h1>Team Availability</h1>
             <p>Click View on a team to open its members and response activity logs.</p>
         </div>
+        <form class="availability-search" method="GET" action="{{ url()->current() }}" role="search">
+            <label class="sr-only" for="team-availability-search">Search by team name or team leader</label>
+            <input
+                id="team-availability-search"
+                name="search"
+                type="search"
+                value="{{ $search }}"
+                placeholder="Search team or team leader"
+                maxlength="100"
+            >
+            <input type="hidden" name="status" value="{{ $selectedStatus }}">
+            <input type="hidden" name="per_page" value="{{ $perPage }}">
+            <button type="submit" class="button secondary dispatcher-view-button">Search</button>
+        </form>
     </div>
 
     @php
@@ -83,7 +97,13 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5">No response teams found.</td>
+                            <td colspan="5">
+                                @if ($search !== '')
+                                    No teams match "{{ $search }}".
+                                @else
+                                    No response teams found.
+                                @endif
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

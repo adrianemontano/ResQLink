@@ -14,7 +14,8 @@ can open a full incident summary and update status only through `Reported`,
 Dispatcher dashboard and incident lists share 10/25/50 pagination controls,
 preserving active filters and the selected page size. Team Availability uses
 the same controls, with status filters applied across pages and counts covering
-all teams.
+all teams. Its search bar matches partial team names and team-leader names, and
+the search term is retained while paging or changing status filters.
 
 If a dispatcher picks a status that skips a step (for example `Reported` to
 `Completed`), the incident is not changed and the TASK3 Update Status form

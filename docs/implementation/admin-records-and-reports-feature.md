@@ -33,8 +33,8 @@ retains it. Volunteer navigation remains unchanged.
 default, with 10/25/50 options, ordered by report time then ID) with filters
 carried through pagination links via `withQueryString()`. Admin team, user, and
 incident lists share the same page controls and page-size selector. Team
-availability uses the same pagination while retaining its status totals and
-status filters across pages.
+availability uses the same pagination while retaining its search, status totals,
+and status filters across pages; its search matches team names and team leaders.
 
 Accepted query parameters:
 
