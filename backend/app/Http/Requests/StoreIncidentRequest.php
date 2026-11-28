@@ -8,9 +8,17 @@ class StoreIncidentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->is_active === true
-            && $this->user()->hasRole('volunteer')
-            && $this->user()->volunteerProfile?->verification_status === 'verified';
+        $user = $this->user();
+        if (! $user || ! $user->is_active) {
+            return false;
+        }
+
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        return $user->hasRole('volunteer')
+            && $user->volunteerProfile?->verification_status === 'verified';
     }
 
     public function rules(): array
@@ -25,6 +33,12 @@ class StoreIncidentRequest extends FormRequest
             'impact_radius' => ['required', 'numeric', 'gt:0', 'max:100000'],
             'notes' => ['nullable', 'string', 'max:5000'],
             'photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:5120'],
+            'media' => ['nullable', 'array', 'max:5'],
+            'media.*' => [
+                'file',
+                'mimetypes:image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime',
+                'max:25600',
+            ],
         ];
     }
 }

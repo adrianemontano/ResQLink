@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['incident_id', 'file_path', 'original_name', 'mime_type', 'size'])]
+#[Fillable(['incident_id', 'file_path', 'original_name', 'mime_type', 'media_type', 'size'])]
 class IncidentPhoto extends Model
 {
     use HasFactory;

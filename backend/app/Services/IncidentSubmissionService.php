@@ -17,14 +17,15 @@ class IncidentSubmissionService
     public function submit(array $data, User $reporter): Incident
     {
         $photo = $data['photo'] ?? null;
-        unset($data['photo']);
+        $mediaFiles = $data['media'] ?? [];
+        unset($data['photo'], $data['media']);
 
         $severity = $this->severityService->classify(
             (int) $data['affected_population'],
             (float) $data['impact_radius'],
         );
 
-        $incident = DB::transaction(function () use ($data, $reporter, $severity, $photo): Incident {
+        $incident = DB::transaction(function () use ($data, $reporter, $severity, $photo, $mediaFiles): Incident {
             $categoryId = DB::table('incident_categories')->where('name', $data['category'])->value('id');
             $severityId = DB::table('severity_levels')->where('name', $severity)->value('id');
             $statusId = DB::table('incident_statuses')->where('name', 'Reported')->value('id');
@@ -53,23 +54,39 @@ class IncidentSubmissionService
                 'changed_at' => now(),
             ]);
 
+            $uploads = [];
             if ($photo instanceof UploadedFile) {
-                $path = $photo->store('incident-photos', 'local');
+                $uploads[] = $photo;
+            }
+            foreach (is_array($mediaFiles) ? $mediaFiles : [] as $file) {
+                if ($file instanceof UploadedFile) {
+                    $uploads[] = $file;
+                }
+            }
+
+            foreach ($uploads as $file) {
+                $mime = $file->getMimeType() ?: 'image/jpeg';
+                $mediaType = str_starts_with($mime, 'video/') ? 'video' : 'image';
+                $path = $file->store('incident-photos', 'local');
                 $incident->photos()->create([
                     'file_path' => $path,
-                    'original_name' => $photo->getClientOriginalName(),
-                    'mime_type' => $photo->getMimeType() ?: 'image/jpeg',
-                    'size' => $photo->getSize(),
+                    'original_name' => $file->getClientOriginalName(),
+                    'mime_type' => $mime,
+                    'media_type' => $mediaType,
+                    'size' => $file->getSize(),
                 ]);
             }
 
             return $incident;
         });
 
-        // Notify all dispatchers of the incoming incident
-        $dispatchers = User::query()->where('is_active', true)->whereRelation('role', 'name', 'dispatcher')->get();
-        if ($dispatchers->isNotEmpty()) {
-            Notification::send($dispatchers, new NewIncidentReportedNotification($incident));
+        // Notify all dispatchers and admins of the incoming incident
+        $recipients = User::query()
+            ->where('is_active', true)
+            ->whereHas('role', fn ($q) => $q->whereIn('name', ['dispatcher', 'admin']))
+            ->get();
+        if ($recipients->isNotEmpty()) {
+            Notification::send($recipients, new NewIncidentReportedNotification($incident));
         }
 
         return $incident;

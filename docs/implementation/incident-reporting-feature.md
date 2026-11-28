@@ -25,6 +25,8 @@ incident structure through `/volunteer/incidents/create`. The web form posts to
 `/volunteer/incidents` and uses the shared `StoreIncidentRequest` validation and
 `IncidentSubmissionService`, so API and web submissions produce the same stored
 incident data, severity, timestamp, and `Reported` status.
+The volunteer incident list uses the shared 10/25/50 pagination controls and
+preserves the selected page size when navigating pages.
 
 Development testing requires an active volunteer user with a related
 `volunteer_profiles.verification_status` value of `verified`.

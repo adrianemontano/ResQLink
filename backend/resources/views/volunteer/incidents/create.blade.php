@@ -13,7 +13,7 @@
 @section('content')
     <div class="header-row"><div><h1>Submit Incident</h1><p>Provide accurate details. Dispatchers will review the preliminary assessment.</p></div></div>
     <div class="volunteer-report-grid">
-        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}" novalidate>
+        <form class="card volunteer-form-card" method="POST" action="{{ route('volunteer.incidents.store') }}" enctype="multipart/form-data" novalidate>
             @csrf
             <div class="volunteer-section-head">Incident details</div>
             <div class="volunteer-field-row"><x-volunteer-field label="Category" name="category" type="select" :options="['Flood', 'Earthquake', 'Landslide', 'Fire']" required /><div class="volunteer-field"><label for="barangay">Barangay <span class="required-asterisk" aria-hidden="true">*</span></label><input id="barangay" name="barangay" list="barangay-options" value="{{ old('barangay') }}" placeholder="Search a barangay" autocomplete="off" required data-barangay-field><datalist id="barangay-options"></datalist>@error('barangay')<small>{{ $message }}</small>@enderror</div></div>
@@ -23,6 +23,17 @@
             <x-volunteer-field label="Impact radius (metres)" name="impact_radius" type="number" step="any" min="0.01" :value="300" required placeholder="Enter radius or use map slider" />
             <p class="volunteer-synced-note">ⓘ Place a pin and adjust the map slider to fill these fields, or enter the location and radius manually.</p>
             <x-volunteer-field label="Notes" name="notes" type="textarea" placeholder="Anything dispatchers should know before they respond" required />
+            <div class="volunteer-field">
+                <label for="media">Photo or Video Evidence <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <input id="media" type="file" name="media[]" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime" multiple>
+                    <input id="camera-capture" type="file" name="media[]" accept="image/jpeg,image/png,image/webp" capture="environment" hidden>
+                    <button type="button" class="button" id="take-photo-btn" onclick="document.getElementById('camera-capture').click()">Take a photo</button>
+                </div>
+                <small style="color: var(--text-muted);">Optional. Upload up to 5 photos (JPG, PNG, WEBP) or videos (MP4, MOV, WEBM), max 25 MB each.</small>
+                @error('media')<small>{{ $message }}</small>@enderror
+                @error('media.*')<small>{{ $message }}</small>@enderror
+            </div>
             <div class="volunteer-form-footer"><button class="button" type="submit" data-submit-incident>Submit Incident Report</button></div>
         </form>
         <section class="card volunteer-map-card"><div class="volunteer-map-head"><h2>Mark the incident</h2><span>Tap to place a pin, drag the slider to set radius</span></div><div class="volunteer-map-wrap" data-volunteer-map><div class="volunteer-map-search"><input type="search" placeholder="Search a barangay" data-barangay-search aria-label="Search a local barangay"></div><div class="volunteer-map" data-map-canvas aria-label="Offline Cebu City barangay map"></div><div class="volunteer-no-pin" data-no-pin>⌖<span>Tap anywhere on the map to place the incident location</span></div><div class="volunteer-map-controls"><div><strong>Impact radius</strong><span><b data-radius-value>300</b> m</span></div><input type="range" min="100" max="3000" step="50" value="300" data-radius-slider><small>Local map data • no external tiles required</small></div></div></section>

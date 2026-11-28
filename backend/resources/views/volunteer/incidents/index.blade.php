@@ -47,9 +47,7 @@
                 </table>
             </div>
 
-            <div class="records-pagination">
-                {{ $incidents->links() }}
-            </div>
+            <x-resqlink-pagination :paginator="$incidents" :per-page="$perPage" />
         @endif
     </section>
 @endsection
