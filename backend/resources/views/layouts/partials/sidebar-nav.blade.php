@@ -8,16 +8,68 @@
             </a>
         </div>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-label sidebar-label">Management</div>
+        <details class="sidebar-section admin-module-accordion" @if (request()->routeIs('admin.users.*', 'admin.teams.*')) open @endif>
+            <summary class="sidebar-section-label sidebar-label admin-module-toggle">
+                <svg class="admin-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span class="admin-module-title">Management</span>
+                <svg class="admin-module-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
             <a class="sidebar-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                 <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 <span class="sidebar-label">User Management</span>
             </a>
-        </div>
+            <a class="sidebar-item {{ request()->routeIs('admin.teams.index') ? 'active' : '' }}" href="{{ route('admin.teams.index') }}">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span class="sidebar-label">Response Teams</span>
+            </a>
+            <a class="sidebar-item {{ request()->routeIs('admin.teams.availability*') ? 'active' : '' }}" href="{{ route('admin.teams.availability') }}">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="sidebar-label">Team Availability</span>
+            </a>
+        </details>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-label sidebar-label">Incidents</div>
+        <details class="sidebar-section admin-module-accordion" @if (request()->routeIs('dispatcher.dashboard', 'dispatcher.incidents.*', 'dispatcher.map', 'dispatcher.teams.availability*')) open @endif>
+            <summary class="sidebar-section-label sidebar-label admin-module-toggle">
+                <svg class="admin-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+                <span class="admin-module-title">Dispatch &amp; Operations</span>
+                <svg class="admin-module-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <a class="sidebar-item {{ request()->routeIs('dispatcher.incidents.*') ? 'active' : '' }}" href="{{ route('dispatcher.incidents.index') }}">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span class="sidebar-label">Live Incidents</span>
+            </a>
+            <a class="sidebar-item {{ request()->routeIs('dispatcher.map') ? 'active' : '' }}" href="{{ route('dispatcher.map') }}">
+                <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                <span class="sidebar-label">Map View</span>
+            </a>
+            <a class="sidebar-item {{ request()->routeIs('dispatcher.teams.availability*') ? 'active' : '' }}" href="{{ route('dispatcher.teams.availability') }}">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="sidebar-label">Team Availability</span>
+            </a>
+        </details>
+
+        <details class="sidebar-section admin-module-accordion" @if (request()->routeIs('volunteer.incidents.create', 'volunteer.incidents.index', 'volunteer.incidents.edit')) open @endif>
+            <summary class="sidebar-section-label sidebar-label admin-module-toggle">
+                <svg class="admin-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                <span class="admin-module-title">Responder Portal</span>
+                <svg class="admin-module-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.create') ? 'active' : '' }}" href="{{ route('volunteer.incidents.create') }}">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                <span class="sidebar-label">Submit Incident</span>
+            </a>
+            <a class="sidebar-item {{ request()->routeIs('volunteer.incidents.index') || request()->routeIs('volunteer.incidents.edit') ? 'active' : '' }}" href="{{ route('volunteer.incidents.index') }}">
+                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span class="sidebar-label">Responder Reports</span>
+            </a>
+        </details>
+
+        <details class="sidebar-section admin-module-accordion" @if (request()->routeIs('admin.incidents.*', 'admin.reports.*')) open @endif>
+            <summary class="sidebar-section-label sidebar-label admin-module-toggle">
+                <svg class="admin-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span class="admin-module-title">Incidents</span>
+                <svg class="admin-module-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
             <a class="sidebar-item {{ request()->routeIs('admin.incidents.*') ? 'active' : '' }}" href="{{ route('admin.incidents.index') }}">
                 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 <span class="sidebar-label">Incident Records</span>
@@ -26,14 +78,18 @@
                 <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                 <span class="sidebar-label">Reports</span>
             </a>
-        </div>
-        <div class="sidebar-section">
-            <div class="sidebar-section-label sidebar-label">Account</div>
+        </details>
+        <details class="sidebar-section admin-module-accordion" @if (request()->routeIs('admin.account.*')) open @endif>
+            <summary class="sidebar-section-label sidebar-label admin-module-toggle">
+                <svg class="admin-module-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                <span class="admin-module-title">Account</span>
+                <svg class="admin-module-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
             <a class="sidebar-item {{ request()->routeIs('admin.account.*') ? 'active' : '' }}" href="{{ route('admin.account.edit') }}">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
                 <span class="sidebar-label">My Account</span>
             </a>
-        </div>
+        </details>
     @elseif (auth()->user()->hasRole('dispatcher'))
         <div class="sidebar-section">
             <div class="sidebar-section-label sidebar-label">Main</div>
@@ -52,6 +108,10 @@
             <a class="sidebar-item {{ request()->routeIs('dispatcher.map') ? 'active' : '' }}" href="{{ route('dispatcher.map') }}">
                 <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
                 <span class="sidebar-label">Map View</span>
+            </a>
+            <a class="sidebar-item {{ request()->routeIs('dispatcher.teams.availability') ? 'active' : '' }}" href="{{ route('dispatcher.teams.availability') }}">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="sidebar-label">Team Availability</span>
             </a>
         </div>
 

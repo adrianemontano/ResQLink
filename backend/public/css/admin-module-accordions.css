@@ -1,0 +1,84 @@
+.sidebar-nav .admin-module-accordion > .admin-module-toggle {
+    align-items: center;
+    cursor: pointer;
+    display: flex !important;
+    font-size: 10.5px !important;
+    font-weight: 600;
+    gap: var(--space-3);
+    letter-spacing: .1em;
+    list-style: none;
+    padding: var(--space-2) var(--space-4);
+    text-transform: uppercase;
+    transition: background .15s, color .15s;
+    user-select: none;
+}
+
+.sidebar-nav .admin-module-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.sidebar-nav .admin-module-icon {
+    fill: none;
+    flex: 0 0 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    width: 18px;
+}
+
+.sidebar-nav .admin-module-title {
+    flex: 1;
+}
+
+.sidebar-nav .admin-module-chevron {
+    fill: none;
+    flex: 0 0 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    transition: transform .15s ease;
+    width: 16px;
+}
+
+.sidebar-nav .admin-module-accordion[open] > .admin-module-toggle .admin-module-chevron {
+    transform: rotate(180deg);
+}
+
+.sidebar-nav .admin-module-toggle:hover,
+.sidebar-nav .admin-module-accordion[open] > .admin-module-toggle {
+    background: rgba(255, 255, 255, .08);
+    color: #ffffff;
+}
+
+.sidebar-nav .admin-module-toggle:focus-visible {
+    outline: 2px solid var(--philippine-orange);
+    outline-offset: -2px;
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+    .sidebar-nav .admin-module-accordion > .admin-module-toggle {
+        display: flex !important;
+        justify-content: center;
+        padding-inline: 8px;
+    }
+
+    .sidebar-nav .admin-module-title,
+    .sidebar-nav .admin-module-chevron {
+        display: none;
+    }
+}
+
+.dashboard-shell.sidebar-collapsed .sidebar-nav .admin-module-accordion > .admin-module-toggle {
+    display: flex !important;
+    justify-content: center;
+    padding-inline: 8px;
+}
+
+.dashboard-shell.sidebar-collapsed .sidebar-nav .admin-module-title,
+.dashboard-shell.sidebar-collapsed .sidebar-nav .admin-module-chevron {
+    display: none;
+}

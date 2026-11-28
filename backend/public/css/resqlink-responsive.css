@@ -301,9 +301,9 @@ table { box-sizing: border-box; max-width: 100%; }
     /* Compact pagination */
     .dispatcher-pagination { align-items: center !important; display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; gap: 8px !important; justify-content: space-between !important; margin-top: 8px !important; }
     .rql-pagination { display: flex !important; flex-wrap: nowrap !important; gap: 4px !important; overflow-x: auto !important; padding-bottom: 2px !important; }
-    .rql-page-btn { border-radius: 6px !important; font-size: 12px !important; height: 32px !important; min-width: 32px !important; padding: 0 6px !important; }
-    .dispatcher-pagination-size { width: 110px !important; }
-    #dispatcher-pagination-per-page .dispatcher-dropdown-trigger { font-size: 12px !important; height: 32px !important; min-height: 32px !important; padding: 0 8px !important; }
+    .rql-page-btn { border-radius: 8px !important; font-size: 14px !important; height: 40px !important; min-width: 40px !important; padding: 0 8px !important; }
+    .resqlink-pagination-size { width: 140px !important; }
+    #resqlink-pagination-per-page .dispatcher-dropdown-trigger { font-size: 13px !important; height: 40px !important; min-height: 40px !important; padding: 0 8px !important; }
 }
 
 /* 3. Extra Narrow (<= 360px) */
